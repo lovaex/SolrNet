@@ -43,7 +43,7 @@ namespace AutofacContrib.SolrNet.Tests {
             builder.RegisterModule(module);
             var container = builder.Build();
             var m = container.Resolve<IReadOnlyMappingManager>();
-            Assert.AreSame(new MReadOnlyMappingManager(), m);
+            Assert.That(m, Is.TypeOf<MReadOnlyMappingManager>());
         }
 
         [Test]

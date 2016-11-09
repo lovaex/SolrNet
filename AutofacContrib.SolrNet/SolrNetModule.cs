@@ -41,8 +41,8 @@ namespace AutofacContrib.SolrNet {
     /// <summary>
     /// Configures SolrNet in an Autofac container
     /// </summary>
-    public class SolrNetModule : Module, IModule {
-        protected void Load(ContainerBuilder builder) {
+    public class SolrNetModule : Module {
+        protected override void Load(ContainerBuilder builder) {
             if (!string.IsNullOrEmpty(ServerUrl))
                 RegisterSingleCore(builder);
             else if (solrServers != null)

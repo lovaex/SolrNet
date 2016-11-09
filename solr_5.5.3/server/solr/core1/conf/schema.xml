@@ -159,8 +159,10 @@
   <fieldType name="tfloat" class="solr.TrieFloatField" positionIncrementGap="0" precisionStep="8"/>
   <fieldType name="tint" class="solr.TrieIntField" positionIncrementGap="0" precisionStep="8"/>
   <fieldType name="tlong" class="solr.TrieLongField" positionIncrementGap="0" precisionStep="8"/>
+  <fieldType name="uuid" class="solr.UUIDField" />
   <field name="_root_" type="string" indexed="true" stored="false"/>
   <field name="_src_" type="string" indexed="false" stored="true"/>
+  <field name="timestamp" type="date" indexed="false" stored="true"/>
   <field name="_version_" type="long" indexed="true" stored="true"/>
   <field name="author" type="text_general" indexed="true" stored="true"/>
   <field name="cat" type="string" multiValued="true" indexed="true" stored="true"/>
@@ -192,6 +194,7 @@
   <field name="title" type="text_general" multiValued="true" indexed="true" stored="true"/>
   <field name="url" type="text_general" indexed="true" stored="true"/>
   <field name="weight" type="float" indexed="true" stored="true"/>
+  <field name="guid" type="uuid" indexed="true" stored="true"/>
   <dynamicField name="*_coordinate" type="tdouble" indexed="true" stored="false"/>
   <dynamicField name="ignored_*" type="ignored" multiValued="true"/>
   <dynamicField name="random_*" type="random"/>
