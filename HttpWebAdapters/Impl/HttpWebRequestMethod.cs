@@ -14,7 +14,7 @@
 // limitations under the License.
 #endregion
 
-namespace HttpWebAdapters {
+namespace HttpWebAdapters.Impl {
 	public class HttpWebRequestMethod {
 		private string method;
 		private static readonly string SGET = "GET";

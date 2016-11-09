@@ -20,12 +20,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
-using Moroco;
 using NUnit.Framework;
 using SolrNet;
 using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using SolrNet.Tests.Mocks;
+using SolrNet.Tests.Utils;
 using Order = NHibernate.Criterion.Order;
 
 namespace NHibernate.SolrNet.Tests {

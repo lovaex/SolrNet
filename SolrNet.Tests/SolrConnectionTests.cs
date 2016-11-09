@@ -21,10 +21,11 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using HttpWebAdapters;
-using Moroco;
+using HttpWebAdapters.Impl;
 using NUnit.Framework;
 using SolrNet.Exceptions;
 using SolrNet.Impl;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests {
 	[TestFixture]

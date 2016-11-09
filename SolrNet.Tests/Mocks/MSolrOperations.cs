@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Moroco;
 using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using SolrNet.Mapping.Validation;
 using SolrNet.Schema;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MSolrOperations<T> : ISolrOperations<T> {

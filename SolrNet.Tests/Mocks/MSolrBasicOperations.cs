@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Moroco;
 using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using SolrNet.Schema;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MSolrBasicOperations<T> : ISolrBasicOperations<T> {

@@ -15,10 +15,10 @@
 #endregion
 
 using MbUnit.Framework;
-using Moroco;
 using NHibernate.SolrNet.Impl;
 using NUnit.Framework;
 using SolrNet;
+using SolrNet.Tests.Utils;
 
 namespace NHibernate.SolrNet.Tests {
     [TestFixture]

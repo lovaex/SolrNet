@@ -18,10 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
-using Rhino.Commons;
 using SolrNet.Commands;
 using SolrNet.Commands.Parameters;
 using SolrNet.DSL.Impl;
+using SolrNet.DSL.Utils;
 using SolrNet.Impl;
 
 namespace SolrNet.DSL {

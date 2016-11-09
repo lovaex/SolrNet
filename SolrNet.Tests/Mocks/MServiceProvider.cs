@@ -1,5 +1,5 @@
 ﻿using System;
-using Moroco;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MServiceProvider : IServiceProvider {

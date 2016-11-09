@@ -16,13 +16,13 @@
 
 using System;
 using System.Collections.Generic;
-using Moroco;
 using NUnit.Framework;
 using SolrNet.Attributes;
 using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using SolrNet.Tests;
 using SolrNet.Tests.Mocks;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.DSL.Tests {
     /// <summary>
