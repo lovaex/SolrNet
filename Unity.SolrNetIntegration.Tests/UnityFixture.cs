@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
-using MbUnit.Framework;
 using Microsoft.Practices.Unity;
+using NUnit.Framework;
 using SolrNet;
 using SolrNet.Exceptions;
 using SolrNet.Impl;
@@ -38,7 +37,7 @@ namespace Unity.SolrNetIntegration.Tests {
             }
         }
 
-        [Test, ExpectedException(typeof (InvalidURLException))]
+        [Test]
         public void Should_throw_exception_for_invalid_protocol_on_url() {
             var solrServers = new SolrServers {
                 new SolrServerElement {
@@ -47,13 +46,15 @@ namespace Unity.SolrNetIntegration.Tests {
                     DocumentType = typeof (Entity2).AssemblyQualifiedName,
                 }
             };
-            using (var container = new UnityContainer()) {
-                new SolrNetContainerConfiguration().ConfigureContainer(solrServers, container);
-                container.Resolve<ISolrConnection>();
-            }
+            Assert.Throws<InvalidURLException>(() => {
+                using (var container = new UnityContainer()) {
+                    new SolrNetContainerConfiguration().ConfigureContainer(solrServers, container);
+                    container.Resolve<ISolrConnection>();
+                }
+            });
         }
 
-        [Test, ExpectedException(typeof (InvalidURLException))]
+        [Test]
         public void Should_throw_exception_for_invalid_url() {
             var solrServers = new SolrServers {
                 new SolrServerElement {
@@ -62,10 +63,12 @@ namespace Unity.SolrNetIntegration.Tests {
                     DocumentType = typeof (Entity2).AssemblyQualifiedName,
                 }
             };
-            using (var container = new UnityContainer()) {
-                new SolrNetContainerConfiguration().ConfigureContainer(solrServers, container);
-                container.Resolve<ISolrConnection>();
-            }
+            Assert.Throws<InvalidURLException>(() => {
+                using (var container = new UnityContainer()) {
+                    new SolrNetContainerConfiguration().ConfigureContainer(solrServers, container);
+                    container.Resolve<ISolrConnection>();
+                }
+            });
         }
 
         [Test]
@@ -94,7 +97,7 @@ namespace Unity.SolrNetIntegration.Tests {
         public void DictionaryDocument_ResponseParser() {
             using (var container = SetupContainer()) {
                 var parser = container.Resolve<ISolrDocumentResponseParser<Dictionary<string, object>>>();
-                Assert.IsInstanceOfType<SolrDictionaryDocumentResponseParser>(parser);
+                Assert.IsInstanceOf<SolrDictionaryDocumentResponseParser>(parser);
             }
         }
 
@@ -102,7 +105,7 @@ namespace Unity.SolrNetIntegration.Tests {
         public void DictionaryDocument_Serializer() {
             using (var container = SetupContainer()) {
                 var serializer = container.Resolve<ISolrDocumentSerializer<Dictionary<string, object>>>();
-                Assert.IsInstanceOfType<SolrDictionarySerializer>(serializer);
+                Assert.IsInstanceOf<SolrDictionarySerializer>(serializer);
             }
         }
 

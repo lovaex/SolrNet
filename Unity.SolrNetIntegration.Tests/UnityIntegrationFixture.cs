@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using MbUnit.Framework;
 using Microsoft.Practices.Unity;
+using NUnit.Framework;
 using SolrNet;
 using Unity.SolrNetIntegration.Config;
 
@@ -49,7 +50,7 @@ namespace Unity.SolrNetIntegration.Tests {
                 new SolrNetContainerConfiguration().ConfigureContainer(TestServers, container);
                 var solr = container.Resolve<ISolrOperations<Entity2>>();
                 var results = solr.Query(SolrQuery.All);
-                Assert.GreaterThan(results.Count, 0);
+                Assert.That(results.Count, Is.GreaterThan(0));
             }
         }
 

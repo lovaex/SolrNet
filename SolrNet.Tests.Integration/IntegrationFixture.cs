@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using MbUnit.Framework;
 using Microsoft.Practices.ServiceLocation;
+using NUnit.Framework;
 using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using SolrNet.Tests.Integration.Sample;
@@ -267,7 +268,7 @@ namespace SolrNet.Tests.Integration {
                 {"qt", "dismax"},
                 {"qf", "sku name^1.2 manu^1.1"},
             }});
-            Assert.GreaterThan(products.Count, 0);
+            Assert.That(products.Count, Is.GreaterThan(0));
         }
 
         [Test]
@@ -295,7 +296,7 @@ namespace SolrNet.Tests.Integration {
             }
             Console.WriteLine();
             Console.WriteLine("Spell checking:");
-            Assert.GreaterThan(r.SpellChecking.Count, 0);
+            Assert.That(r.SpellChecking.Count, Is.GreaterThan(0));
             foreach (var sc in r.SpellChecking) {
                 Console.WriteLine(sc.Query);
                 foreach (var s in sc.Suggestions) {
@@ -338,7 +339,7 @@ namespace SolrNet.Tests.Integration {
                     //Count = 1,
                 },
             });
-            Assert.GreaterThan(results.SimilarResults.Count, 0);
+            Assert.That(results.SimilarResults.Count, Is.GreaterThan(0));
             foreach (var r in results.SimilarResults) {
                 Console.WriteLine("Similar documents to {0}", r.Key);
                 foreach (var similar in r.Value)
@@ -414,13 +415,13 @@ namespace SolrNet.Tests.Integration {
             var _ = initDict.Value;
             var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
             var results = solr.Query(SolrQuery.All);
-            Assert.IsInstanceOfType<ArrayList>(results[0]["cat"]);
-            Assert.IsInstanceOfType<string>(results[0]["id"]);
-            Assert.IsInstanceOfType<bool>(results[0]["inStock"]);
-            Assert.IsInstanceOfType<int>(results[0]["popularity"]);
-            Assert.IsInstanceOfType<float>(results[0]["price"]);
-            Assert.IsInstanceOfType<DateTime>(results[0]["timestamp"]);
-            Assert.IsInstanceOfType<string>(((IList) results[0]["cat"])[0]);
+            Assert.IsInstanceOf<ArrayList>(results[0]["cat"]);
+            Assert.IsInstanceOf<string>(results[0]["id"]);
+            Assert.IsInstanceOf<bool>(results[0]["inStock"]);
+            Assert.IsInstanceOf<int>(results[0]["popularity"]);
+            Assert.IsInstanceOf<float>(results[0]["price"]);
+            Assert.IsInstanceOf<DateTime>(results[0]["timestamp"]);
+            Assert.IsInstanceOf<string>(((IList) results[0]["cat"])[0]);
             foreach (var r in results)
                 foreach (var kv in r) {
                     Console.WriteLine("{0} ({1}): {2}", kv.Key, TypeOrNull(kv.Value), kv.Value);
@@ -479,7 +480,7 @@ namespace SolrNet.Tests.Integration {
 			Console.WriteLine("Group.Count {0}", results.Grouping.Count);
 			Assert.AreEqual(1, results.Grouping.Count);
 			Assert.AreEqual(true, results.Grouping.ContainsKey("manu_exact"));
-			Assert.GreaterThanOrEqualTo(results.Grouping["manu_exact"].Groups.Count,1);
+			Assert.That(results.Grouping["manu_exact"].Groups.Count,Is.GreaterThanOrEqualTo(1));
 		}
 
         [Test]
@@ -500,8 +501,8 @@ namespace SolrNet.Tests.Integration {
             Assert.AreEqual(2, results.Grouping.Count);
             Assert.AreEqual(true, results.Grouping.ContainsKey("manu_exact"));
             Assert.AreEqual(true, results.Grouping.ContainsKey("name"));
-            Assert.GreaterThanOrEqualTo(results.Grouping["manu_exact"].Groups.Count, 1);
-            Assert.GreaterThanOrEqualTo(results.Grouping["name"].Groups.Count, 1);
+            Assert.That(results.Grouping["manu_exact"].Groups.Count, Is.GreaterThanOrEqualTo(1));
+            Assert.That(results.Grouping["name"].Groups.Count, Is.GreaterThanOrEqualTo(1));
         }
 
         private static readonly Gallio.Common.Lazy<object> initLoose = new Gallio.Common.Lazy<object>(() => {
@@ -527,9 +528,9 @@ namespace SolrNet.Tests.Integration {
             Console.WriteLine(product.OtherFields.Count);
             foreach (var field in product.OtherFields)
                 Console.WriteLine("{0}: {1} ({2})", field.Key, field.Value, TypeOrNull(field.Value));
-            Assert.IsInstanceOfType(typeof(DateTime), product.OtherFields["timestamp"]);
+            Assert.IsInstanceOf<DateTime>(product.OtherFields["timestamp"]);
             Assert.AreEqual(new DateTime(1,1,1), product.OtherFields["timestamp"]);
-            Assert.IsInstanceOfType(typeof(ICollection), product.OtherFields["features"]);
+            Assert.IsInstanceOf<ICollection>( product.OtherFields["features"]);
             product.OtherFields["timestamp"] = new DateTime(2010, 1, 1);
             product.OtherFields["features"] = new[] {"a", "b", "c"};
             product.OtherFields.Remove("_version_"); // avoid optimistic locking for now https://issues.apache.org/jira/browse/SOLR-3178
@@ -577,7 +578,7 @@ namespace SolrNet.Tests.Integration {
             Assert.AreEqual(2, results.Count);
             Assert.IsNotNull(results.Match);
             Assert.AreEqual("UTF8TEST", results.Match.Id);
-            Assert.GreaterThan(results.InterestingTerms.Count, 0);
+            Assert.That(results.InterestingTerms.Count, Is.GreaterThan(0));
             foreach (var t in results.InterestingTerms) {
                 Console.WriteLine("Interesting term: {0} ({1})", t.Key, t.Value);
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet;
 using StructureMap.SolrNetIntegration.Config;
 
@@ -26,10 +27,10 @@ namespace StructureMap.SolrNetIntegration.Tests {
 
             var solr = ObjectFactory.Container.GetInstance<ISolrOperations<Dictionary<string, object>>>();
             var results = solr.Query(SolrQuery.All);
-            Assert.GreaterThan(results.Count, 0);
+            Assert.That(results.Count, Is.GreaterThan(0));
             foreach (var d in results)
             {
-                Assert.GreaterThan(d.Count, 0);
+                Assert.That(d.Count, Is.GreaterThan(0));
                 foreach (var kv in d)
                     Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
             }

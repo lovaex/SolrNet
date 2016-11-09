@@ -35,9 +35,6 @@
     <Reference Include="Gallio">
       <HintPath>..\lib\Gallio.dll</HintPath>
     </Reference>
-    <Reference Include="MbUnit">
-      <HintPath>..\lib\MbUnit.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\lib\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
