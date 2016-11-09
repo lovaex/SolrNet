@@ -43,7 +43,7 @@ namespace Unity.SolrNetIntegration.Tests {
 
         [Test]
         public void Get_named_SolrOperations_for_Entity2() {
-            var solrOperations2 = container.Resolve<ISolrOperations<Entity2>>("entity2");
+            var solrOperations2 = container.Resolve<ISolrOperations<Entity2>>("entity3");
             Assert.IsNotNull(solrOperations2);
         }
 

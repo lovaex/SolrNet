@@ -31,7 +31,7 @@ namespace SolrNet.Tests.Integration {
         http://localhost:8983/solr/admin/cores?action=UNLOAD&core=core0
         */
 
-        private static readonly string solrUrl = ConfigurationManager.AppSettings["solr"];
+        private static readonly string solrUrl = ConfigurationManager.AppSettings["solrBase"];
         private const string instanceDir = "/apps/solr";
 
         [Test]
