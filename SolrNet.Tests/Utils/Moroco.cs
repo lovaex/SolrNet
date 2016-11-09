@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 
-namespace Moroco {
+namespace SolrNet.Tests.Utils {
     public class MorocoException : Exception {
         public MorocoException(string message) : base(message) {}
         public MorocoException(string message, Exception innerException) : base(message, innerException) {}

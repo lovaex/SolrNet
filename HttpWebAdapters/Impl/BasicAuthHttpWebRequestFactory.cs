@@ -1,9 +1,8 @@
 using System;
 using System.Net;
 using System.Text;
-using HttpWebAdapters.Adapters;
 
-namespace HttpWebAdapters {
+namespace HttpWebAdapters.Impl {
     /// <summary>
     /// Creates a web request that does basic auth
     /// </summary>

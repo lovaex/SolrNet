@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MbUnit.Framework;
-using Moroco;
 using NUnit.Framework;
 using SolrNet.Attributes;
 using SolrNet.Commands.Parameters;
@@ -29,6 +28,7 @@ using SolrNet.Impl.FacetQuerySerializers;
 using SolrNet.Impl.FieldSerializers;
 using SolrNet.Impl.QuerySerializers;
 using SolrNet.Tests.Mocks;
+using SolrNet.Tests.Utils;
 using SolrNet.Utils;
 
 namespace SolrNet.Tests {

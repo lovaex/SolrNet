@@ -28,8 +28,25 @@ using SolrNet.Mapping;
 
 namespace NHibernate.SolrNet.Tests {
     [TestFixture]
-    [Category("Integration")]
     public class IntegrationTests {
+        private Configuration cfg;
+        private CfgHelper cfgHelper;
+        private ISessionFactory sessionFactory;
+        private string solrServerUrl = "http://localhost:8983/solr/core0";
+
+        [OneTimeSetUp]
+        public void FixtureSetup() {
+            BasicConfigurator.Configure();
+            SetupSolr();
+
+            cfg = SetupNHibernate();
+
+            cfgHelper = new CfgHelper();
+            cfgHelper.Configure(cfg, true);
+            sessionFactory = cfg.BuildSessionFactory();
+        }
+
+
         [Test]
         public void Insert() {
             using (var session = sessionFactory.OpenSession()) {
@@ -91,32 +108,15 @@ namespace NHibernate.SolrNet.Tests {
             Startup.Container.Remove<ISolrDocumentPropertyVisitor>();
             var propertyVisitor = new DefaultDocumentVisitor(mapper, Startup.Container.GetInstance<ISolrFieldParser>());
             Startup.Container.Register<ISolrDocumentPropertyVisitor>(c => propertyVisitor);
-
-            Startup.Init<Entity>("http://localhost:8983/solr");
+            Startup.Init<Entity>(solrServerUrl);
             var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Entity>>();
             solr.Delete(SolrQuery.All);
             solr.Commit();
-        }
-
-        [OneTimeSetUp]
-        public void FixtureSetup() {
-            BasicConfigurator.Configure();
-            SetupSolr();
-
-            cfg = SetupNHibernate();
-
-            cfgHelper = new CfgHelper();
-            cfgHelper.Configure(cfg, true);
-            sessionFactory = cfg.BuildSessionFactory();
         }
 
         [OneTimeTearDown]
         public void FixtureTearDown() {
             sessionFactory.Dispose();
         }
-
-        private Configuration cfg;
-        private CfgHelper cfgHelper;
-        private ISessionFactory sessionFactory;
     }
 }

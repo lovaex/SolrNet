@@ -20,11 +20,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using HttpWebAdapters;
-using Moroco;
+using HttpWebAdapters.Impl;
 using NUnit.Framework;
 using SolrNet.Exceptions;
 using SolrNet.Impl;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests {
 	[TestFixture]
@@ -32,7 +32,6 @@ namespace SolrNet.Tests {
         private const string solrURL = "http://localhost:8983/solr";
 
 		[Test, Ignore("")]
-		[Category("Integration")]
 		public void ActualConnection() {
             var conn = new SolrConnection(solrURL) { HttpWebRequestFactory = new HttpWebRequestFactory() };
 			var p = new Dictionary<string, string>();
@@ -43,7 +42,6 @@ namespace SolrNet.Tests {
 		}
 
         [Test, Ignore("")]
-        [Category("Integration")]
 		public void ActualConnectionWithException() {
             var conn = new SolrConnection(solrURL);
 			var p = new Dictionary<string, string>();

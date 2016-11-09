@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using MbUnit.Framework;
 using Microsoft.Practices.Unity;
 using NUnit.Framework;
 using SolrNet;
@@ -11,23 +9,22 @@ using Unity.SolrNetIntegration.Config;
 
 namespace Unity.SolrNetIntegration.Tests {
     [TestFixture]
-    [Category("Integration")]
     public class UnityIntegrationFixture {
         internal static readonly SolrServers TestServers = new SolrServers {
             new SolrServerElement {
                 Id = "entity",
                 DocumentType = typeof (Entity).AssemblyQualifiedName,
-                Url = "http://localhost:8983/solr/entity",
+                Url = "http://localhost:8983/solr/core0",
             },
             new SolrServerElement {
                 Id = "entity2Dict",
                 DocumentType = typeof (Dictionary<string, object>).AssemblyQualifiedName,
-                Url = "http://localhost:8983/solr/entity2",
+                Url = "http://localhost:8983/solr/core1",
             },
             new SolrServerElement {
                 Id = "entity2",
                 DocumentType = typeof (Entity2).AssemblyQualifiedName,
-                Url = "http://localhost:8983/solr/entity2",
+                Url = "http://localhost:8983/solr/core1",
             },
         };
 

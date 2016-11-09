@@ -8,7 +8,6 @@ using SolrNet;
 
 namespace Castle.Facilities.SolrNetIntegration.Tests {
     [TestFixture]
-    [Category("Integration")]
     public class CastleIntegrationFixture {
         [Test]
         public void Ping_Query()

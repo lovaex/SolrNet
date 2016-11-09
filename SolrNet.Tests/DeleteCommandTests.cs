@@ -14,10 +14,10 @@
 // limitations under the License.
 #endregion
 
-using Moroco;
 using NUnit.Framework;
 using SolrNet.Commands;
 using SolrNet.Commands.Parameters;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests {
 	[TestFixture]

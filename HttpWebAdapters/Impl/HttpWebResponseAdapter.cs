@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using System.Net;
 
-namespace HttpWebAdapters.Adapters {
+namespace HttpWebAdapters.Impl {
 	public class HttpWebResponseAdapter : IHttpWebResponse {
 		private WebResponse response;
 

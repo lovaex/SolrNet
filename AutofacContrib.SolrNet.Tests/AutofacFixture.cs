@@ -19,7 +19,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Autofac;
-using HttpWebAdapters;
 using NUnit.Framework;
 using SolrNet;
 using SolrNet.Impl;
@@ -29,20 +28,27 @@ using Mocks = SolrNet.Tests.Mocks;
 namespace AutofacContrib.SolrNet.Tests {
     [TestFixture]
     public class AutofacFixture {
+        private ContainerBuilder builder;
+        private SolrNetModule module;
+
+        [SetUp]
+        public void SetUp() {
+            builder = new ContainerBuilder();
+            module = new SolrNetModule("http://localhost:8983/solr/core0");
+        }
+
         [Test]
         public void ReplaceMapper() {
-            var builder = new ContainerBuilder();
-            var mapper = new MReadOnlyMappingManager();
-            builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr") {Mapper = mapper});
+            module.Mapper = new MReadOnlyMappingManager();
+            builder.RegisterModule(module);
             var container = builder.Build();
             var m = container.Resolve<IReadOnlyMappingManager>();
-            Assert.AreSame(mapper, m);
+            Assert.AreSame(new MReadOnlyMappingManager(), m);
         }
 
         [Test]
         public void ReplaceHttpWebRequestFactory()
         {
-            var builder = new ContainerBuilder();
             var getResponseCalls = 0;
             var response = new Mocks.HttpWebResponse
             {
@@ -54,7 +60,7 @@ namespace AutofacContrib.SolrNet.Tests {
                     // If we don't give back at least the basic XML, we get an XmlParseException
                     new MemoryStream(Encoding.UTF8.GetBytes("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response />")),
             };
-            IHttpWebRequestFactory factory = new Mocks.HttpWebRequestFactory {
+            module.HttpWebRequestFactory = new Mocks.HttpWebRequestFactory {
                 create = _ => new Mocks.HttpWebRequest {
                     getResponse = () => {
                         getResponseCalls++;
@@ -63,7 +69,7 @@ namespace AutofacContrib.SolrNet.Tests {
                     Headers = new WebHeaderCollection(),
                 },
             };
-            builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr") { HttpWebRequestFactory = factory });
+            builder.RegisterModule(module);
             var container = builder.Build();
             var operations = container.Resolve<ISolrOperations<Dictionary<string, object>>>();
             var results = operations.Query(new SolrQuery("q:*"));
@@ -73,8 +79,7 @@ namespace AutofacContrib.SolrNet.Tests {
 
         [Test]
         public void ResolveSolrOperations() {
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr"));
+            builder.RegisterModule(module);
             var container = builder.Build();
             var m = container.Resolve<ISolrOperations<Entity>>();
         }
@@ -86,7 +91,7 @@ namespace AutofacContrib.SolrNet.Tests {
         [Test]
         public void ResolveSolrBasicOperationsAndSolrBasicReadOnlyOperationsUseSameEntity() {
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr"));
+            builder.RegisterModule(module);
             var container = builder.Build();
             var basic = container.Resolve<ISolrBasicOperations<Entity>>();
             var basicReadonly = container.Resolve<ISolrBasicReadOnlyOperations<Entity>>();
@@ -96,8 +101,7 @@ namespace AutofacContrib.SolrNet.Tests {
         [Test]
         public void DictionaryDocument_Operations()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr"));
+            builder.RegisterModule(module);
             var container = builder.Build();
             var m = container.Resolve<ISolrOperations<Dictionary<string, object>>>();
         }
@@ -105,8 +109,7 @@ namespace AutofacContrib.SolrNet.Tests {
         [Test]
         public void DictionaryDocument_ResponseParser()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr"));
+            builder.RegisterModule(module);
             var container = builder.Build();
             var parser = container.Resolve<ISolrDocumentResponseParser<Dictionary<string, object>>>();
             Assert.IsInstanceOf<SolrDictionaryDocumentResponseParser>(parser);
@@ -115,8 +118,7 @@ namespace AutofacContrib.SolrNet.Tests {
         [Test]
         public void DictionaryDocument_Serializer()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr"));
+            builder.RegisterModule(module);
             var container = builder.Build();
             var serializer = container.Resolve<ISolrDocumentSerializer<Dictionary<string, object>>>();
             Assert.IsInstanceOf<SolrDictionarySerializer>(serializer);

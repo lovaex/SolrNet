@@ -33,7 +33,7 @@ namespace Unity.SolrNetIntegration.Tests {
 
                 var solrConnection = (SolrConnection) container.Resolve<ISolrConnection>(instanceKey);
 
-                Assert.AreEqual("http://localhost:8983/solr/entity", solrConnection.ServerURL);
+                Assert.AreEqual("http://localhost:8983/solr/core0", solrConnection.ServerURL);
             }
         }
 

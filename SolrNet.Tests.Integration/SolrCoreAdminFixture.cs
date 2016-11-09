@@ -5,9 +5,8 @@ using SolrNet.Commands.Cores;
 using SolrNet.Impl;
 using SolrNet.Impl.ResponseParsers;
 
-namespace SolrNet.Tests {
+namespace SolrNet.Tests.Integration {
     [TestFixture]
-    [Category("Integration")]
     public class SolrCoreAdminFixture {
         /*
         CREATE

@@ -10,18 +10,23 @@ namespace StructureMap.SolrNetIntegration.Tests
 {
     [TestFixture]
     public class StructureMapFixture
-    {                
+    {
+        [SetUp]
+        private void SetUp()
+        {
+            var solrConfig = (SolrConfigurationSection)ConfigurationManager.GetSection("solr");
+            ObjectFactory.Initialize(c => c.IncludeRegistry(new SolrNetRegistry(solrConfig.SolrServers)));
+        }
+
         [Test]
         public void ResolveSolrOperations()
         {
-            SetupContainer();
            var m = ObjectFactory.GetInstance<ISolrOperations<Entity>>();
             Assert.IsNotNull(m);            
         }
 
         [Test]
         public void RegistersSolrConnectionWithAppConfigServerUrl() {
-            SetupContainer();
             var instanceKey = "entity" + typeof(SolrConnection);
 
             var solrConnection = (SolrConnection)ObjectFactory.Container.GetInstance<ISolrConnection>(instanceKey);
@@ -64,7 +69,6 @@ namespace StructureMap.SolrNetIntegration.Tests
         [Test]
         public void Container_has_ISolrFieldParser()
         {
-            SetupContainer();
             var parser = ObjectFactory.GetInstance<ISolrFieldParser>();
             Assert.IsNotNull(parser);
         }
@@ -72,14 +76,12 @@ namespace StructureMap.SolrNetIntegration.Tests
         [Test]
         public void Container_has_ISolrFieldSerializer()
         {
-           SetupContainer();
             ObjectFactory.GetInstance<ISolrFieldSerializer>();
         }
 
         [Test]
         public void Container_has_ISolrDocumentPropertyVisitor()
         {
-            SetupContainer();
             ObjectFactory.GetInstance<ISolrDocumentPropertyVisitor>();
         }
 
@@ -111,8 +113,6 @@ namespace StructureMap.SolrNetIntegration.Tests
         [Test]
         public void DictionaryDocument_ResponseParser()
         {
-            SetupContainer();
-
             var parser = ObjectFactory.GetInstance<ISolrDocumentResponseParser<Dictionary<string, object>>>();
             Assert.IsInstanceOf<SolrDictionaryDocumentResponseParser>(parser);
         }
@@ -120,25 +120,17 @@ namespace StructureMap.SolrNetIntegration.Tests
         [Test]
         public void DictionaryDocument_Serializer()
         {
-            SetupContainer();
             var serializer = ObjectFactory.GetInstance<ISolrDocumentSerializer<Dictionary<string, object>>>();
             Assert.IsInstanceOf<SolrDictionarySerializer>(serializer);
         }
 
         [Test]
         public void Cache() {
-            SetupContainer();
             ObjectFactory.Configure(cfg => cfg.For<ISolrCache>().Use<HttpRuntimeCache>());
             var connectionId = "entity" + typeof (SolrConnection);
             var connection = (SolrConnection) ObjectFactory.GetNamedInstance<ISolrConnection>(connectionId);
             Assert.IsNotNull(connection.Cache);
             Assert.IsInstanceOf<HttpRuntimeCache>(connection.Cache);
-        }
-
-        private static void SetupContainer()
-        {
-            var solrConfig = (SolrConfigurationSection)ConfigurationManager.GetSection("solr");
-            ObjectFactory.Initialize(c => c.IncludeRegistry(new SolrNetRegistry(solrConfig.SolrServers)));
         }
     }
 }

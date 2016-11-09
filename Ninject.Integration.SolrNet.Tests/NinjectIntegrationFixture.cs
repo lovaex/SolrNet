@@ -7,7 +7,6 @@ using SolrNet;
 
 namespace Ninject.Integration.SolrNet.Tests {
     [TestFixture]
-    [Category("Integration")]
     public class NinjectIntegrationFixture {
         private StandardKernel kernel;
         [SetUp]

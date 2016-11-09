@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet;
 using StructureMap.SolrNetIntegration.Config;
 
 namespace StructureMap.SolrNetIntegration.Tests {
     [TestFixture]
-    [Category("Integration")]
     public class StructureMapIntegrationFixture {
+        [SetUp]
+        private void SetUp()
+        {
+            var solrConfig = (SolrConfigurationSection)ConfigurationManager.GetSection("solr");
+            ObjectFactory.Initialize(c => c.IncludeRegistry(new SolrNetRegistry(solrConfig.SolrServers)));
+        }
 
         [Test]
         public void Ping_And_Query()
         {
-            SetupContainer();
             var solr = ObjectFactory.GetInstance<ISolrOperations<Entity>>();
             solr.Ping();
             Console.WriteLine(solr.Query(SolrQuery.All).Count);
@@ -23,8 +26,6 @@ namespace StructureMap.SolrNetIntegration.Tests {
         [Test]
         public void DictionaryDocument()
         {
-            SetupContainer();
-
             var solr = ObjectFactory.Container.GetInstance<ISolrOperations<Dictionary<string, object>>>();
             var results = solr.Query(SolrQuery.All);
             Assert.That(results.Count, Is.GreaterThan(0));
@@ -36,11 +37,10 @@ namespace StructureMap.SolrNetIntegration.Tests {
             }
         }
 
+
         [Test]
         public void DictionaryDocument_add()
         {
-            SetupContainer();
-
             var solr = ObjectFactory.Container.GetInstance<ISolrOperations<Dictionary<string, object>>>();
 
             solr.Add(new Dictionary<string, object> 
@@ -51,12 +51,5 @@ namespace StructureMap.SolrNetIntegration.Tests {
                 {"timestamp", DateTime.UtcNow},
             });
         }
-
-        private static void SetupContainer()
-        {
-            var solrConfig = (SolrConfigurationSection)ConfigurationManager.GetSection("solr");
-            ObjectFactory.Initialize(c => c.IncludeRegistry(new SolrNetRegistry(solrConfig.SolrServers)));
-        }
-
     }
 }

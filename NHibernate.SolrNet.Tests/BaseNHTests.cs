@@ -15,12 +15,12 @@
 #endregion
 
 using System;
-using Moroco;
 using NHibernate.SolrNet.Impl;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 using SolrNet;
 using SolrNet.Tests.Mocks;
+using SolrNet.Tests.Utils;
 
 namespace NHibernate.SolrNet.Tests {
     public class BaseNHTests {

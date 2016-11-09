@@ -21,7 +21,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using HttpWebAdapters;
-using HttpWebAdapters.Adapters;
+using HttpWebAdapters.Impl;
 using SolrNet.Exceptions;
 using SolrNet.Utils;
 using HttpUtility = SolrNet.Utils.HttpUtility;

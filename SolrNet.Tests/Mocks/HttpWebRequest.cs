@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using HttpWebAdapters;
+using HttpWebAdapters.Impl;
 
 namespace SolrNet.Tests.Mocks {
     public class HttpWebRequest : IHttpWebRequest {

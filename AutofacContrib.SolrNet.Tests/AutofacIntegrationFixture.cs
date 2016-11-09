@@ -8,7 +8,6 @@ using SolrNet;
 
 namespace AutofacContrib.SolrNet.Tests {
     [TestFixture]
-    [Category("Integration")]
     public class AutofacIntegrationFixture {
         [Test]      
         public void Ping_And_Query()

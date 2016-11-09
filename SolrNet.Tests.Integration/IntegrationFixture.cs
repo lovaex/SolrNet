@@ -30,7 +30,6 @@ using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Integration {
     [TestFixture]
-    [Category("Integration")]
     public class IntegrationFixture
     {
         private static readonly string serverURL = ConfigurationManager.AppSettings["solr"];

@@ -16,9 +16,8 @@
 
 using System;
 using System.Net;
-using HttpWebAdapters.Adapters;
 
-namespace HttpWebAdapters {
+namespace HttpWebAdapters.Impl {
 	public class HttpWebRequestFactory : IHttpWebRequestFactory {
 		public IHttpWebRequest Create(string url) {
 			return new HttpWebRequestAdapter((HttpWebRequest) WebRequest.Create(url));

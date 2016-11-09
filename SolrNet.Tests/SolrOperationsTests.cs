@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using MbUnit.Framework;
-using Moroco;
 using NUnit.Framework;
 using SolrNet.Attributes;
 using SolrNet.Commands.Parameters;

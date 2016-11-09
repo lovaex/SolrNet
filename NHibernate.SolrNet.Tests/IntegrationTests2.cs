@@ -16,9 +16,8 @@ namespace NHibernate.SolrNet.Tests {
     /// Do not use as reference.
     /// </summary>
     [TestFixture]
-    [Category("Integration")]
     public class IntegrationTests2 {
-        private const string _httpSolrTest = "http://localhost:8983/solr";
+        private const string _httpSolrTest = "http://localhost:8983/solr/core0";
 
         [Test]
         public void InsertAGraph() {
