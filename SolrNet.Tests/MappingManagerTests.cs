@@ -16,8 +16,7 @@
 
 using System;
 using System.Linq;
-using MbUnit.Framework;
-using SolrNet.Exceptions;
+using NUnit.Framework;
 using SolrNet.Mapping;
 
 namespace SolrNet.Tests {
@@ -74,11 +73,12 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentException))]
         public void SetUniqueKey_without_mapping_throws() {
-            var mgr = new MappingManager();
-            var property = typeof (Entity).GetProperty("Id");
-            mgr.SetUniqueKey(property);
+            Assert.Throws<ArgumentException>(() => {
+                var mgr = new MappingManager();
+                var property = typeof(Entity).GetProperty("Id");
+                mgr.SetUniqueKey(property);
+            });
         }
 
         [Test]
@@ -92,45 +92,51 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void SetUniqueKey_doesnt_admit_null() {
-            var mgr = new MappingManager();
-            mgr.SetUniqueKey(null);
+            Assert.Throws<ArgumentNullException>(() => {
+                var mgr = new MappingManager();
+                mgr.SetUniqueKey(null);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void GetUniqueKey_doesnt_admit_null() {
-            var mgr = new MappingManager();
-            mgr.GetUniqueKey(null);
+            Assert.Throws<ArgumentNullException>(() => {
+                var mgr = new MappingManager();
+                mgr.GetUniqueKey(null);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void GetFields_doesnt_admit_null() {
-            var mgr = new MappingManager();
-            mgr.GetFields(null);
+            Assert.Throws<ArgumentNullException>(() => {
+                var mgr = new MappingManager();
+                mgr.GetFields(null);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void AddProperty_doesnt_admit_null() {
-            var mgr = new MappingManager();
-            mgr.Add(null);
+            Assert.Throws<ArgumentNullException>(() => {
+                var mgr = new MappingManager();
+                mgr.Add(null);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void AddProperty2_doesnt_admit_null() {
-            var mgr = new MappingManager();
-            mgr.Add(null, "");
+            Assert.Throws<ArgumentNullException>(() => {
+                var mgr = new MappingManager();
+                mgr.Add(null, "");
+            });
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void AddProperty3_doesnt_admit_null() {
-            var mgr = new MappingManager();
-            mgr.Add(typeof (Entity).GetProperties()[0], null);
+            Assert.Throws<ArgumentNullException>(() => {
+                var mgr = new MappingManager();
+                mgr.Add(typeof(Entity).GetProperties()[0], null);
+            });
         }
 
         [Test]
@@ -170,7 +176,7 @@ namespace SolrNet.Tests {
             mgr.Add(typeof(Entity).GetProperty("Id"), "id");
             var types = mgr.GetRegisteredTypes();
             Assert.AreEqual(1, types.Count);
-            Assert.Contains(types, typeof(Entity));
+            CollectionAssert.Contains(types, typeof(Entity));
         }
 
     }

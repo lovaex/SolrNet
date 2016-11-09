@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using MbUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using SolrNet.Attributes;
 using SolrNet.Impl;
 using SolrNet.Impl.DocumentPropertyVisitors;
@@ -24,11 +23,11 @@ namespace SolrNet.Tests {
 
             var attr2 = entity.Attributes["2"];
             Assert.AreEqual(5, attr2.Count);
-            Assert.Contains(attr2, 63);
-            Assert.Contains(attr2, 64);
-            Assert.Contains(attr2, 65);
-            Assert.Contains(attr2, 66);
-            Assert.Contains(attr2, 102);
+            CollectionAssert.Contains(attr2, 63);
+            CollectionAssert.Contains(attr2, 64);
+            CollectionAssert.Contains(attr2, 65);
+            CollectionAssert.Contains(attr2, 66);
+            CollectionAssert.Contains(attr2, 102);
         }
 
         class Entity {

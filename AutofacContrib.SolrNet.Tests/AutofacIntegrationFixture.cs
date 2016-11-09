@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet;
 
 namespace AutofacContrib.SolrNet.Tests {
@@ -29,10 +29,10 @@ namespace AutofacContrib.SolrNet.Tests {
             var container = builder.Build();
             var solr = container.Resolve<ISolrOperations<Dictionary<string, object>>>();
             var results = solr.Query(SolrQuery.All);
-            Assert.GreaterThan(results.Count, 0);
+            Assert.Greater(results.Count, 0);
             foreach (var d in results)
             {
-                Assert.GreaterThan(d.Count, 0);
+                Assert.Greater(d.Count, 0);
                 foreach (var kv in d)
                     Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
             }

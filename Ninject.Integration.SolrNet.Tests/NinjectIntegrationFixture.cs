@@ -1,8 +1,8 @@
 ﻿// 
 
 using System;
-using MbUnit.Framework;
 using Ninject.Integration.SolrNet.Config;
+using NUnit.Framework;
 using SolrNet;
 
 namespace Ninject.Integration.SolrNet.Tests {

@@ -21,7 +21,7 @@ using System.Net;
 using System.Text;
 using Autofac;
 using HttpWebAdapters;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet;
 using SolrNet.Impl;
 using SolrNet.Tests.Mocks;
@@ -110,7 +110,7 @@ namespace AutofacContrib.SolrNet.Tests {
             builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr"));
             var container = builder.Build();
             var parser = container.Resolve<ISolrDocumentResponseParser<Dictionary<string, object>>>();
-            Assert.IsInstanceOfType<SolrDictionaryDocumentResponseParser>(parser);
+            Assert.IsInstanceOf<SolrDictionaryDocumentResponseParser>(parser);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace AutofacContrib.SolrNet.Tests {
             builder.RegisterModule(new SolrNetModule("http://localhost:8983/solr"));
             var container = builder.Build();
             var serializer = container.Resolve<ISolrDocumentSerializer<Dictionary<string, object>>>();
-            Assert.IsInstanceOfType<SolrDictionarySerializer>(serializer);
+            Assert.IsInstanceOf<SolrDictionarySerializer>(serializer);
         }
 
         public class Entity {}

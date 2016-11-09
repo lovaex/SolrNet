@@ -18,8 +18,8 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Web;
-using MbUnit.Framework;
 using Microsoft.Practices.ServiceLocation;
+using NUnit.Framework;
 using SolrNet.Utils;
 
 namespace SolrNet.Tests {
@@ -168,12 +168,13 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof (ActivationException))]
         public void NoInterface_ask_for_interface_throws() {
-            var container = new Container();
-            var inst = new ServiceImpl();
-            container.Register(c => inst);
-            container.GetInstance<IService>();
+            Assert.Throws<ActivationException>(() => {
+                var container = new Container();
+                var inst = new ServiceImpl();
+                container.Register(c => inst);
+                container.GetInstance<IService>();
+            });
         }
 
         [Test]
@@ -187,21 +188,23 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof (ActivationException))]
         public void InjectionWithoutDependency_throws() {
-            var container = new Container();
-            container.Register(c => new AnotherService(c.GetInstance<IService>()));
-            container.GetInstance<AnotherService>();
+            Assert.Throws<ActivationException>(() => {
+                var container = new Container();
+                container.Register(c => new AnotherService(c.GetInstance<IService>()));
+                container.GetInstance<AnotherService>();
+            });
         }
 
         [Test]
-        [ExpectedException(typeof (ApplicationException))]
         public void MultipleInstancesOfSameService_without_key_throws() {
-            var container = new Container();
-            var inst = new ServiceImpl();
-            container.Register<IService>(c => inst);
-            var inst2 = new ServiceImpl();
-            container.Register<IService>(c => inst2);
+            Assert.Throws<ApplicationException>(() => {
+                var container = new Container();
+                var inst = new ServiceImpl();
+                container.Register<IService>(c => inst);
+                var inst2 = new ServiceImpl();
+                container.Register<IService>(c => inst2);
+            });
         }
 
         [Test]
@@ -244,15 +247,16 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof (ActivationException))]
         public void RemoveAllByType() {
-            var container = new Container();
-            var inst = new ServiceImpl();
-            container.Register<IService>("inst1", c => inst);
-            var inst2 = new ServiceImpl();
-            container.Register<IService>(c => inst2);
-            container.RemoveAll<IService>();
-            container.GetInstance<IService>();
+            Assert.Throws<ActivationException>(() => {
+                var container = new Container();
+                var inst = new ServiceImpl();
+                container.Register<IService>("inst1", c => inst);
+                var inst2 = new ServiceImpl();
+                container.Register<IService>(c => inst2);
+                container.RemoveAll<IService>();
+                container.GetInstance<IService>();
+            });
         }
 
         [Test]

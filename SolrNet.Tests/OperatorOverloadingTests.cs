@@ -16,7 +16,7 @@
 
 using System;
 using System.Linq;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet.Impl.FieldSerializers;
 using SolrNet.Impl.QuerySerializers;
 
@@ -105,34 +105,39 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void NullAnd_Throws() {
-            var a = SolrQuery.All && null;
+            Assert.Throws<ArgumentNullException>(() => {
+                var a = SolrQuery.All && null;
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void NullOr_Throws() {
-            var a = SolrQuery.All || null;
+            Assert.Throws<ArgumentNullException>(() => {
+                var a = SolrQuery.All || null;
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void NullPlus_throws() {
-            var a = SolrQuery.All + null;
+            Assert.Throws<ArgumentNullException>(() => {
+                var a = SolrQuery.All + null;
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void NullMinus_throws() {
-            var a = SolrQuery.All - null;
+            Assert.Throws<ArgumentNullException>(() => {
+                var a = SolrQuery.All - null;
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void NullNot_argumentnull() {
-            AbstractSolrQuery a = null;
-            var b = !a;
+            Assert.Throws<ArgumentNullException>(() => {
+                AbstractSolrQuery a = null;
+                var b = !a;
+            });
         }
     }
 }

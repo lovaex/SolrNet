@@ -16,6 +16,7 @@
 
 using System;
 using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet;
 
 namespace Ninject.Integration.SolrNet.Tests {

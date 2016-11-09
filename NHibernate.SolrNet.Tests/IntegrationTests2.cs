@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using log4net.Config;
-using MbUnit.Framework;
 using Microsoft.Practices.ServiceLocation;
 using NHibernate.Tool.hbm2ddl;
+using NUnit.Framework;
 using SolrNet;
 using SolrNet.Impl;
 using SolrNet.Impl.DocumentPropertyVisitors;
@@ -112,7 +112,7 @@ namespace NHibernate.SolrNet.Tests {
             return mapper;
         }
 
-        [FixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetup() {
             BasicConfigurator.Configure();
             SetupSolr();
@@ -124,7 +124,7 @@ namespace NHibernate.SolrNet.Tests {
             sessionFactory = cfg.BuildSessionFactory();
         }
 
-        [FixtureTearDown]
+        [OneTimeTearDown]
         public void FixtureTearDown() {
             sessionFactory.Dispose();
         }

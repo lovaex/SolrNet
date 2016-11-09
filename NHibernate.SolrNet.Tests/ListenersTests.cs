@@ -16,6 +16,7 @@
 
 using MbUnit.Framework;
 using Moroco;
+using NUnit.Framework;
 
 namespace NHibernate.SolrNet.Tests {
     [TestFixture]

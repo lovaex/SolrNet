@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MbUnit.Framework;
 using Moroco;
+using NUnit.Framework;
 using SolrNet.Attributes;
 using SolrNet.Impl;
 using SolrNet.Mapping.Validation;

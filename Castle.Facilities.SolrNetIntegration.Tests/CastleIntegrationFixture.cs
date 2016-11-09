@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Castle.Core.Configuration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet;
 
 namespace Castle.Facilities.SolrNetIntegration.Tests {
@@ -33,10 +33,10 @@ namespace Castle.Facilities.SolrNetIntegration.Tests {
             container.AddFacility("solr", solrFacility);
             var solr = container.Resolve<ISolrOperations<Dictionary<string, object>>>();
             var results = solr.Query(SolrQuery.All);
-            Assert.GreaterThan(results.Count, 0);
+            Assert.Greater(results.Count, 0);
             foreach (var d in results)
             {
-                Assert.GreaterThan(d.Count, 0);
+                Assert.Greater(d.Count, 0);
                 foreach (var kv in d)
                     Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
             }
@@ -47,7 +47,7 @@ namespace Castle.Facilities.SolrNetIntegration.Tests {
         {
             var solrFacility = new SolrNetFacility("http://localhost:8983/solr");
             var container = new WindsorContainer();
-            container.AddFacility("solr", solrFacility);
+            container.AddFacility(solrFacility);
             var solr = container.Resolve<ISolrOperations<Dictionary<string, object>>>();
             solr.Add(new Dictionary<string, object> {
                 {"id", "ababa"},

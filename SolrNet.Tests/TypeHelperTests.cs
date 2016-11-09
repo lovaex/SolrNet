@@ -17,6 +17,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet.Utils;
 
 namespace SolrNet.Tests {

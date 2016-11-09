@@ -1,19 +1,22 @@
 using System;
 using MbUnit.Framework;
+using NUnit.Framework;
 
 namespace SolrNet.Tests {
     [TestFixture]
     public class SolrQueryByDistanceTests {
         [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void NullField_should_throw() {
-            var q = new SolrQueryByDistance(null, 45.15, -93.85, 5);
+            Assert.Throws<ArgumentNullException>(() => {
+                var q = new SolrQueryByDistance(null, 45.15, -93.85, 5);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void NegativeDistance_should_throw() {
-            var q = new SolrQueryByDistance("store", 45.15, -93.85, -100);
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+                var q = new SolrQueryByDistance("store", 45.15, -93.85, -100);
+            });
         }
 
         [Test]

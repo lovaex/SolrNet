@@ -17,6 +17,7 @@
 using MbUnit.Framework;
 using Moroco;
 using NHibernate.SolrNet.Impl;
+using NUnit.Framework;
 using SolrNet;
 
 namespace NHibernate.SolrNet.Tests {

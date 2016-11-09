@@ -15,10 +15,10 @@
 #endregion
 
 using System;
-using MbUnit.Framework;
 using Moroco;
 using NHibernate.SolrNet.Impl;
 using NHibernate.Tool.hbm2ddl;
+using NUnit.Framework;
 using SolrNet;
 using SolrNet.Tests.Mocks;
 

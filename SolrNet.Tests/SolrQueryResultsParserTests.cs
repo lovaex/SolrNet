@@ -30,6 +30,7 @@ using SolrNet.Impl.ResponseParsers;
 using SolrNet.Mapping;
 using SolrNet.Tests.Utils;
 using Castle.Facilities.SolrNetIntegration;
+using NUnit.Framework;
 
 namespace SolrNet.Tests {
 	[TestFixture]
@@ -243,15 +244,16 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void EmptyEnumThrows() {
-            var mapper = new MappingManager();
-            mapper.Add(typeof(TestDocWithEnum).GetProperty("En"), "basicview");
-            var docParser = GetDocumentParser<TestDocWithEnum>(mapper);
-            var parser = new ResultsResponseParser<TestDocWithEnum>(docParser);
-            var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.response.xml");
-            var results = new SolrQueryResults<TestDocWithEnum>();
-            parser.Parse(xml, results);
+            Assert.Throws<Exception>(() => {
+                var mapper = new MappingManager();
+                mapper.Add(typeof(TestDocWithEnum).GetProperty("En"), "basicview");
+                var docParser = GetDocumentParser<TestDocWithEnum>(mapper);
+                var parser = new ResultsResponseParser<TestDocWithEnum>(docParser);
+                var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.response.xml");
+                var results = new SolrQueryResults<TestDocWithEnum>();
+                parser.Parse(xml, results);
+            });
         }
 
         [Test]
@@ -314,7 +316,7 @@ namespace SolrNet.Tests {
             Assert.AreEqual("2.234", results[0].Dict["DictTwo"]);
             Assert.AreEqual(new DateTime(1, 1, 1), results[0].Dict["timestamp"]);
             Assert.AreEqual(92.0f, results[0].Dict["price"]);
-            Assert.IsInstanceOfType(typeof(ICollection), results[0].Dict["features"]);
+            Assert.IsInstanceOf(typeof(ICollection), results[0].Dict["features"]);
         }
 
 		[Test]
@@ -428,7 +430,7 @@ namespace SolrNet.Tests {
             Assert.AreEqual("features", kv.First().Key);
             Assert.AreEqual(1, kv.First().Value.Count);
             //Console.WriteLine(kv.First().Value.First());
-            Assert.Like(kv.First().Value.First(), "Noise");
+            Assert.AreEqual(kv.First().Value.First(), "Noise");
         }
 
 		[Test]
@@ -442,7 +444,7 @@ namespace SolrNet.Tests {
             Assert.AreEqual("features", fieldsWithSnippets.First().Key);
 		    var snippets = highlights["SP2514N"].Snippets["features"];
             Assert.AreEqual(1, snippets.Count);
-            Assert.Like(snippets.First(), "Noise");
+            Assert.AreEqual(snippets.First(), "Noise");
 		}
 
         [Test]
@@ -472,7 +474,7 @@ namespace SolrNet.Tests {
             Assert.AreEqual(0, highlights["e4420cc2"].Count);
             Assert.AreEqual(1, highlights["e442c4cd"].Count);
             Assert.AreEqual(1, highlights["e442c4cd"]["bodytext"].Count);
-            Assert.Contains(highlights["e442c4cd"]["bodytext"].First(), "Garia lancerer");
+            CollectionAssert.Contains(highlights["e442c4cd"]["bodytext"].First(), "Garia lancerer");
         }
         
         [Test]
@@ -642,8 +644,8 @@ namespace SolrNet.Tests {
             var stats = parser.ParseStats(xml.Root, "stats_fields");
 
             Assert.IsNotNull(stats);
-            Assert.Contains(stats.Keys, "instock_prices");
-            Assert.Contains(stats.Keys, "all_prices");
+            CollectionAssert.Contains(stats.Keys, "instock_prices");
+            CollectionAssert.Contains(stats.Keys, "all_prices");
 
             var instock = stats["instock_prices"];
             Assert.AreEqual(0, instock.Min);

@@ -14,12 +14,11 @@
 // limitations under the License.
 #endregion
 
-using System;
-using MbUnit.Framework;
 using Moroco;
 using Ninject.Integration.SolrNet.Config;
 using SolrNet;
 using System.Configuration;
+using NUnit.Framework;
 using SolrNet.Exceptions;
 using SolrNet.Tests.Mocks;
 

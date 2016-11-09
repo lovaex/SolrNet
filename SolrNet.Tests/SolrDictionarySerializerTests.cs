@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet.Impl;
 using SolrNet.Impl.FieldSerializers;
 
@@ -26,10 +26,11 @@ namespace SolrNet.Tests {
     [TestFixture]
     public class SolrDictionarySerializerTests {
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Serialize_null() {
-            var serializer = GetSerializer();
-            serializer.Serialize(null, null);
+            Assert.Throws<ArgumentNullException>(() => {
+                var serializer = GetSerializer();
+                serializer.Serialize(null, null);
+            });
         }
 
         [Test]

@@ -19,9 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MbUnit.Framework;
 using Microsoft.Practices.ServiceLocation;
 using Moroco;
+using NUnit.Framework;
 using SolrNet;
 using SolrNet.Commands.Parameters;
 using SolrNet.Impl;

@@ -15,10 +15,8 @@
 #endregion
 
 using System;
-using System.Linq;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet.Attributes;
-using SolrNet.Exceptions;
 using SolrNet.Mapping;
 
 namespace SolrNet.Tests {
@@ -89,11 +87,11 @@ namespace SolrNet.Tests {
         public void GetRegisteredTypes() {
             var m = new AttributesMappingManager();
             var types = m.GetRegisteredTypes();
-            Assert.GreaterThan(types.Count, 0);
-            Assert.Contains(types, typeof(Entity));
-            Assert.Contains(types, typeof(InheritedEntity));
-            Assert.Contains(types, typeof(AnotherEntity));
-            Assert.DoesNotContain(types, typeof(NoProperties));
+            Assert.Greater(types.Count, 0);
+            CollectionAssert.Contains(types, typeof(Entity));
+            CollectionAssert.Contains(types, typeof(InheritedEntity));
+            CollectionAssert.Contains(types, typeof(AnotherEntity));
+            CollectionAssert.DoesNotContain(types, typeof(NoProperties));
         }
 
         public class NoProperties {}

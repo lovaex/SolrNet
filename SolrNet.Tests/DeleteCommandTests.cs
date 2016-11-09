@@ -14,8 +14,8 @@
 // limitations under the License.
 #endregion
 
-using MbUnit.Framework;
 using Moroco;
+using NUnit.Framework;
 using SolrNet.Commands;
 using SolrNet.Commands.Parameters;
 
