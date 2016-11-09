@@ -19,7 +19,7 @@ namespace Ninject.Integration.SolrNet.Tests {
         public void Ping_And_Query()
         {
             var c = new StandardKernel();
-            c.Load(new SolrNetModule("http://localhost:8983/solr"));
+            c.Load(new SolrNetModule("http://localhost:8983/solr/core0"));
             var solr = c.Get<ISolrOperations<NinjectFixture.Entity>>();
             solr.Ping();
             Console.WriteLine(solr.Query(SolrQuery.All).Count);

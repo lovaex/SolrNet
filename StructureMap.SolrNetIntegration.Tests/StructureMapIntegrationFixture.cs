@@ -5,11 +5,13 @@ using NUnit.Framework;
 using SolrNet;
 using StructureMap.SolrNetIntegration.Config;
 
-namespace StructureMap.SolrNetIntegration.Tests {
+namespace StructureMap.SolrNetIntegration.Tests
+{
     [TestFixture]
-    public class StructureMapIntegrationFixture {
-        [SetUp]
-        private void SetUp()
+    public class StructureMapIntegrationFixture
+    {
+
+        private static void SetUp()
         {
             var solrConfig = (SolrConfigurationSection)ConfigurationManager.GetSection("solr");
             ObjectFactory.Initialize(c => c.IncludeRegistry(new SolrNetRegistry(solrConfig.SolrServers)));
@@ -18,6 +20,7 @@ namespace StructureMap.SolrNetIntegration.Tests {
         [Test]
         public void Ping_And_Query()
         {
+            SetUp();
             var solr = ObjectFactory.GetInstance<ISolrOperations<Entity>>();
             solr.Ping();
             Console.WriteLine(solr.Query(SolrQuery.All).Count);
@@ -26,6 +29,7 @@ namespace StructureMap.SolrNetIntegration.Tests {
         [Test]
         public void DictionaryDocument()
         {
+            SetUp();
             var solr = ObjectFactory.Container.GetInstance<ISolrOperations<Dictionary<string, object>>>();
             var results = solr.Query(SolrQuery.All);
             Assert.That(results.Count, Is.GreaterThan(0));
@@ -41,9 +45,10 @@ namespace StructureMap.SolrNetIntegration.Tests {
         [Test]
         public void DictionaryDocument_add()
         {
+            SetUp();
             var solr = ObjectFactory.Container.GetInstance<ISolrOperations<Dictionary<string, object>>>();
 
-            solr.Add(new Dictionary<string, object> 
+            solr.Add(new Dictionary<string, object>
             {
                 {"id", "ababa"},
                 {"manu", "who knows"},
