@@ -55,7 +55,7 @@ namespace SolrNet.Tests {
             var rndSort = r.ToString();
             Console.WriteLine(rndSort);
             //Assert.Like(rndSort, string.Format("random_{0} desc", seed));
-            Assert.AreEqual(rndSort, string.Format("random_{0} desc", seed)); //todo check me
+            Assert.AreEqual(rndSort, string.Format("random_{0} desc", seed));
         }
     }
 }

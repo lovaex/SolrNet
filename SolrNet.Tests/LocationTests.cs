@@ -1,69 +1,103 @@
 ﻿using System;
 using System.Collections.Generic;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet.Impl.FieldParsers;
 
-namespace SolrNet.Tests {
-    public static class LocationTests {
-        // TODO rewrite me
-        //[StaticTestFactory]
-        //public static IEnumerable<Test> Tests() {
-        //    var locations = new[] {
-        //        new { location = new Location(12, 23), toString = "12,23" },
-        //        new { location = new Location(-4.3, 0.20), toString = "-4.3,0.2" },
-        //    };
+namespace SolrNet.Tests
+{
+    [TestFixture]
+    public class LocationTests
+    {
+        #region TestCaseData
+        private static IEnumerable<TestCaseData> Locations
+        {
+            get
+            {
+                yield return new TestCaseData(new { location = new Location(12, 23), toString = "12,23" });
+                yield return new TestCaseData(new { location = new Location(-4.3, 0.20), toString = "-4.3,0.2" });
+            }
+        }
 
-        //    foreach (var l in locations) {
-        //        var x = l;
-        //        yield return new TestCase("ToString " + x.toString,
-        //            () => Assert.AreEqual(x.toString, x.location.ToString()));
+        private static IEnumerable<TestCaseData> InvalidLatitudes
+        {
+            get
+            {
+                yield return new TestCaseData(new { latitude = -100 });
+                yield return new TestCaseData(new { latitude = 120 });
 
-        //        yield return new TestCase("Parse " + x.toString, () => {
-        //            var parsedLocation = LocationFieldParser.Parse(x.toString);
-        //            Assert.AreEqual(x.location, parsedLocation);
-        //            Assert.AreEqual(x.location.Latitude, parsedLocation.Latitude);
-        //            Assert.AreEqual(x.location.Longitude, parsedLocation.Longitude);
-        //        });
-        //    }
+            }
+        }
 
-        //    var invalidLatitudes = new[] {-100, 120};
-        //    foreach (var x in invalidLatitudes) {
-        //        var latitude = x;
+        private static IEnumerable<TestCaseData> InvalidLongitudes
+        {
+            get
+            {
+                yield return new TestCaseData(new { longitude = -200 });
+                yield return new TestCaseData(new { longitude = 999 });
 
-        //        yield return new TestCase("Latitude " + latitude + " is invalid", 
-        //            () => Assert.IsFalse(Location.IsValidLatitude(latitude)));
+            }
+        }
 
-        //        yield return new TestCase("Invalid latitude throws: " + latitude, 
-        //            () => Assert.Throws<ArgumentOutOfRangeException>(() => new Location(latitude, 0)));
-        //    }
+        private static IEnumerable<dynamic> LatitudeLongitude
+        {
+            get
+            {
+                yield return new TestCaseData(new { latitude = -100, longitude = -200 });
+                yield return new TestCaseData(new { latitude = -100, longitude = 999 });
+                yield return new TestCaseData(new { latitude = 120, longitude = -200 });
+                yield return new TestCaseData(new { latitude = 120, longitude = 999 });
+            }
 
-        //    var invalidLongitudes = new[] {-200, 999};
-        //    foreach (var x in invalidLongitudes) {
-        //        var longitude = x;
+        }
+        #endregion
 
-        //        yield return new TestCase("Longitude " + longitude + " is invalid",
-        //            () => Assert.IsFalse(Location.IsValidLongitude(longitude)));
+        [TestCaseSource(nameof(Locations))]
+        public void ParseLocationTests(dynamic location)
+        {
+            var parsedLocation = LocationFieldParser.Parse(location.toString);
+            Assert.AreEqual(location.toString, location.location.ToString());
+            Assert.AreEqual(location.location, parsedLocation);
+            Assert.AreEqual(location.location.Latitude, parsedLocation.Latitude);
+            Assert.AreEqual(location.location.Longitude, parsedLocation.Longitude);
+        }
 
-        //        yield return new TestCase("Invalid longitude throws: " + longitude,
-        //            () => Assert.Throws<ArgumentOutOfRangeException>(() => new Location(0, longitude)));
-        //    }
+        [TestCaseSource(nameof(InvalidLatitudes))]
+        public void InvalidLatitudeTests(dynamic latitude)
+        {
+            Assert.IsFalse(Location.IsValidLatitude(latitude.latitude));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                new Location(latitude.latitude, 0);
+            });
+        }
 
-        //    yield return new TestCase("TryCreate returns null with invalid lat/long", () => {
-        //        foreach (var lat in invalidLatitudes)
-        //            foreach (var lng in invalidLongitudes) {
-        //                var loc = Location.TryCreate(lat, lng);
-        //                Assert.IsNull(loc);
-        //            }
-        //    });
+        [TestCaseSource(nameof(InvalidLongitudes))]
+        public void InvalidLongitudeTests(dynamic longitude)
+        {
+            Assert.IsFalse(Location.IsValidLongitude(longitude.longitude));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                new Location(0, longitude.longitude);
+            });
+        }
 
-        //    yield return new TestCase("TryCreate returns non-null with valid lat/long", () => {
-        //        foreach (var l in locations) {
-        //            var loc = l.location;
-        //            var loc2 = Location.TryCreate(loc.Latitude, loc.Longitude);
-        //            Assert.IsNotNull(loc2);
-        //            Assert.AreEqual(loc, loc2);
-        //        }
-        //    });
-        //}
+        [TestCaseSource(nameof(LatitudeLongitude))]
+        public void TryCreateReturnsNullWithInvalidLatLong(dynamic latitudeLongitude)
+        {
+            var lat = latitudeLongitude.latitude;
+            var lng = latitudeLongitude.longitude;
+            var loc = Location.TryCreate(lat, lng);
+            Assert.IsNull(loc);
+
+        }
+
+        [TestCaseSource(nameof(Locations))]
+        public void TryCreateReturnsNotNullWithValidLatLong(dynamic location)
+        {
+            var loc = location.location;
+            var loc2 = Location.TryCreate(loc.Latitude, loc.Longitude);
+            Assert.IsNotNull(loc2);
+            Assert.AreEqual(loc, loc2);
+        }
     }
 }
