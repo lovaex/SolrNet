@@ -1,1 +1,1 @@
-bin\solr.cmd stop -p 8983
+start\solr.cmd stop -p 8983

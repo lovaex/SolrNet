@@ -1,1 +1,1 @@
-bin\solr.cmd start
+start\solr.cmd start
