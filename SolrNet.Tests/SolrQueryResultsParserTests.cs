@@ -353,10 +353,6 @@ namespace SolrNet.Tests {
                     let kv = new { method = x.Key, count = x.Count(), total = x.Sum(t => t.TotalMilliseconds)}
                     orderby kv.total descending
                     select kv;
-
-            //foreach (var i in q)
-            //    Console.WriteLine("{0} {1}: {2} executions, {3}ms", i.method.DeclaringType, i.method, i.count, i.total);
-
         }
 
         public IEnumerable<KeyValuePair<MethodInfo, TimeSpan>> Flatten(Node<KeyValuePair<MethodInfo, TimeSpan>> n) {
@@ -382,14 +378,12 @@ namespace SolrNet.Tests {
 		    var r = new SolrQueryResults<TestDocumentWithArrays>();
 		    parser.Parse(xml, r);
 			Assert.IsNotNull(r.FacetFields);
-			//Console.WriteLine(r.FacetFields.Count);
 			Assert.IsTrue(r.FacetFields.ContainsKey("cat"));
 			Assert.IsTrue(r.FacetFields.ContainsKey("inStock"));
 			Assert.AreEqual(2, r.FacetFields["cat"].First(q => q.Key == "connector").Value);
             Assert.AreEqual(2, r.FacetFields["cat"].First(q => q.Key == "").Value); // facet.missing as empty string
 
 			Assert.IsNotNull(r.FacetQueries);
-			//Console.WriteLine(r.FacetQueries.Count);
 			Assert.AreEqual(1, r.FacetQueries.Count);
 		}
 
@@ -429,8 +423,7 @@ namespace SolrNet.Tests {
             Assert.AreEqual(1, kv.Count);
             Assert.AreEqual("features", kv.First().Key);
             Assert.AreEqual(1, kv.First().Value.Count);
-            //Console.WriteLine(kv.First().Value.First());
-            Assert.AreEqual(kv.First().Value.First(), "Noise");
+            Assert.That(kv.First().Value.First().Contains("Noise"), Is.True);
         }
 
 		[Test]
@@ -444,15 +437,13 @@ namespace SolrNet.Tests {
             Assert.AreEqual("features", fieldsWithSnippets.First().Key);
 		    var snippets = highlights["SP2514N"].Snippets["features"];
             Assert.AreEqual(1, snippets.Count);
-            Assert.AreEqual(snippets.First(), "Noise");
+		    Assert.That(snippets.First().Contains("Noise"), Is.True);
 		}
 
         [Test]
         public void ParseHighlighting2() {
             var highlights = ParseHighlightingResults(EmbeddedResource.GetEmbeddedString(GetType(), "Resources.responseWithHighlighting2.xml"));
             var first = highlights.First();
-            //first.Value.Keys.ToList().ForEach(Console.WriteLine);
-            //first.Value["source_en"].ToList().ForEach(Console.WriteLine);
             Assert.AreEqual(3, first.Value["source_en"].Count);
         }
 
@@ -461,10 +452,6 @@ namespace SolrNet.Tests {
         {
             var highlights = ParseHighlightingResults(EmbeddedResource.GetEmbeddedString(GetType(), "Resources.responseWithHighlighting2.xml"));
             var first = highlights.First();
-            //foreach (var i in first.Value.Snippets.Keys)
-            //    Console.WriteLine(i);
-            //foreach (var i in first.Value.Snippets["source_en"])
-            //    Console.WriteLine(i);
             Assert.AreEqual(3, first.Value.Snippets["source_en"].Count);
         }
 
@@ -474,7 +461,8 @@ namespace SolrNet.Tests {
             Assert.AreEqual(0, highlights["e4420cc2"].Count);
             Assert.AreEqual(1, highlights["e442c4cd"].Count);
             Assert.AreEqual(1, highlights["e442c4cd"]["bodytext"].Count);
-            CollectionAssert.Contains(highlights["e442c4cd"]["bodytext"].First(), "Garia lancerer");
+            var toCheck = highlights["e442c4cd"]["bodytext"].First();
+            Assert.That(toCheck.Contains("Garia lancerer"), Is.True);
         }
         
         [Test]

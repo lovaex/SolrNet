@@ -16,6 +16,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace SolrNet.Tests {
     [TestFixture]
@@ -25,7 +26,8 @@ namespace SolrNet.Tests {
             var r = new RandomSortOrder("random");
             var rndSort = r.ToString();
             Console.WriteLine(rndSort);
-            Assert.AreEqual(rndSort, "random_\\d+ asc");
+            Assert.That(rndSort.Contains("random_"), Is.True);
+            Assert.That(rndSort.Contains(" asc"), Is.True);
         }
 
         [Test]
@@ -42,7 +44,8 @@ namespace SolrNet.Tests {
             var r = new RandomSortOrder("random", Order.DESC);
             var rndSort = r.ToString();
             Console.WriteLine(rndSort);
-            Assert.AreEqual(rndSort, "random_\\d+ desc");
+            Assert.That(rndSort.Contains("random_"), Is.True);
+            Assert.That(rndSort.Contains(" desc"), Is.True);
         }
 
         [Test]

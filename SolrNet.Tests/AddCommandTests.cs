@@ -186,9 +186,9 @@ namespace SolrNet.Tests {
 
         [Test]
         public void RemoveControlCharacters() {
-            var valueToCheck = "1";
+            var valueToCheck = (char)1;
             var xml = SolrDocumentSerializer<object>.RemoveControlCharacters("control " + valueToCheck);
-            Assert.That(xml.Contains(valueToCheck),Is.False);
+            Assert.That(xml.IndexOfAny(new[] {valueToCheck}), Is.EqualTo(-1));
         }
 	}
 }
