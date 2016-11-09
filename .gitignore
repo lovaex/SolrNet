@@ -29,5 +29,5 @@ packages/*
 .nuget/*.exe
 *.sln.ide
 .vs/*
-data/*
-logs/*
+**/data/*
+**/logs/*
