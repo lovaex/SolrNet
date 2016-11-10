@@ -35,13 +35,15 @@ namespace Unity.SolrNetIntegration.Tests {
             {
                 var solr = container.Resolve<ISolrOperations<Entity>>();
                 solr.Ping();
-                Console.WriteLine(solr.Query(SolrQuery.All).Count);
+                var count = solr.Query(SolrQuery.All).Count;
+                Assert.That(count, Is.GreaterThan(0));
             }
         }
 
         [Test]
         public void DictionaryDocument()
         {
+            DictionaryDocumentAdd();
             using (var container = new UnityContainer())
             {
                 new SolrNetContainerConfiguration().ConfigureContainer(TestServers, container);
@@ -51,8 +53,8 @@ namespace Unity.SolrNetIntegration.Tests {
             }
         }
 
-        [Test]
-        public void DictionaryDocument_add()
+       
+        private void DictionaryDocumentAdd()
         {
             using (var container = new UnityContainer())
             {
@@ -66,6 +68,7 @@ namespace Unity.SolrNetIntegration.Tests {
                     {"popularity", 55},
                     {"timestamp", DateTime.UtcNow},
                 });
+                solr.Commit();
             }
         }
     }
