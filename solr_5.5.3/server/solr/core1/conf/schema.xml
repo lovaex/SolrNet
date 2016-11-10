@@ -239,6 +239,6 @@
   <copyField source="resourcename" dest="text"/>
   <copyField source="title" dest="text"/>
   <copyField source="url" dest="text"/>
-  <copyField source="price" dest="price_c"/>
+  <!-- <copyField source="price" dest="price_c"/> -->
   <copyField source="author" dest="author_s"/>
 </schema>
