@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,38 +13,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.IO;
 using System.Net;
-using MbUnit.Framework;
 using NUnit.Framework;
 
 namespace SolrNet.Tests {
     [TestFixture]
     public class HttpTests {
         private const int Reps = 100;
-
-        [Test, Ignore("performance test")]
-        public void ReadToEnd() {
-            for (int i = 0; i < Reps; i++) {
-                var req = WebRequest.Create("http://www.google.com");
-                using (var r = req.GetResponse())
-                using (var rs = r.GetResponseStream())
-                using (var sr = new StreamReader(rs))
-                    sr.ReadToEnd();
-            }
-        }
-
-        [Test, Ignore("performance test")]
-        public void ReadFully() {
-            for (int i = 0; i < Reps; i++) {
-                var req = WebRequest.Create("http://www.google.com");
-                using (var r = req.GetResponse())
-                using (var rs = r.GetResponseStream())
-                    ReadFully(rs);
-            }
-        }
 
         /// <summary>
         /// Reads data from a stream until the end is reached. The
@@ -56,11 +36,32 @@ namespace SolrNet.Tests {
             var buffer = new byte[32768];
             using (var ms = new MemoryStream()) {
                 while (true) {
-                    int read = stream.Read(buffer, 0, buffer.Length);
+                    var read = stream.Read(buffer, 0, buffer.Length);
                     if (read <= 0)
                         return ms.ToArray();
                     ms.Write(buffer, 0, read);
                 }
+            }
+        }
+
+        [Test, Ignore("performance test")]
+        public void ReadFully() {
+            for (var i = 0; i < Reps; i++) {
+                var req = WebRequest.Create("http://www.google.com");
+                using (var r = req.GetResponse())
+                using (var rs = r.GetResponseStream())
+                    ReadFully(rs);
+            }
+        }
+
+        [Test, Ignore("performance test")]
+        public void ReadToEnd() {
+            for (var i = 0; i < Reps; i++) {
+                var req = WebRequest.Create("http://www.google.com");
+                using (var r = req.GetResponse())
+                using (var rs = r.GetResponseStream())
+                using (var sr = new StreamReader(rs))
+                    sr.ReadToEnd();
             }
         }
     }

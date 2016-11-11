@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using SolrNet.Commands.Parameters;
 using SolrNet.Exceptions;
@@ -29,9 +30,9 @@ namespace SolrNet.Impl {
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
     public class SolrServer<T> : ISolrOperations<T> {
+        private readonly IMappingValidator _schemaMappingValidator;
         private readonly ISolrBasicOperations<T> basicServer;
         private readonly IReadOnlyMappingManager mappingManager;
-        private readonly IMappingValidator _schemaMappingValidator;
 
         public SolrServer(ISolrBasicOperations<T> basicServer, IReadOnlyMappingManager mappingManager, IMappingValidator _schemaMappingValidator) {
             this.basicServer = basicServer;
@@ -49,7 +50,6 @@ namespace SolrNet.Impl {
             return basicServer.Query(query, options);
         }
 
-        
 
         public ResponseHeader Ping() {
             return basicServer.Ping();
@@ -95,7 +95,7 @@ namespace SolrNet.Impl {
         /// <param name="orders"></param>
         /// <returns></returns>
         public SolrQueryResults<T> Query(ISolrQuery query, ICollection<SortOrder> orders) {
-            return Query(query, new QueryOptions { OrderBy = orders });
+            return Query(query, new QueryOptions {OrderBy = orders});
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace SolrNet.Impl {
         public ResponseHeader BuildSpellCheckDictionary() {
             var r = basicServer.Query(SolrQuery.All, new QueryOptions {
                 Rows = 0,
-                SpellCheck = new SpellCheckingParameters { Build = true },
+                SpellCheck = new SpellCheckingParameters {Build = true},
             });
             return r.Header;
         }
@@ -126,7 +126,7 @@ namespace SolrNet.Impl {
         }
 
         public ResponseHeader AddWithBoost(T doc, double boost, AddParameters parameters) {
-            return ((ISolrOperations<T>)this).AddRangeWithBoost(new[] { new KeyValuePair<T, double?>(doc, boost) }, parameters);
+            return ((ISolrOperations<T>) this).AddRangeWithBoost(new[] {new KeyValuePair<T, double?>(doc, boost)}, parameters);
         }
 
         public ExtractResponse Extract(ExtractParameters parameters) {
@@ -153,11 +153,11 @@ namespace SolrNet.Impl {
 
         [Obsolete("Use AddRangeWithBoost instead")]
         ResponseHeader ISolrOperations<T>.AddWithBoost(IEnumerable<KeyValuePair<T, double?>> docs) {
-            return ((ISolrOperations<T>)this).AddWithBoost(docs, null);
+            return ((ISolrOperations<T>) this).AddWithBoost(docs, null);
         }
 
         public ResponseHeader AddRangeWithBoost(IEnumerable<KeyValuePair<T, double?>> docs) {
-            return ((ISolrOperations<T>)this).AddRangeWithBoost(docs, null);
+            return ((ISolrOperations<T>) this).AddRangeWithBoost(docs, null);
         }
 
         [Obsolete("Use AddRangeWithBoost instead")]
@@ -191,21 +191,12 @@ namespace SolrNet.Impl {
         }
 
         public ResponseHeader Delete(IEnumerable<T> docs, DeleteParameters parameters) {
-            return basicServer.Delete(docs.Select(d =>
-            {
+            return basicServer.Delete(docs.Select(d => {
                 var uniqueKey = mappingManager.GetUniqueKey(typeof(T));
                 if (uniqueKey == null)
                     throw new SolrNetException(string.Format("This operation requires a unique key, but type '{0}' has no declared unique key", typeof(T)));
                 return Convert.ToString(uniqueKey.Property.GetValue(d, null));
             }), null, parameters);
-        }
-
-        private object GetId(T doc) {
-            var uniqueKey = mappingManager.GetUniqueKey(typeof(T));
-            if (uniqueKey == null)
-                throw new SolrNetException(string.Format("This operation requires a unique key, but type '{0}' has no declared unique key", typeof(T)));
-            var prop = uniqueKey.Property;
-            return prop.GetValue(doc, null);
         }
 
         ResponseHeader ISolrOperations<T>.Delete(ISolrQuery q) {
@@ -228,7 +219,7 @@ namespace SolrNet.Impl {
             return basicServer.Delete(ids, q, null);
         }
 
-        ResponseHeader ISolrOperations<T>.Delete(IEnumerable<string> ids, ISolrQuery q, DeleteParameters parameters){
+        ResponseHeader ISolrOperations<T>.Delete(IEnumerable<string> ids, ISolrQuery q, DeleteParameters parameters) {
             return basicServer.Delete(ids, q, parameters);
         }
 
@@ -258,11 +249,7 @@ namespace SolrNet.Impl {
         }
 
         public ResponseHeader Add(T doc, AddParameters parameters) {
-            return AddRange(new[] { doc }, parameters);
-        }
-
-        public SolrSchema GetSchema() {
-            return basicServer.GetSchema("schema.xml");
+            return AddRange(new[] {doc}, parameters);
         }
 
         public SolrSchema GetSchema(string schemaFileName) {
@@ -285,6 +272,18 @@ namespace SolrNet.Impl {
 
         public SolrMoreLikeThisHandlerResults<T> MoreLikeThis(SolrMLTQuery query, MoreLikeThisHandlerQueryOptions options) {
             return basicServer.MoreLikeThis(query, options);
+        }
+
+        private object GetId(T doc) {
+            var uniqueKey = mappingManager.GetUniqueKey(typeof(T));
+            if (uniqueKey == null)
+                throw new SolrNetException(string.Format("This operation requires a unique key, but type '{0}' has no declared unique key", typeof(T)));
+            var prop = uniqueKey.Property;
+            return prop.GetValue(doc, null);
+        }
+
+        public SolrSchema GetSchema() {
+            return basicServer.GetSchema("schema.xml");
         }
     }
 }

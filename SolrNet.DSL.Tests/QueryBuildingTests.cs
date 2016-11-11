@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -22,17 +24,9 @@ using SolrNet.Impl.QuerySerializers;
 namespace SolrNet.DSL.Tests {
     [TestFixture]
     public class QueryBuildingTests {
-
         public string Serialize(object q) {
             var serializer = new DefaultQuerySerializer(new DefaultFieldSerializer());
             return serializer.Serialize(q);
-        }
-
-
-        [Test]
-        public void Simple() {
-            var q = Query.Simple("name:solr");
-            Assert.AreEqual("name:solr", q.Query);
         }
 
         [Test]
@@ -66,9 +60,9 @@ namespace SolrNet.DSL.Tests {
         }
 
         [Test]
-        public void Range() {
-            var q = Query.Field("price").From(10).To(20);
-            Assert.AreEqual("price:[10 TO 20]", Serialize(q));
+        public void HasValue() {
+            var q = Query.Field("name").HasAnyValue();
+            Assert.AreEqual("name:[* TO *]", Serialize(q));
         }
 
         [Test]
@@ -86,9 +80,16 @@ namespace SolrNet.DSL.Tests {
         }
 
         [Test]
-        public void HasValue() {
-            var q = Query.Field("name").HasAnyValue();
-            Assert.AreEqual("name:[* TO *]", Serialize(q));
+        public void Range() {
+            var q = Query.Field("price").From(10).To(20);
+            Assert.AreEqual("price:[10 TO 20]", Serialize(q));
+        }
+
+
+        [Test]
+        public void Simple() {
+            var q = Query.Simple("name:solr");
+            Assert.AreEqual("name:solr", q.Query);
         }
     }
 }

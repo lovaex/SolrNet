@@ -1,4 +1,5 @@
 #region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,12 +57,16 @@ namespace SolrNet {
             return string.Format("'{0}'", v.Replace("'", "\\'"));
         }
 
+        public static ISolrQuery operator +(LocalParams p, ISolrQuery q) {
+            return new LocalParamsQuery(q, p);
+        }
+
         /// <summary>
         /// Query object from a query + local params
         /// </summary>
-        public class LocalParamsQuery: ISolrQuery {
-            private readonly ISolrQuery query;
+        public class LocalParamsQuery : ISolrQuery {
             private readonly LocalParams local;
+            private readonly ISolrQuery query;
 
             /// <summary>
             /// Query object from a query + local params
@@ -76,20 +81,18 @@ namespace SolrNet {
             /// <summary>
             /// Query part
             /// </summary>
-            public ISolrQuery Query {
+            public ISolrQuery Query
+            {
                 get { return query; }
             }
 
             /// <summary>
             /// Local params part
             /// </summary>
-            public LocalParams Local {
+            public LocalParams Local
+            {
                 get { return local; }
             }
-        }
-
-        public static ISolrQuery operator + (LocalParams p, ISolrQuery q) {
-            return new LocalParamsQuery(q, p);
         }
     }
 }

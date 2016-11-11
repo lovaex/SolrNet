@@ -4,9 +4,7 @@ namespace SolrNet.Commands.Parameters {
     /// <summary>
     /// Constants for the choices of Regex Flags 
     /// </summary>
-    public abstract class RegexFlag: IEquatable<RegexFlag> {
-        internal RegexFlag() {}
-
+    public abstract class RegexFlag : IEquatable<RegexFlag> {
         /// <summary>
         /// By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. 
         /// Unicode-aware case-insensitive matching can be enabled by specifying the <see cref="UnicodeCase"/> flag in conjunction with this flag.
@@ -54,31 +52,47 @@ namespace SolrNet.Commands.Parameters {
         /// </summary>
         public static readonly RegexFlag UnixLines = new RegexFlagUnixLines();
 
-        private class RegexFlagCaseInsensitive: RegexFlag {
+        internal RegexFlag() {}
+
+        public bool Equals(RegexFlag other) {
+            if (other == null)
+                return false;
+            return ToString() == other.ToString();
+        }
+
+        public override bool Equals(object obj) {
+            return Equals(obj as RegexFlag);
+        }
+
+        public override int GetHashCode() {
+            return ToString().GetHashCode();
+        }
+
+        private class RegexFlagCaseInsensitive : RegexFlag {
             public override string ToString() {
                 return "case_insensitive";
             }
         }
 
-        private class RegexFlagComments: RegexFlag {
+        private class RegexFlagComments : RegexFlag {
             public override string ToString() {
                 return "comments";
             }
         }
 
-        private class RegexFlagMultiLine: RegexFlag {
+        private class RegexFlagMultiLine : RegexFlag {
             public override string ToString() {
                 return "multiline";
             }
         }
 
-        private class RegexFlagLiteral: RegexFlag {
+        private class RegexFlagLiteral : RegexFlag {
             public override string ToString() {
                 return "literal";
             }
         }
 
-        private class RegexFlagDotAll: RegexFlag {
+        private class RegexFlagDotAll : RegexFlag {
             public override string ToString() {
                 return "dotall";
             }
@@ -100,20 +114,6 @@ namespace SolrNet.Commands.Parameters {
             public override string ToString() {
                 return "unix_lines";
             }
-        }
-
-        public bool Equals(RegexFlag other) {
-            if (other == null)
-                return false;
-            return ToString() == other.ToString();
-        }
-
-        public override bool Equals(object obj) {
-            return Equals(obj as RegexFlag);
-        }
-
-        public override int GetHashCode() {
-            return ToString().GetHashCode();
         }
     }
 }

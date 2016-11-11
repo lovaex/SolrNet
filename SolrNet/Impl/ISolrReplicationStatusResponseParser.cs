@@ -1,12 +1,10 @@
 ﻿using System.Xml.Linq;
 
-namespace SolrNet.Impl 
-{
+namespace SolrNet.Impl {
     /// <summary>
     /// Parses a Solr Replication result from a Replication Status command.
     /// </summary>
-    public interface ISolrReplicationStatusResponseParser 
-    {
+    public interface ISolrReplicationStatusResponseParser {
         /// <summary>
         /// 
         /// </summary>

@@ -6,16 +6,17 @@ namespace SolrNet {
     /// </summary>
     [Serializable]
     public abstract class StartOrCursor : IEquatable<StartOrCursor> {
-        private StartOrCursor() { }
-
-        public abstract T Switch<T>(Func<Start, T> start, Func<Cursor, T> cursor);
+        private StartOrCursor() {}
 
         public bool Equals(StartOrCursor other) {
-            if (other == null) return false;
+            if (other == null)
+                return false;
             return other.Switch(
                 startOther => Switch(startThis => startThis.Equals(startOther), _ => false),
                 cursorOther => Switch(_ => false, cursorThis => cursorThis.Equals(cursorOther)));
         }
+
+        public abstract T Switch<T>(Func<Start, T> start, Func<Cursor, T> cursor);
 
         /// <summary>
         /// Starting row for pagination
@@ -23,12 +24,6 @@ namespace SolrNet {
         [Serializable]
         public sealed class Start : StartOrCursor, IEquatable<Start> {
             private readonly int row;
-
-            public int Row {
-                get {
-                    return row;
-                }
-            }
 
             /// <summary>
             /// Starting row for pagination
@@ -38,13 +33,19 @@ namespace SolrNet {
                 this.row = row;
             }
 
-            public override T Switch<T>(Func<Start, T> start, Func<Cursor, T> cursor) {
-                return start(this);
+            public int Row
+            {
+                get { return row; }
             }
 
             public bool Equals(Start other) {
-                if (other == null) return false;
+                if (other == null)
+                    return false;
                 return other.Row == Row;
+            }
+
+            public override T Switch<T>(Func<Start, T> start, Func<Cursor, T> cursor) {
+                return start(this);
             }
 
             public override bool Equals(object obj) {
@@ -63,17 +64,12 @@ namespace SolrNet {
         /// </summary>
         [Serializable]
         public sealed class Cursor : StartOrCursor, IEquatable<Cursor> {
-            private readonly string mark;
-
-            public string Mark
-            {
-                get { return mark; }
-            }
-
             /// <summary>
             /// Starting point cursor.
             /// </summary>
             public static readonly Cursor Start = new Cursor("*");
+
+            private readonly string mark;
 
             /// <summary>
             /// Cursor mark for pagination.
@@ -87,13 +83,19 @@ namespace SolrNet {
                 this.mark = mark;
             }
 
-            public override T Switch<T>(Func<Start, T> start, Func<Cursor, T> cursor) {
-                return cursor(this);
+            public string Mark
+            {
+                get { return mark; }
             }
 
             public bool Equals(Cursor other) {
-                if (other == null) return false;
+                if (other == null)
+                    return false;
                 return other.mark.Equals(mark);
+            }
+
+            public override T Switch<T>(Func<Start, T> start, Func<Cursor, T> cursor) {
+                return cursor(this);
             }
 
             public override bool Equals(object obj) {

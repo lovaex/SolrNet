@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 namespace SolrNet.Commands.Parameters {
@@ -52,7 +54,7 @@ namespace SolrNet.Commands.Parameters {
         /// Only return suggestions that result in more hits for the query than the existing query.
         /// </summary>
         public bool? OnlyMorePopular { get; set; }
-        
+
         //public bool? ExtendedResults { get; set; }
 
         /// <summary>

@@ -13,7 +13,8 @@ namespace AutofacContrib.SolrNet.Config {
         /// Core / instance ID
         /// </summary>
         [ConfigurationProperty(ID, IsKey = true, IsRequired = true)]
-        public string Id {
+        public string Id
+        {
             get { return base[ID].ToString(); }
             set { base[ID] = value; }
         }
@@ -22,7 +23,8 @@ namespace AutofacContrib.SolrNet.Config {
         /// Core / instance URL
         /// </summary>
         [ConfigurationProperty(URL, IsKey = true, IsRequired = true)]
-        public string Url {
+        public string Url
+        {
             get { return base[URL].ToString(); }
             set { base[URL] = value; }
         }
@@ -31,7 +33,8 @@ namespace AutofacContrib.SolrNet.Config {
         /// Core / instance document type
         /// </summary>
         [ConfigurationProperty(DOCUMENT_TYPE, IsKey = true, IsRequired = true)]
-        public string DocumentType {
+        public string DocumentType
+        {
             get { return base[DOCUMENT_TYPE].ToString(); }
             set { base[DOCUMENT_TYPE] = value; }
         }

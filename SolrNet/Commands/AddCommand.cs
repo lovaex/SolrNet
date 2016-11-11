@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +13,22 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using SolrNet.Utils;
 
 namespace SolrNet.Commands {
-	/// <summary>
-	/// Adds / updates documents to solr
-	/// </summary>
-	/// <typeparam name="T">Document type</typeparam>
-	public class AddCommand<T> : ISolrCommand {
-	    private readonly IEnumerable<KeyValuePair<T, double?>> documents = new List<KeyValuePair<T, double?>>();
-	    private readonly ISolrDocumentSerializer<T> documentSerializer;
-	    private readonly AddParameters parameters;
+    /// <summary>
+    /// Adds / updates documents to solr
+    /// </summary>
+    /// <typeparam name="T">Document type</typeparam>
+    public class AddCommand<T> : ISolrCommand {
+        private readonly IEnumerable<KeyValuePair<T, double?>> documents = new List<KeyValuePair<T, double?>>();
+        private readonly ISolrDocumentSerializer<T> documentSerializer;
+        private readonly AddParameters parameters;
 
         /// <summary>
         /// Adds / updates documents to solr
@@ -36,10 +36,15 @@ namespace SolrNet.Commands {
         /// <param name="documents"></param>
         /// <param name="serializer"></param>
         /// <param name="parameters"></param>
-	    public AddCommand(IEnumerable<KeyValuePair<T, double?>> documents, ISolrDocumentSerializer<T> serializer, AddParameters parameters) {
+        public AddCommand(IEnumerable<KeyValuePair<T, double?>> documents, ISolrDocumentSerializer<T> serializer, AddParameters parameters) {
             this.documents = documents;
             documentSerializer = serializer;
             this.parameters = parameters;
+        }
+
+        public string Execute(ISolrConnection connection) {
+            var xml = ConvertToXml();
+            return connection.Post("/update", xml);
         }
 
         /// <summary>
@@ -70,10 +75,5 @@ namespace SolrNet.Commands {
             }
             return addElement.ToString(SaveOptions.DisableFormatting);
         }
-
-	    public string Execute(ISolrConnection connection) {
-	        var xml = ConvertToXml();
-			return connection.Post("/update", xml);
-		}
-	}
+    }
 }

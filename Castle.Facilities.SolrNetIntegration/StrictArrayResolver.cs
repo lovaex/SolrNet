@@ -1,4 +1,5 @@
 #region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using Castle.Core;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
@@ -23,7 +24,7 @@ namespace Castle.Facilities.SolrNetIntegration {
     /// <summary>
     /// Resolves all components with a particular service interface, without subtyping
     /// </summary>
-    public class StrictArrayResolver: ISubDependencyResolver {
+    public class StrictArrayResolver : ISubDependencyResolver {
         private readonly IKernel kernel;
 
         /// <summary>

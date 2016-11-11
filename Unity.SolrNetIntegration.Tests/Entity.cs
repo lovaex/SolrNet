@@ -1,4 +1,3 @@
-﻿namespace Unity.SolrNetIntegration.Tests
-{
-    public class Entity { }
+﻿namespace Unity.SolrNetIntegration.Tests {
+    public class Entity {}
 }

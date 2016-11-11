@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -37,10 +39,10 @@ namespace SolrNet.Impl.FieldParsers {
         }
 
         public bool CanHandleType(Type t) {
-            return t != typeof (string) &&
-                   typeof (IEnumerable).IsAssignableFrom(t) &&
-                   !typeof (IDictionary).IsAssignableFrom(t) &&
-                   !TypeHelper.IsGenericAssignableFrom(typeof (IDictionary<,>), t);
+            return t != typeof(string) &&
+                   typeof(IEnumerable).IsAssignableFrom(t) &&
+                   !typeof(IDictionary).IsAssignableFrom(t) &&
+                   !TypeHelper.IsGenericAssignableFrom(typeof(IDictionary<,>), t);
         }
 
         public object Parse(XElement field, Type t) {
@@ -71,9 +73,9 @@ namespace SolrNet.Impl.FieldParsers {
 
         public Array GetArrayProperty(XElement field, Type t) {
             // int[], string[], etc
-            var arr = (Array)Activator.CreateInstance(t, new object[] { field.Elements().Count() });
+            var arr = (Array) Activator.CreateInstance(t, new object[] {field.Elements().Count()});
             var arrType = Type.GetType(t.ToString().Replace("[]", ""));
-            int i = 0;
+            var i = 0;
             foreach (var arrayValueNode in field.Elements()) {
                 arr.SetValue(valueParser.Parse(arrayValueNode, arrType), i);
                 i++;
@@ -85,7 +87,7 @@ namespace SolrNet.Impl.FieldParsers {
         public IList GetGenericCollectionProperty(XElement field, Type[] genericTypes) {
             // ICollection<int>, etc
             var gt = genericTypes[0];
-            var l = (IList) Activator.CreateInstance(typeof (List<>).MakeGenericType(gt));
+            var l = (IList) Activator.CreateInstance(typeof(List<>).MakeGenericType(gt));
             foreach (var arrayValueNode in field.Elements()) {
                 l.Add(valueParser.Parse(arrayValueNode, gt));
             }

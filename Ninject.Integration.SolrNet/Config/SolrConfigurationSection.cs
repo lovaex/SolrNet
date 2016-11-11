@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Configuration;
@@ -20,15 +22,14 @@ namespace Ninject.Integration.SolrNet.Config {
     /// <summary>
     /// Configuration section for Solr servers
     /// </summary>
-    public class SolrConfigurationSection : ConfigurationSection
-    {
+    public class SolrConfigurationSection : ConfigurationSection {
         /// <summary>
         /// Solr Servers configuration settings
         /// </summary>
         [ConfigurationProperty("", IsDefaultCollection = true)]
         public SolrServers SolrServers
         {
-            get { return (SolrServers)base[""]; }
+            get { return (SolrServers) base[""]; }
         }
-    }         
+    }
 }

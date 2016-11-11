@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -23,9 +25,9 @@ namespace SolrNet.Impl {
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
     public class SolrDocumentResponseParser<T> : ISolrDocumentResponseParser<T> {
+        private readonly ISolrDocumentActivator<T> activator;
         private readonly IReadOnlyMappingManager mappingManager;
         private readonly ISolrDocumentPropertyVisitor propVisitor;
-        private readonly ISolrDocumentActivator<T> activator;
 
         public SolrDocumentResponseParser(IReadOnlyMappingManager mappingManager, ISolrDocumentPropertyVisitor propVisitor, ISolrDocumentActivator<T> activator) {
             this.mappingManager = mappingManager;
@@ -58,7 +60,7 @@ namespace SolrNet.Impl {
         public T ParseDocument(XElement node) {
             var doc = activator.Create();
             foreach (var field in node.Elements()) {
-                string fieldName = field.Attribute("name").Value;
+                var fieldName = field.Attribute("name").Value;
                 propVisitor.Visit(doc, fieldName, field);
             }
             return doc;

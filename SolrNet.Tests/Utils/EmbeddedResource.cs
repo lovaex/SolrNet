@@ -32,8 +32,8 @@ namespace SolrNet.Tests.Utils {
         /// <returns>A stream containing the file data.</returns>
         public static Stream GetEmbeddedFile(string assemblyName, string fileName) {
             try {
-                Assembly a = Assembly.Load(assemblyName);
-                Stream str = a.GetManifestResourceStream(assemblyName + "." + fileName);
+                var a = Assembly.Load(assemblyName);
+                var str = a.GetManifestResourceStream(assemblyName + "." + fileName);
 
                 if (str == null)
                     throw new Exception("Could not locate embedded resource '" + fileName + "' in assembly '" + assemblyName + "'");
@@ -50,7 +50,7 @@ namespace SolrNet.Tests.Utils {
         /// <param name="fileName">The name of the resource.</param>
         /// <returns>A Stream with the contents of the embedded resource.</returns>
         public static Stream GetEmbeddedFile(Assembly assembly, string fileName) {
-            string assemblyName = assembly.GetName().Name;
+            var assemblyName = assembly.GetName().Name;
             return GetEmbeddedFile(assemblyName, fileName);
         }
 
@@ -61,7 +61,7 @@ namespace SolrNet.Tests.Utils {
         /// <param name="fileName">The name of the resource.</param>
         /// <returns>A Stream with the contents of the embedded resource.</returns>
         public static Stream GetEmbeddedFile(Type type, string fileName) {
-            string assemblyName = type.Assembly.GetName().Name;
+            var assemblyName = type.Assembly.GetName().Name;
             return GetEmbeddedFile(assemblyName, fileName);
         }
 
@@ -84,9 +84,9 @@ namespace SolrNet.Tests.Utils {
         /// <param name="fileName">The name of the resource</param>
         /// <returns>An XmlDocument with the contents of the embedded resource.</returns>
         public static XDocument GetEmbeddedXml(Type type, string fileName) {
-			using (Stream str = GetEmbeddedFile(type, fileName))
-			using (var sr = new StreamReader(str))
-			    return XDocument.Load(sr);
+            using (var str = GetEmbeddedFile(type, fileName))
+            using (var sr = new StreamReader(str))
+                return XDocument.Load(sr);
         }
     }
 }

@@ -6,80 +6,74 @@ using NHibernate.Event;
 
 namespace NHibernate.SolrNet.Impl {
     public class NHHelper {
-        private struct NHListenerInfo {
-            public System.Type Intf;
-            public ListenerType ListenerType;
-            public Converter<EventListeners, Array> ListenerCollection;
-        }
-
         private static readonly ICollection<NHListenerInfo> ListenerInfo = new[] {
             new NHListenerInfo {
-                Intf = typeof (IEvictEventListener),
+                Intf = typeof(IEvictEventListener),
                 ListenerType = ListenerType.Evict,
                 ListenerCollection = l => l.EvictEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IPostInsertEventListener),
+                Intf = typeof(IPostInsertEventListener),
                 ListenerType = ListenerType.PostInsert,
                 ListenerCollection = l => l.PostInsertEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IPostDeleteEventListener),
+                Intf = typeof(IPostDeleteEventListener),
                 ListenerType = ListenerType.PostDelete,
                 ListenerCollection = l => l.PostDeleteEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IPostUpdateEventListener),
+                Intf = typeof(IPostUpdateEventListener),
                 ListenerType = ListenerType.PostUpdate,
                 ListenerCollection = l => l.PostUpdateEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IPreInsertEventListener),
+                Intf = typeof(IPreInsertEventListener),
                 ListenerType = ListenerType.PreInsert,
                 ListenerCollection = l => l.PreInsertEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IPreDeleteEventListener),
+                Intf = typeof(IPreDeleteEventListener),
                 ListenerType = ListenerType.PreDelete,
                 ListenerCollection = l => l.PreDeleteEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IPreUpdateEventListener),
+                Intf = typeof(IPreUpdateEventListener),
                 ListenerType = ListenerType.PreUpdate,
                 ListenerCollection = l => l.PreUpdateEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (ILoadEventListener),
+                Intf = typeof(ILoadEventListener),
                 ListenerType = ListenerType.Load, // preload, postload?
                 ListenerCollection = l => l.LoadEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (ILockEventListener),
+                Intf = typeof(ILockEventListener),
                 ListenerType = ListenerType.Lock,
                 ListenerCollection = l => l.LockEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IRefreshEventListener),
+                Intf = typeof(IRefreshEventListener),
                 ListenerType = ListenerType.Refresh,
                 ListenerCollection = l => l.RefreshEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IMergeEventListener),
+                Intf = typeof(IMergeEventListener),
                 ListenerType = ListenerType.Merge,
                 ListenerCollection = l => l.MergeEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IFlushEventListener),
+                Intf = typeof(IFlushEventListener),
                 ListenerType = ListenerType.Flush,
                 ListenerCollection = l => l.FlushEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IFlushEntityEventListener),
+                Intf = typeof(IFlushEntityEventListener),
                 ListenerType = ListenerType.FlushEntity,
                 ListenerCollection = l => l.FlushEntityEventListeners,
             },
             new NHListenerInfo {
-                Intf = typeof (IAutoFlushEventListener),
+                Intf = typeof(IAutoFlushEventListener),
                 ListenerType = ListenerType.Autoflush,
                 ListenerCollection = l => l.AutoFlushEventListeners,
             },
@@ -105,6 +99,12 @@ namespace NHibernate.SolrNet.Impl {
             currentListeners.CopyTo(newListeners, 0);
             newListeners.SetValue(listener, currentListeners.Length);
             return (object[]) newListeners;
+        }
+
+        private struct NHListenerInfo {
+            public System.Type Intf;
+            public ListenerType ListenerType;
+            public Converter<EventListeners, Array> ListenerCollection;
         }
     }
 }

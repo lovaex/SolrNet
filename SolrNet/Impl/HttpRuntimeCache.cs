@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -23,27 +25,28 @@ namespace SolrNet.Impl {
     /// Uses the HttpRuntime (ASP.NET) cache
     /// </summary>
     public class HttpRuntimeCache : ISolrCache {
-        /// <summary>
-        /// Cache sliding minutes. By default 10 minutes
-        /// </summary>
-        public int SlidingMinutes { get; set; }
-
         private readonly string id = Guid.NewGuid().ToString();
 
         public HttpRuntimeCache() {
             SlidingMinutes = 10;
         }
 
-        public string CacheKey(string url) {
-            return "solr" + id + url;
-        }
+        /// <summary>
+        /// Cache sliding minutes. By default 10 minutes
+        /// </summary>
+        public int SlidingMinutes { get; set; }
 
-        public SolrCacheEntity this[string url] {
+        public SolrCacheEntity this[string url]
+        {
             get { return HttpRuntime.Cache[CacheKey(url)] as SolrCacheEntity; }
         }
 
         public void Add(SolrCacheEntity e) {
             HttpRuntime.Cache.Insert(CacheKey(e.Url), e, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, SlidingMinutes, 0));
+        }
+
+        public string CacheKey(string url) {
+            return "solr" + id + url;
         }
     }
 }

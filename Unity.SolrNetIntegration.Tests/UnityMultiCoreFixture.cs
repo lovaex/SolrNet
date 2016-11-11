@@ -1,5 +1,4 @@
 using System.Configuration;
-using MbUnit.Framework;
 using Microsoft.Practices.Unity;
 using NUnit.Framework;
 using SolrNet;
@@ -8,8 +7,6 @@ using Unity.SolrNetIntegration.Config;
 namespace Unity.SolrNetIntegration.Tests {
     [TestFixture]
     public class UnityMultiCoreFixture {
-        private IUnityContainer container;
-
         [SetUp]
         public void SetUp() {
             var solrConfig = (SolrConfigurationSection) ConfigurationManager.GetSection("solr");
@@ -21,6 +18,20 @@ namespace Unity.SolrNetIntegration.Tests {
         [TearDown]
         public void Teardown() {
             container.Dispose();
+        }
+
+        private IUnityContainer container;
+
+        [Test]
+        public void Get_named_SolrOperations_for_Entity() {
+            var solrOperations = container.Resolve<ISolrOperations<Entity>>("entity");
+            Assert.IsNotNull(solrOperations);
+        }
+
+        [Test]
+        public void Get_named_SolrOperations_for_Entity2() {
+            var solrOperations2 = container.Resolve<ISolrOperations<Entity2>>("entity3");
+            Assert.IsNotNull(solrOperations2);
         }
 
         [Test]
@@ -36,28 +47,16 @@ namespace Unity.SolrNetIntegration.Tests {
         }
 
         [Test]
-        public void Get_named_SolrOperations_for_Entity() {
-            var solrOperations = container.Resolve<ISolrOperations<Entity>>("entity");
-            Assert.IsNotNull(solrOperations);
-        }
-
-        [Test]
-        public void Get_named_SolrOperations_for_Entity2() {
-            var solrOperations2 = container.Resolve<ISolrOperations<Entity2>>("entity3");
-            Assert.IsNotNull(solrOperations2);
-        }
-
-        [Test]
         public void Same_document_type_different_core_url() {
             var cores = new SolrServers {
                 new SolrServerElement {
                     Id = "core1",
-                    DocumentType = typeof (Entity).AssemblyQualifiedName,
+                    DocumentType = typeof(Entity).AssemblyQualifiedName,
                     Url = "http://localhost:8983/solr/entity1",
                 },
                 new SolrServerElement {
                     Id = "core2",
-                    DocumentType = typeof (Entity).AssemblyQualifiedName,
+                    DocumentType = typeof(Entity).AssemblyQualifiedName,
                     Url = "http://localhost:8983/solr/entity2",
                 }
             };

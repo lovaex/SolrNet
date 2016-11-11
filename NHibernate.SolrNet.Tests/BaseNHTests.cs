@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -24,9 +26,9 @@ using SolrNet.Tests.Utils;
 
 namespace NHibernate.SolrNet.Tests {
     public class BaseNHTests {
+        protected MSolrOperations<Entity> mockSolr;
 
         protected ISessionFactory sessionFactory;
-        protected MSolrOperations<Entity> mockSolr;
 
         [SetUp]
         public void FixtureSetup() {

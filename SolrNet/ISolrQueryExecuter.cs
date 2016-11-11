@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +13,24 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System.Collections.Generic;
 using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 
 namespace SolrNet {
-	/// <summary>
-	/// Executable query
-	/// </summary>
-	/// <typeparam name="T">Document type</typeparam>
-	public interface ISolrQueryExecuter<T>  {
-		/// <summary>
-		/// Executes the query and returns results
-		/// </summary>
-		/// <returns>query results</returns>
-		SolrQueryResults<T> Execute(ISolrQuery q, QueryOptions options);
+    /// <summary>
+    /// Executable query
+    /// </summary>
+    /// <typeparam name="T">Document type</typeparam>
+    public interface ISolrQueryExecuter<T> {
+        /// <summary>
+        /// Executes the query and returns results
+        /// </summary>
+        /// <returns>query results</returns>
+        SolrQueryResults<T> Execute(ISolrQuery q, QueryOptions options);
 
         SolrMoreLikeThisHandlerResults<T> Execute(SolrMLTQuery query, MoreLikeThisHandlerQueryOptions options);
-	}
+    }
 }

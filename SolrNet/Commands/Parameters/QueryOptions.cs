@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -20,18 +22,21 @@ namespace SolrNet.Commands.Parameters {
     /// <summary>
     /// Query options
     /// </summary>
-	public partial class QueryOptions: CommonQueryOptions {
+    public partial class QueryOptions : CommonQueryOptions {
+        public QueryOptions() {
+            OrderBy = new List<SortOrder>();
+        }
 
-		/// <summary>
-		/// Sort order.
-		/// By default, it's "score desc"
-		/// </summary>
-		public ICollection<SortOrder> OrderBy { get; set; }
+        /// <summary>
+        /// Sort order.
+        /// By default, it's "score desc"
+        /// </summary>
+        public ICollection<SortOrder> OrderBy { get; set; }
 
-		/// <summary>
-		/// Highlighting parameters
-		/// </summary>
-		public HighlightingParameters Highlight { get; set; }
+        /// <summary>
+        /// Highlighting parameters
+        /// </summary>
+        public HighlightingParameters Highlight { get; set; }
 
         /// <summary>
         /// Spell-checking parameters
@@ -67,26 +72,22 @@ namespace SolrNet.Commands.Parameters {
         /// <see href="https://cwiki.apache.org/confluence/display/solr/Collapse+and+Expand+Results"/>
         public CollapseExpandParameters CollapseExpand { get; set; }
 
-		/// <summary>
-		/// This parameter can be used to collapse - or group - documents by the unique values of a specified field. Included in the results are the number of
-		/// records by document key and by field value
-		/// </summary>
-		public TermVectorParameters TermVector { get; set; }
+        /// <summary>
+        /// This parameter can be used to collapse - or group - documents by the unique values of a specified field. Included in the results are the number of
+        /// records by document key and by field value
+        /// </summary>
+        public TermVectorParameters TermVector { get; set; }
 
-		/// <summary>
-		/// (only SOLR 4.0)
-		/// This parameter can be used to collapse - or group - documents by the unique values of a specified field. Included in the results are the number of
-		/// records by document key and by field value
-		/// </summary>
-		public GroupingParameters Grouping { get; set; }
+        /// <summary>
+        /// (only SOLR 4.0)
+        /// This parameter can be used to collapse - or group - documents by the unique values of a specified field. Included in the results are the number of
+        /// records by document key and by field value
+        /// </summary>
+        public GroupingParameters Grouping { get; set; }
 
         /// <summary>
         /// This parmeter can be used to group query results into clusters based on document similarity 
         /// </summary>
         public ClusteringParameters Clustering { get; set; }
-
-	    public QueryOptions() {
-			OrderBy = new List<SortOrder>();
-		}
-	}
+    }
 }

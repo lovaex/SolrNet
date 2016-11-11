@@ -11,8 +11,8 @@ namespace SolrNet.Impl.ResponseParsers {
         }
 
         public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
-            results.Switch(query: F.DoNothing,
-                           moreLikeThis: r => Parse(xml, r));
+            results.Switch(query : F.DoNothing,
+                moreLikeThis : r => Parse(xml, r));
         }
 
         public void Parse(XDocument xml, SolrMoreLikeThisHandlerResults<T> results) {
@@ -21,9 +21,9 @@ namespace SolrNet.Impl.ResponseParsers {
                 .Elements("result")
                 .FirstOrDefault(e => e.Attribute("name").Value == "match");
 
-            results.Match = resultNode == null ? 
-                default(T) : 
-                docParser.ParseResults(resultNode).FirstOrDefault();
+            results.Match = resultNode == null
+                ? default(T)
+                : docParser.ParseResults(resultNode).FirstOrDefault();
         }
     }
 }

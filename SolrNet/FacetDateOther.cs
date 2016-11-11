@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 namespace SolrNet {
@@ -29,35 +31,40 @@ namespace SolrNet {
         /// <summary>
         /// All records with field values lower then lower bound of the first range
         /// </summary>
-        public static FacetDateOther Before {
+        public static FacetDateOther Before
+        {
             get { return new FacetDateOther("before"); }
         }
 
         /// <summary>
         /// All records with field values greater then the upper bound of the last range
         /// </summary>
-        public static FacetDateOther After {
+        public static FacetDateOther After
+        {
             get { return new FacetDateOther("after"); }
         }
 
         /// <summary>
         /// All records with field values between the start and end bounds of all ranges
         /// </summary>
-        public static FacetDateOther Between {
+        public static FacetDateOther Between
+        {
             get { return new FacetDateOther("between"); }
         }
 
         /// <summary>
         /// Compute none of this information. Overrides all other options.
         /// </summary>
-        public static FacetDateOther None {
+        public static FacetDateOther None
+        {
             get { return new FacetDateOther("none"); }
         }
 
         /// <summary>
         /// Shortcut for before, between, and after
         /// </summary>
-        public static FacetDateOther All {
+        public static FacetDateOther All
+        {
             get { return new FacetDateOther("all"); }
         }
 

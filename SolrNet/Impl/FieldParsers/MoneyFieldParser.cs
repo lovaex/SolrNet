@@ -12,16 +12,16 @@ namespace SolrNet.Impl.FieldParsers {
             return t == typeof(Money);
         }
 
+        public object Parse(XElement field, Type t) {
+            return Parse(field.Value);
+        }
+
         public static Money Parse(string v) {
             if (string.IsNullOrEmpty(v))
                 return null;
             var m = v.Split(',');
             var currency = m.Length == 1 ? null : m[1];
             return new Money(decimal.Parse(m[0], CultureInfo.InvariantCulture), currency);
-        }
-
-        public object Parse(XElement field, Type t) {
-            return Parse(field.Value);
         }
     }
 }

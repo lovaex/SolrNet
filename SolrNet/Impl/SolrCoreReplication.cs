@@ -1,27 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Linq;
 using SolrNet.Commands.Replication;
 
-namespace SolrNet.Impl 
-{
+namespace SolrNet.Impl {
     /// <summary>
     /// Solr core replication commands.
     /// </summary>
     /// <seealso href="http://wiki.apache.org/solr/SolrReplication"/>
     /// <seealso href="https://cwiki.apache.org/confluence/display/solr/Index+Replication"/>
-    public class SolrCoreReplication : ISolrCoreReplication 
-    {
+    public class SolrCoreReplication : ISolrCoreReplication {
         private readonly ISolrConnection connection;
-        private readonly ISolrReplicationStatusResponseParser statusParser;
-        private readonly ISolrReplicationIndexVersionResponseParser indexversionParser;
         private readonly ISolrReplicationDetailsResponseParser detailsParser;
+        private readonly ISolrReplicationIndexVersionResponseParser indexversionParser;
+        private readonly ISolrReplicationStatusResponseParser statusParser;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SolrCoreReplication"/> class.
         /// </summary>
-        public SolrCoreReplication(ISolrConnection connection, ISolrReplicationStatusResponseParser statusParser, ISolrReplicationIndexVersionResponseParser indexversionParser, ISolrReplicationDetailsResponseParser detailsParser)
-        {
+        public SolrCoreReplication(ISolrConnection connection, ISolrReplicationStatusResponseParser statusParser, ISolrReplicationIndexVersionResponseParser indexversionParser, ISolrReplicationDetailsResponseParser detailsParser) {
             this.connection = connection;
             this.statusParser = statusParser;
             this.indexversionParser = indexversionParser;
@@ -32,8 +28,7 @@ namespace SolrNet.Impl
         /// Enables replication on the master for all its slaves. 
         /// </summary>
         /// <returns></returns>
-        public ReplicationStatusResponse EnableReplication()
-        {
+        public ReplicationStatusResponse EnableReplication() {
             return SendAndParseStatus(new EnableReplicationCommand());
         }
 
@@ -41,8 +36,7 @@ namespace SolrNet.Impl
         /// Disables replication on the master for all its slaves. 
         /// </summary>
         /// <returns></returns>
-        public ReplicationStatusResponse DisableReplication()
-        {
+        public ReplicationStatusResponse DisableReplication() {
             return SendAndParseStatus(new DisableReplicationCommand());
         }
 
@@ -50,8 +44,7 @@ namespace SolrNet.Impl
         /// Returns the version of the latest replicatable index on the specified master or slave. 
         /// </summary>
         /// <returns></returns>
-        public ReplicationIndexVersionResponse IndexVersion()
-        {
+        public ReplicationIndexVersionResponse IndexVersion() {
             return SendAndParseIndexVersion(new IndexVersionCommand());
         }
 
@@ -59,8 +52,7 @@ namespace SolrNet.Impl
         /// Retrieves configuration details and current status. 
         /// </summary>
         /// <returns></returns>
-        public ReplicationDetailsResponse Details()
-        {
+        public ReplicationDetailsResponse Details() {
             return SendAndParseDetails(new DetailsCommand());
         }
 
@@ -68,8 +60,7 @@ namespace SolrNet.Impl
         /// Enables the specified slave to poll for changes on the master. 
         /// </summary>
         /// <returns></returns>
-        public ReplicationStatusResponse EnablePoll()
-        {
+        public ReplicationStatusResponse EnablePoll() {
             return SendAndParseStatus(new EnablePollCommand());
         }
 
@@ -77,8 +68,7 @@ namespace SolrNet.Impl
         /// Enables the specified slave to poll for changes on the master. 
         /// </summary>
         /// <returns></returns>
-        public ReplicationStatusResponse DisablePoll()
-        {
+        public ReplicationStatusResponse DisablePoll() {
             return SendAndParseStatus(new DisablePollCommand());
         }
 
@@ -88,8 +78,7 @@ namespace SolrNet.Impl
         /// is specified in the &lt;lst name="slave"&gt; tag) to do a one time replication from a master. 
         /// This obviates the need for hard-coding the master in the slave. 
         /// </summary>
-        public ReplicationStatusResponse FetchIndex()
-        {
+        public ReplicationStatusResponse FetchIndex() {
             return FetchIndex(null);
         }
 
@@ -100,16 +89,14 @@ namespace SolrNet.Impl
         /// This obviates the need for hard-coding the master in the slave. 
         /// </summary>
         /// <param name="parameters">Optional parameters</param>
-        public ReplicationStatusResponse FetchIndex(IEnumerable<KeyValuePair<string, string>> parameters)
-        {
+        public ReplicationStatusResponse FetchIndex(IEnumerable<KeyValuePair<string, string>> parameters) {
             return SendAndParseStatus(new FetchIndexCommand(parameters));
         }
 
         /// <summary>
         /// Aborts copying an index from a master to the specified slave.
         /// </summary>
-        public ReplicationStatusResponse AbortFetch()
-        {
+        public ReplicationStatusResponse AbortFetch() {
             return SendAndParseStatus(new AbortFetchCommand());
         }
 
@@ -118,8 +105,7 @@ namespace SolrNet.Impl
         /// </summary>
         /// <param name="cmd">The CMD.</param>
         /// <returns></returns>
-        public ReplicationStatusResponse SendAndParseStatus(ISolrCommand cmd)
-        {
+        public ReplicationStatusResponse SendAndParseStatus(ISolrCommand cmd) {
             var r = Send(cmd);
             var xml = XDocument.Parse(r);
             return statusParser.Parse(xml);
@@ -130,8 +116,7 @@ namespace SolrNet.Impl
         /// </summary>
         /// <param name="cmd">The CMD.</param>
         /// <returns></returns>
-        public ReplicationIndexVersionResponse SendAndParseIndexVersion(ISolrCommand cmd)
-        {
+        public ReplicationIndexVersionResponse SendAndParseIndexVersion(ISolrCommand cmd) {
             var r = Send(cmd);
             var xml = XDocument.Parse(r);
             return indexversionParser.Parse(xml);
@@ -142,8 +127,7 @@ namespace SolrNet.Impl
         /// </summary>
         /// <param name="cmd">The CMD.</param>
         /// <returns></returns>
-        public ReplicationDetailsResponse SendAndParseDetails(ISolrCommand cmd)
-        {
+        public ReplicationDetailsResponse SendAndParseDetails(ISolrCommand cmd) {
             var r = Send(cmd);
             var xml = XDocument.Parse(r);
             return detailsParser.Parse(xml);

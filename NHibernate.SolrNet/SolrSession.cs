@@ -1,4 +1,5 @@
 #region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -26,8 +28,8 @@ namespace NHibernate.SolrNet {
     /// </summary>
     [Obsolete("Deprecated. Replace with your own integration.")]
     public class SolrSession : DelegatingSession, ISolrSession {
-        private readonly ISession session;
         private readonly IServiceProvider provider;
+        private readonly ISession session;
 
         /// <summary>
         /// Creates a session using the current <see cref="ServiceLocator"/>
@@ -66,7 +68,7 @@ namespace NHibernate.SolrNet {
         /// <param name="query">Solr query</param>
         /// <returns>query object</returns>
         public INHSolrQuery CreateSolrQuery(ISolrQuery query) {
-            var serializer = (ISolrQuerySerializer) provider.GetService(typeof (ISolrQuerySerializer));
+            var serializer = (ISolrQuerySerializer) provider.GetService(typeof(ISolrQuerySerializer));
             return CreateSolrQuery(serializer.Serialize(query));
         }
     }

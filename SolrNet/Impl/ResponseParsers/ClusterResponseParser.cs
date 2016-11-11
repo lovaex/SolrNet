@@ -8,8 +8,8 @@ using SolrNet.Utils;
 namespace SolrNet.Impl.ResponseParsers {
     public class ClusterResponseParser<T> : ISolrResponseParser<T> {
         public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
-            results.Switch(query: r => Parse(xml, r), 
-                           moreLikeThis: F.DoNothing);
+            results.Switch(query : r => Parse(xml, r),
+                moreLikeThis : F.DoNothing);
         }
 
         /// <summary>

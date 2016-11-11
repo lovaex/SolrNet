@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Linq;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Impl.FieldSerializers;
 using SolrNet.Impl.QuerySerializers;
@@ -24,11 +25,20 @@ using SolrNet.Impl.QuerySerializers;
 namespace SolrNet.Tests {
     [TestFixture]
     public class SolrMultipleCriteriaQueryTests {
-        public class TestDocument  {}
+        public class TestDocument {}
 
         public string Serialize(object q) {
             var serializer = new DefaultQuerySerializer(new DefaultFieldSerializer());
             return serializer.Serialize(q);
+        }
+
+
+        [Test]
+        public void AcceptsNulls() {
+            var q1 = new SolrQuery("1");
+            ISolrQuery q2 = null;
+            var qm = new SolrMultipleCriteriaQuery(new[] {q1, q2});
+            Assert.AreEqual("(1)", Serialize(qm));
         }
 
 
@@ -49,30 +59,21 @@ namespace SolrNet.Tests {
             Assert.AreEqual("(1  f:(v))", Serialize(qm));
         }
 
-
-        [Test]
-        public void AcceptsNulls() {
-            var q1 = new SolrQuery("1");
-            ISolrQuery q2 = null;
-            var qm = new SolrMultipleCriteriaQuery(new[] {q1, q2});
-            Assert.AreEqual("(1)", Serialize(qm));
-        }
-
         [Test]
         public void Empty() {
-            var qm = new SolrMultipleCriteriaQuery(new ISolrQuery[] { });
+            var qm = new SolrMultipleCriteriaQuery(new ISolrQuery[] {});
             Assert.IsEmpty(Serialize(qm));
         }
 
         [Test]
         public void EmptyQueries_are_ignored() {
-            var qm = new SolrMultipleCriteriaQuery(new ISolrQuery[] { new SolrQuery(""), });
+            var qm = new SolrMultipleCriteriaQuery(new ISolrQuery[] {new SolrQuery(""),});
             Assert.IsEmpty(Serialize(qm));
         }
 
         [Test]
         public void NullQueries_are_ignored() {
-            var qm = new SolrMultipleCriteriaQuery(new ISolrQuery[] { new SolrQuery(null), });
+            var qm = new SolrMultipleCriteriaQuery(new ISolrQuery[] {new SolrQuery(null),});
             Assert.IsEmpty(Serialize(qm));
         }
 

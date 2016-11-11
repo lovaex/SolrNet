@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -43,32 +45,6 @@ namespace SolrNet.Utils {
             };
         }
 
-        private struct Tuple2<A,B> {
-            private readonly A first;
-            private readonly B second;
-
-            public Tuple2(A first, B second) {
-                this.first = first;
-                this.second = second;
-            }
-
-            public bool Equals(Tuple2<A, B> other) {
-                return Equals(other.first, first) && Equals(other.second, second);
-            }
-
-            public override bool Equals(object obj) {
-                if (ReferenceEquals(null, obj)) return false;
-                if (obj.GetType() != typeof (Tuple2<A, B>)) return false;
-                return Equals((Tuple2<A, B>) obj);
-            }
-
-            public override int GetHashCode() {
-                unchecked {
-                    return (first.GetHashCode()*397) ^ second.GetHashCode();
-                }
-            }
-        }
-
         /// <summary>
         /// Memoize a binary function
         /// </summary>
@@ -90,8 +66,36 @@ namespace SolrNet.Utils {
                     value = function(k1, k2);
                     results.Add(tupleKey, value);
                     return value;
-                }               
+                }
             };
+        }
+
+        private struct Tuple2<A, B> {
+            private readonly A first;
+            private readonly B second;
+
+            public Tuple2(A first, B second) {
+                this.first = first;
+                this.second = second;
+            }
+
+            public bool Equals(Tuple2<A, B> other) {
+                return Equals(other.first, first) && Equals(other.second, second);
+            }
+
+            public override bool Equals(object obj) {
+                if (ReferenceEquals(null, obj))
+                    return false;
+                if (obj.GetType() != typeof(Tuple2<A, B>))
+                    return false;
+                return Equals((Tuple2<A, B>) obj);
+            }
+
+            public override int GetHashCode() {
+                unchecked {
+                    return (first.GetHashCode()*397) ^ second.GetHashCode();
+                }
+            }
         }
     }
 }

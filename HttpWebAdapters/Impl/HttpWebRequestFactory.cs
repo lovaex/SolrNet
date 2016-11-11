@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +13,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Net;
 
 namespace HttpWebAdapters.Impl {
-	public class HttpWebRequestFactory : IHttpWebRequestFactory {
-		public IHttpWebRequest Create(string url) {
-			return new HttpWebRequestAdapter((HttpWebRequest) WebRequest.Create(url));
-		}
+    public class HttpWebRequestFactory : IHttpWebRequestFactory {
+        public IHttpWebRequest Create(Uri url) {
+            return new HttpWebRequestAdapter((HttpWebRequest) WebRequest.Create(url));
+        }
 
-		public IHttpWebRequest Create(Uri url) {
-			return new HttpWebRequestAdapter((HttpWebRequest) WebRequest.Create(url));
-		}
-	}
+        public IHttpWebRequest Create(string url) {
+            return new HttpWebRequestAdapter((HttpWebRequest) WebRequest.Create(url));
+        }
+    }
 }

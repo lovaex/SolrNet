@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -28,7 +30,11 @@ namespace SolrNet.Impl.FieldParsers {
         }
 
         public bool CanHandleType(Type t) {
-            return t == typeof (float);
+            return t == typeof(float);
+        }
+
+        public object Parse(XElement field, Type t) {
+            return Parse(field);
         }
 
         public static float Parse(string value) {
@@ -39,10 +45,6 @@ namespace SolrNet.Impl.FieldParsers {
             if (field == null)
                 throw new ArgumentNullException("field");
             return Parse(field.Value);
-        }
-
-        public object Parse(XElement field, Type t) {
-            return Parse(field);
         }
     }
 }

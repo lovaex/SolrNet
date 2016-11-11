@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -22,31 +24,31 @@ namespace SolrNet.Exceptions {
     /// Invalid URL specified
     /// </summary>
     [Serializable]
-	public class InvalidURLException : SolrNetException {
+    public class InvalidURLException : SolrNetException {
         /// <summary>
         /// Invalid URL specified
         /// </summary>
         /// <param name="innerException"></param>
-		public InvalidURLException(Exception innerException) : base(innerException) {}
+        public InvalidURLException(Exception innerException) : base(innerException) {}
 
         /// <summary>
         /// Invalid URL specified
         /// </summary>
         /// <param name="message"></param>
-		public InvalidURLException(string message) : base(message) {}
+        public InvalidURLException(string message) : base(message) {}
 
         /// <summary>
         /// Invalid URL specified
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-		public InvalidURLException(string message, Exception innerException) : base(message, innerException) {}
+        public InvalidURLException(string message, Exception innerException) : base(message, innerException) {}
 
         /// <summary>
         /// Invalid URL specified
         /// </summary>
-		public InvalidURLException() {}
+        public InvalidURLException() {}
 
         protected InvalidURLException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+    }
 }

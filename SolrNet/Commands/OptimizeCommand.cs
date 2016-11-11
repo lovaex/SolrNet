@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -22,19 +24,18 @@ namespace SolrNet.Commands {
     /// Optimizes Solr's index
     /// </summary>
     /// <seealso href="http://wiki.apache.org/jakarta-lucene/LuceneFAQ">Lucene FAQ</seealso>
-	public class OptimizeCommand : ISolrCommand {
+    public class OptimizeCommand : ISolrCommand {
+        /// <summary>
+        /// Block until index changes are flushed to disk
+        /// Default is true
+        /// </summary>
+        public bool? WaitFlush { get; set; }
 
-		/// <summary>
-		/// Block until index changes are flushed to disk
-		/// Default is true
-		/// </summary>
-		public bool? WaitFlush { get; set; }
-
-		/// <summary>
-		/// Block until a new searcher is opened and registered as the main query searcher, making the changes visible. 
-		/// Default is true
-		/// </summary>
-		public bool? WaitSearcher { get; set; }
+        /// <summary>
+        /// Block until a new searcher is opened and registered as the main query searcher, making the changes visible. 
+        /// Default is true
+        /// </summary>
+        public bool? WaitSearcher { get; set; }
 
         /// <summary>
         /// Merge segments with deletes away
@@ -53,18 +54,18 @@ namespace SolrNet.Commands {
         /// </summary>
         /// <param name="connection"></param>
         /// <returns></returns>
-		public string Execute(ISolrConnection connection) {
-			var node = new XElement("optimize");
+        public string Execute(ISolrConnection connection) {
+            var node = new XElement("optimize");
 
             var ps = new[] {
-                new KeyValuePair<bool?, string>(WaitSearcher, "waitSearcher"), 
-                new KeyValuePair<bool?, string>(WaitFlush, "waitFlush"), 
+                new KeyValuePair<bool?, string>(WaitSearcher, "waitSearcher"),
+                new KeyValuePair<bool?, string>(WaitFlush, "waitFlush"),
                 new KeyValuePair<bool?, string>(ExpungeDeletes, "expungeDeletes")
             };
 
-            foreach (var p in ps)
-            {
-                if (!p.Key.HasValue) continue;
+            foreach (var p in ps) {
+                if (!p.Key.HasValue)
+                    continue;
 
                 var att = new XAttribute(p.Value, p.Key.Value.ToString().ToLower());
                 node.Add(att);
@@ -75,7 +76,7 @@ namespace SolrNet.Commands {
                 node.Add(att);
             }
 
-			return connection.Post("/update", node.ToString(SaveOptions.DisableFormatting));
-		}
-	}
+            return connection.Post("/update", node.ToString(SaveOptions.DisableFormatting));
+        }
+    }
 }

@@ -28,11 +28,11 @@ namespace SolrNet.Mapping.Validation.Rules {
         /// </summary>
         public DoubleSolrFieldTypeChecker()
             : base(new[] {"solr.TrieDoubleField", "solr.SortableDoubleField", "solr.DoubleField"},
-                   new[] {"solr.TextField", "solr.StrField"}) {}
+                new[] {"solr.TextField", "solr.StrField"}) {}
 
         public override bool CanHandleType(Type propertyType) {
-            return propertyType == typeof (double) ||
-                propertyType == typeof(double?);
+            return propertyType == typeof(double) ||
+                   propertyType == typeof(double?);
         }
     }
 }

@@ -37,10 +37,8 @@ using System.IO;
 using System.Security.Permissions;
 using System.Text;
 using System.Web;
-using System.Web.Util;
 
 namespace SolrNet.Utils {
-
 #if !MOBILE
     // CAS - no InheritanceDemand here as the class is sealed
     [AspNetHostingPermission(SecurityAction.LinkDemand, Level = AspNetHostingPermissionLevel.Minimal)]
@@ -48,12 +46,12 @@ namespace SolrNet.Utils {
     public sealed class HttpUtility {
         sealed class HttpQSCollection : NameValueCollection {
             public override string ToString() {
-                int count = Count;
+                var count = Count;
                 if (count == 0)
                     return "";
-                StringBuilder sb = new StringBuilder();
-                string[] keys = AllKeys;
-                for (int i = 0; i < count; i++) {
+                var sb = new StringBuilder();
+                var keys = AllKeys;
+                for (var i = 0; i < count; i++) {
                     sb.AppendFormat("{0}={1}&", keys[i], this[keys[i]]);
                 }
                 if (sb.Length > 0)
@@ -64,8 +62,7 @@ namespace SolrNet.Utils {
 
         #region Constructors
 
-        public HttpUtility() {
-        }
+        public HttpUtility() {}
 
         #endregion // Constructors
 
@@ -105,15 +102,15 @@ namespace SolrNet.Utils {
         }
 
         static char[] GetChars(MemoryStream b, Encoding e) {
-            return e.GetChars(b.GetBuffer(), 0, (int)b.Length);
+            return e.GetChars(b.GetBuffer(), 0, (int) b.Length);
         }
 
         static void WriteCharBytes(IList buf, char ch, Encoding e) {
             if (ch > 255) {
-                foreach (byte b in e.GetBytes(new char[] { ch }))
+                foreach (var b in e.GetBytes(new char[] {ch}))
                     buf.Add(b);
             } else
-                buf.Add((byte)ch);
+                buf.Add((byte) ch);
         }
 
         public static string UrlDecode(string s, Encoding e) {
@@ -131,19 +128,19 @@ namespace SolrNet.Utils {
             int xchar;
             char ch;
 
-            for (int i = 0; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 ch = s[i];
                 if (ch == '%' && i + 2 < len && s[i + 1] != '%') {
                     if (s[i + 1] == 'u' && i + 5 < len) {
                         // unicode hex sequence
                         xchar = GetChar(s, i + 2, 4);
                         if (xchar != -1) {
-                            WriteCharBytes(bytes, (char)xchar, e);
+                            WriteCharBytes(bytes, (char) xchar, e);
                             i += 5;
                         } else
                             WriteCharBytes(bytes, '%', e);
                     } else if ((xchar = GetChar(s, i + 1, 2)) != -1) {
-                        WriteCharBytes(bytes, (char)xchar, e);
+                        WriteCharBytes(bytes, (char) xchar, e);
                         i += 2;
                     } else {
                         WriteCharBytes(bytes, '%', e);
@@ -157,10 +154,9 @@ namespace SolrNet.Utils {
                     WriteCharBytes(bytes, ch, e);
             }
 
-            byte[] buf = bytes.ToArray();
+            var buf = bytes.ToArray();
             bytes = null;
             return e.GetString(buf);
-
         }
 
         public static string UrlDecode(byte[] bytes, Encoding e) {
@@ -171,7 +167,7 @@ namespace SolrNet.Utils {
         }
 
         static int GetInt(byte b) {
-            char c = (char)b;
+            var c = (char) b;
             if (c >= '0' && c <= '9')
                 return c - '0';
 
@@ -185,10 +181,10 @@ namespace SolrNet.Utils {
         }
 
         static int GetChar(byte[] bytes, int offset, int length) {
-            int value = 0;
-            int end = length + offset;
-            for (int i = offset; i < end; i++) {
-                int current = GetInt(bytes[i]);
+            var value = 0;
+            var end = length + offset;
+            for (var i = offset; i < end; i++) {
+                var current = GetInt(bytes[i]);
                 if (current == -1)
                     return -1;
                 value = (value << 4) + current;
@@ -198,14 +194,14 @@ namespace SolrNet.Utils {
         }
 
         static int GetChar(string str, int offset, int length) {
-            int val = 0;
-            int end = length + offset;
-            for (int i = offset; i < end; i++) {
-                char c = str[i];
+            var val = 0;
+            var end = length + offset;
+            for (var i = offset; i < end; i++) {
+                var c = str[i];
                 if (c > 127)
                     return -1;
 
-                int current = GetInt((byte)c);
+                var current = GetInt((byte) c);
                 if (current == -1)
                     return -1;
                 val = (val << 4) + current;
@@ -215,65 +211,62 @@ namespace SolrNet.Utils {
         }
 
         public static string UrlDecode(byte[] bytes, int offset, int count, Encoding e) {
-        	if (bytes == null)
-        		return null;
-        	if (count == 0)
-        		return String.Empty;
+            if (bytes == null)
+                return null;
+            if (count == 0)
+                return String.Empty;
 
-        	if (bytes == null)
-        		throw new ArgumentNullException("bytes");
+            if (bytes == null)
+                throw new ArgumentNullException("bytes");
 
-        	if (offset < 0 || offset > bytes.Length)
-        		throw new ArgumentOutOfRangeException("offset");
+            if (offset < 0 || offset > bytes.Length)
+                throw new ArgumentOutOfRangeException("offset");
 
-        	if (count < 0 || offset + count > bytes.Length)
-        		throw new ArgumentOutOfRangeException("count");
+            if (count < 0 || offset + count > bytes.Length)
+                throw new ArgumentOutOfRangeException("count");
 
-        	StringBuilder output = new StringBuilder();
-        	using(MemoryStream acc = new MemoryStream()){
+            var output = new StringBuilder();
+            using (var acc = new MemoryStream()) {
+                var end = count + offset;
+                int xchar;
+                for (var i = offset; i < end; i++) {
+                    if (bytes[i] == '%' && i + 2 < count && bytes[i + 1] != '%') {
+                        if (bytes[i + 1] == (byte) 'u' && i + 5 < end) {
+                            if (acc.Length > 0) {
+                                output.Append(GetChars(acc, e));
+                                acc.SetLength(0);
+                            }
+                            xchar = GetChar(bytes, i + 2, 4);
+                            if (xchar != -1) {
+                                output.Append((char) xchar);
+                                i += 5;
+                                continue;
+                            }
+                        } else if ((xchar = GetChar(bytes, i + 1, 2)) != -1) {
+                            acc.WriteByte((byte) xchar);
+                            i += 2;
+                            continue;
+                        }
+                    }
 
-        		int end = count + offset;
-        		int xchar;
-        		for (int i = offset; i < end; i++) {
-        			if (bytes[i] == '%' && i + 2 < count && bytes[i + 1] != '%') {
-        				if (bytes[i + 1] == (byte) 'u' && i + 5 < end) {
-        					if (acc.Length > 0) {
-        						output.Append(GetChars(acc, e));
-        						acc.SetLength(0);
-        					}
-        					xchar = GetChar(bytes, i + 2, 4);
-        					if (xchar != -1) {
-        						output.Append((char) xchar);
-        						i += 5;
-        						continue;
-        					}
-        				} else if ((xchar = GetChar(bytes, i + 1, 2)) != -1) {
-        					acc.WriteByte((byte) xchar);
-        					i += 2;
-        					continue;
-        				}
-        			}
+                    if (acc.Length > 0) {
+                        output.Append(GetChars(acc, e));
+                        acc.SetLength(0);
+                    }
 
-        			if (acc.Length > 0) {
-        				output.Append(GetChars(acc, e));
-        				acc.SetLength(0);
-        			}
+                    if (bytes[i] == '+') {
+                        output.Append(' ');
+                    } else {
+                        output.Append((char) bytes[i]);
+                    }
+                }
 
-        			if (bytes[i] == '+') {
-        				output.Append(' ');
-        			} else {
-        				output.Append((char) bytes[i]);
-        			}
-        		}
+                if (acc.Length > 0) {
+                    output.Append(GetChars(acc, e));
+                }
+            }
 
-        		if (acc.Length > 0) {
-        			output.Append(GetChars(acc, e));
-        		}
-
-        	
-			}
-
-			return output.ToString();
+            return output.ToString();
         }
 
         public static byte[] UrlDecodeToBytes(byte[] bytes) {
@@ -303,31 +296,31 @@ namespace SolrNet.Utils {
             if (count == 0)
                 return new byte[0];
 
-            int len = bytes.Length;
+            var len = bytes.Length;
             if (offset < 0 || offset >= len)
                 throw new ArgumentOutOfRangeException("offset");
 
             if (count < 0 || offset > len - count)
                 throw new ArgumentOutOfRangeException("count");
 
-			using (MemoryStream result = new MemoryStream()) {
-				int end = offset + count;
-				for (int i = offset; i < end; i++) {
-					char c = (char) bytes[i];
-					if (c == '+') {
-						c = ' ';
-					} else if (c == '%' && i < end - 2) {
-						int xchar = GetChar(bytes, i + 1, 2);
-						if (xchar != -1) {
-							c = (char) xchar;
-							i += 2;
-						}
-					}
-					result.WriteByte((byte) c);
-				}
+            using (var result = new MemoryStream()) {
+                var end = offset + count;
+                for (var i = offset; i < end; i++) {
+                    var c = (char) bytes[i];
+                    if (c == '+') {
+                        c = ' ';
+                    } else if (c == '%' && i < end - 2) {
+                        var xchar = GetChar(bytes, i + 1, 2);
+                        if (xchar != -1) {
+                            c = (char) xchar;
+                            i += 2;
+                        }
+                    }
+                    result.WriteByte((byte) c);
+                }
 
-				return result.ToArray();
-			}
+                return result.ToArray();
+            }
         }
 
         public static string UrlEncode(string str) {
@@ -341,10 +334,10 @@ namespace SolrNet.Utils {
             if (s == String.Empty)
                 return String.Empty;
 
-            bool needEncode = false;
-            int len = s.Length;
-            for (int i = 0; i < len; i++) {
-                char c = s[i];
+            var needEncode = false;
+            var len = s.Length;
+            for (var i = 0; i < len; i++) {
+                var c = s[i];
                 if ((c < '0') || (c < 'A' && c > '9') || (c > 'Z' && c < 'a') || (c > 'z')) {
                     if (HttpEncoder.NotEncoded(c))
                         continue;
@@ -358,8 +351,8 @@ namespace SolrNet.Utils {
                 return s;
 
             // avoided GetByteCount call
-            byte[] bytes = new byte[Enc.GetMaxByteCount(s.Length)];
-            int realLen = Enc.GetBytes(s, 0, s.Length, bytes, 0);
+            var bytes = new byte[Enc.GetMaxByteCount(s.Length)];
+            var realLen = Enc.GetBytes(s, 0, s.Length, bytes, 0);
             return Encoding.ASCII.GetString(UrlEncodeToBytes(bytes, 0, realLen));
         }
 
@@ -394,7 +387,7 @@ namespace SolrNet.Utils {
             if (str.Length == 0)
                 return new byte[0];
 
-            byte[] bytes = e.GetBytes(str);
+            var bytes = e.GetBytes(str);
             return UrlEncodeToBytes(bytes, 0, bytes.Length);
         }
 
@@ -432,12 +425,12 @@ namespace SolrNet.Utils {
             if (str.Length == 0)
                 return new byte[0];
 
-			using (MemoryStream result = new MemoryStream(str.Length)) {
-				foreach (char c in str) {
-					HttpEncoder.UrlEncodeChar(c, result, true);
-				}
-				return result.ToArray();
-			}
+            using (var result = new MemoryStream(str.Length)) {
+                foreach (var c in str) {
+                    HttpEncoder.UrlEncodeChar(c, result, true);
+                }
+                return result.ToArray();
+            }
         }
 
         /// <summary>
@@ -518,6 +511,7 @@ namespace SolrNet.Utils {
 #endif
             }
         }
+
 #if NET_4_0
 		public static string HtmlEncode (object value)
 		{
@@ -605,6 +599,7 @@ namespace SolrNet.Utils {
 			return sb.ToString ();
 		}
 #endif
+
         public static string UrlPathEncode(string s) {
 #if NET_4_0
 			return HttpEncoder.Current.UrlPathEncode (s);
@@ -636,13 +631,13 @@ namespace SolrNet.Utils {
             if (query.Length == 0)
                 return;
 
-            string decoded = HtmlDecode(query);
-            int decodedLength = decoded.Length;
-            int namePos = 0;
-            bool first = true;
+            var decoded = HtmlDecode(query);
+            var decodedLength = decoded.Length;
+            var namePos = 0;
+            var first = true;
             while (namePos <= decodedLength) {
                 int valuePos = -1, valueEnd = -1;
-                for (int q = namePos; q < decodedLength; q++) {
+                for (var q = namePos; q < decodedLength; q++) {
                     if (valuePos == -1 && decoded[q] == '=') {
                         valuePos = q + 1;
                     } else if (decoded[q] == '&') {
@@ -677,6 +672,7 @@ namespace SolrNet.Utils {
                     break;
             }
         }
+
         #endregion // Methods
     }
 }

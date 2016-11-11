@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using SolrNet.Exceptions;
 using SolrNet.Mapping.Validation;
 
@@ -155,7 +156,7 @@ namespace SolrNet {
         /// <returns></returns>
         /// <exception cref="SolrNetException">throws if document type doesn't have a unique key or document has null unique key</exception>
         ResponseHeader Delete(T doc);
-        
+
         /// <summary>
         /// Deletes a document (requires the document to have a unique key defined with non-null value)
         /// </summary>
@@ -172,6 +173,7 @@ namespace SolrNet {
         /// <returns></returns>
         /// <exception cref="SolrNetException">throws if document type doesn't have a unique key or document has null unique key</exception>
         ResponseHeader Delete(IEnumerable<T> docs);
+
         /// <summary>
         /// Deletes several documents (requires the document type to have a unique key defined with non-null value)
         /// </summary>
@@ -187,6 +189,7 @@ namespace SolrNet {
         /// <param name="q">query to match</param>
         /// <returns></returns>
         ResponseHeader Delete(ISolrQuery q);
+
         /// <summary>
         /// Deletes all documents that match a query
         /// </summary>
@@ -216,6 +219,7 @@ namespace SolrNet {
         /// <param name="ids">document unique keys</param>
         /// <returns></returns>
         ResponseHeader Delete(IEnumerable<string> ids);
+
         /// <summary>
         /// Deletes several documents by their id (unique key)
         /// </summary>

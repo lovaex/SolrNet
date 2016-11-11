@@ -204,8 +204,8 @@ namespace SolrNet.Impl {
         /// <param name="responseXml">The response XML.</param>
         /// <returns></returns>
         protected List<CoreResult> ParseStatusResponse(string responseXml) {
-            var xml = XDocument.Parse( responseXml );
-            return resultParser.Parse( xml );
+            var xml = XDocument.Parse(responseXml);
+            return resultParser.Parse(xml);
         }
     }
 }

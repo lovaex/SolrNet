@@ -11,7 +11,8 @@ namespace SolrNet {
             this.body = body;
         }
 
-        public string Body {
+        public string Body
+        {
             get { return body; }
         }
 

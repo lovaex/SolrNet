@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using SolrNet.Commands;
@@ -28,15 +29,16 @@ namespace SolrNet.Impl {
     /// <typeparam name="T">Document type</typeparam>
     public class SolrBasicServer<T> : ISolrBasicOperations<T> {
         private readonly ISolrConnection connection;
-        private readonly ISolrQueryExecuter<T> queryExecuter;
-        private readonly ISolrDocumentSerializer<T> documentSerializer;
-        private readonly ISolrSchemaParser schemaParser;
-        private readonly ISolrHeaderResponseParser headerParser;
-        private readonly ISolrQuerySerializer querySerializer;
         private readonly ISolrDIHStatusParser dihStatusParser;
+        private readonly ISolrDocumentSerializer<T> documentSerializer;
         private readonly ISolrExtractResponseParser extractResponseParser;
+        private readonly ISolrHeaderResponseParser headerParser;
+        private readonly ISolrQueryExecuter<T> queryExecuter;
+        private readonly ISolrQuerySerializer querySerializer;
+        private readonly ISolrSchemaParser schemaParser;
 
-        public SolrBasicServer(ISolrConnection connection, ISolrQueryExecuter<T> queryExecuter, ISolrDocumentSerializer<T> documentSerializer, ISolrSchemaParser schemaParser, ISolrHeaderResponseParser headerParser, ISolrQuerySerializer querySerializer, ISolrDIHStatusParser dihStatusParser, ISolrExtractResponseParser extractResponseParser) {
+        public SolrBasicServer(ISolrConnection connection, ISolrQueryExecuter<T> queryExecuter, ISolrDocumentSerializer<T> documentSerializer, ISolrSchemaParser schemaParser, ISolrHeaderResponseParser headerParser, ISolrQuerySerializer querySerializer, ISolrDIHStatusParser dihStatusParser,
+            ISolrExtractResponseParser extractResponseParser) {
             this.connection = connection;
             this.extractResponseParser = extractResponseParser;
             this.queryExecuter = queryExecuter;
@@ -50,7 +52,7 @@ namespace SolrNet.Impl {
         public ResponseHeader Commit(CommitOptions options) {
             options = options ?? new CommitOptions();
             var cmd = new CommitCommand {
-                WaitFlush = options.WaitFlush, 
+                WaitFlush = options.WaitFlush,
                 WaitSearcher = options.WaitSearcher,
                 ExpungeDeletes = options.ExpungeDeletes,
                 MaxSegments = options.MaxSegments,
@@ -61,7 +63,7 @@ namespace SolrNet.Impl {
         public ResponseHeader Optimize(CommitOptions options) {
             options = options ?? new CommitOptions();
             var cmd = new OptimizeCommand {
-                WaitFlush = options.WaitFlush, 
+                WaitFlush = options.WaitFlush,
                 WaitSearcher = options.WaitSearcher,
                 ExpungeDeletes = options.ExpungeDeletes,
                 MaxSegments = options.MaxSegments,
@@ -83,14 +85,8 @@ namespace SolrNet.Impl {
             return SendAndParseExtract(cmd);
         }
 
-        public ResponseHeader Delete(IEnumerable<string> ids, ISolrQuery q, DeleteParameters parameters)
-        {
+        public ResponseHeader Delete(IEnumerable<string> ids, ISolrQuery q, DeleteParameters parameters) {
             var delete = new DeleteCommand(new DeleteByIdAndOrQueryParam(ids, q, querySerializer), parameters);
-            return SendAndParseHeader(delete);
-        }
-
-        public ResponseHeader Delete(IEnumerable<string> ids, ISolrQuery q) {
-            var delete = new DeleteCommand(new DeleteByIdAndOrQueryParam(ids, q, querySerializer), null);
             return SendAndParseHeader(delete);
         }
 
@@ -119,7 +115,7 @@ namespace SolrNet.Impl {
         }
 
         public SolrSchema GetSchema(string schemaFileName) {
-            string schemaXml = connection.Get("/admin/file", new[] { new KeyValuePair<string, string>("file", schemaFileName) });
+            var schemaXml = connection.Get("/admin/file", new[] {new KeyValuePair<string, string>("file", schemaFileName)});
             var schema = XDocument.Parse(schemaXml);
             return schemaParser.Parse(schema);
         }
@@ -130,9 +126,13 @@ namespace SolrNet.Impl {
             return dihStatusParser.Parse(dihstatus);
         }
 
-        public SolrMoreLikeThisHandlerResults<T> MoreLikeThis(SolrMLTQuery query, MoreLikeThisHandlerQueryOptions options)
-        {
+        public SolrMoreLikeThisHandlerResults<T> MoreLikeThis(SolrMLTQuery query, MoreLikeThisHandlerQueryOptions options) {
             return this.queryExecuter.Execute(query, options);
+        }
+
+        public ResponseHeader Delete(IEnumerable<string> ids, ISolrQuery q) {
+            var delete = new DeleteCommand(new DeleteByIdAndOrQueryParam(ids, q, querySerializer), null);
+            return SendAndParseHeader(delete);
         }
     }
 }

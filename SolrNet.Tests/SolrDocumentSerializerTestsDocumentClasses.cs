@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -30,18 +32,19 @@ namespace SolrNet.Tests {
 
         public class TestDocWithCollections {
             public TestDocWithCollections() {
-                coll = new[] {"one", "two" };
+                coll = new[] {"one", "two"};
             }
+
             [SolrField]
             public ICollection<string> coll { get; set; }
         }
 
-        public class TestDocWithDate  {
+        public class TestDocWithDate {
             [SolrField]
             public DateTime Date { get; set; }
         }
 
-        public class TestDocWithBool  {
+        public class TestDocWithBool {
             [SolrField]
             public bool B { get; set; }
         }
@@ -90,7 +93,7 @@ namespace SolrNet.Tests {
             public string Desc { get; set; }
         }
 
-        public class InheritedDoc : TestDocWithString{
+        public class InheritedDoc : TestDocWithString {
             [SolrField]
             public string Desc1 { get; set; }
         }
@@ -99,7 +102,8 @@ namespace SolrNet.Tests {
             private int id;
 
             [SolrField]
-            public int Id {
+            public int Id
+            {
                 set { id = value; }
             }
         }
@@ -109,8 +113,7 @@ namespace SolrNet.Tests {
             public Location Loc { get; set; }
         }
 
-        public class TestDoc
-        {
+        public class TestDoc {
             [SolrField]
             public int Id { get; set; }
         }

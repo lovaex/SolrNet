@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -28,8 +29,8 @@ namespace SolrNet.Impl.ResponseParsers {
     /// <typeparam name="T">Document type</typeparam>
     public class HighlightingResponseParser<T> : ISolrResponseParser<T> {
         public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
-            results.Switch(query: r => Parse(xml, r),
-                           moreLikeThis: F.DoNothing);
+            results.Switch(query : r => Parse(xml, r),
+                moreLikeThis : F.DoNothing);
         }
 
         public void Parse(XDocument xml, SolrQueryResults<T> results) {
@@ -49,7 +50,7 @@ namespace SolrNet.Impl.ResponseParsers {
             var docRefs = node.Elements("lst");
             foreach (var docRef in docRefs) {
                 var docRefKey = docRef.Attribute("name").Value;
-                highlights.Add(docRefKey, ParseHighlightingFields(docRef.Elements()));                    
+                highlights.Add(docRefKey, ParseHighlightingFields(docRef.Elements()));
             }
             return highlights;
         }
@@ -67,7 +68,7 @@ namespace SolrNet.Impl.ResponseParsers {
                     .Select(str => str.Value)
                     .ToList();
                 if (snippets.Count == 0 && !string.IsNullOrEmpty(field.Value))
-                    snippets = new[] { field.Value };
+                    snippets = new[] {field.Value};
                 fields.Add(fieldName, snippets);
             }
             return fields;

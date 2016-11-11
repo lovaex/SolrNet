@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -45,7 +47,7 @@ namespace NHibernate.SolrNet {
         /// <param name="provider">Used to fetch SolrNet components</param>
         public CfgHelper(IServiceProvider provider) {
             this.provider = provider;
-            mapper = (IReadOnlyMappingManager) provider.GetService(typeof (IReadOnlyMappingManager));
+            mapper = (IReadOnlyMappingManager) provider.GetService(typeof(IReadOnlyMappingManager));
         }
 
         /// <summary>
@@ -75,8 +77,8 @@ namespace NHibernate.SolrNet {
         /// <returns></returns>
         public Configuration Configure(Configuration config, bool autoCommit, AddParameters parameters) {
             foreach (var t in mapper.GetRegisteredTypes()) {
-                var listenerType = typeof (SolrNetListener<>).MakeGenericType(t);
-                var solrType = typeof (ISolrOperations<>).MakeGenericType(t);
+                var listenerType = typeof(SolrNetListener<>).MakeGenericType(t);
+                var solrType = typeof(ISolrOperations<>).MakeGenericType(t);
                 var solr = provider.GetService(solrType);
                 var listener = (IListenerSettings) Activator.CreateInstance(listenerType, solr);
                 listener.Commit = autoCommit;
@@ -102,6 +104,5 @@ namespace NHibernate.SolrNet {
         public ISolrSession OpenSession(ISessionFactory sessionFactory) {
             return OpenSession(sessionFactory.OpenSession());
         }
-
     }
 }

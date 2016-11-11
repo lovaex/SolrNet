@@ -21,23 +21,6 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void ExecuteWithBasicOptions() {
-            var conn = new MSolrConnection();
-            conn.post += (url, content) => {
-                Assert.AreEqual("/update", url);
-                Assert.AreEqual("<optimize waitSearcher=\"true\" waitFlush=\"true\" />", content);
-                Console.WriteLine(content);
-                return null;
-            };
-            var cmd = new OptimizeCommand {
-                WaitFlush = true,
-                WaitSearcher = true
-            };
-            cmd.Execute(conn);
-            Assert.AreEqual(1, conn.post.Calls);
-        }
-
-        [Test]
         public void ExecuteWithAllOptions() {
             var conn = new MSolrConnection();
             conn.post += (url, content) => {
@@ -54,6 +37,23 @@ namespace SolrNet.Tests {
             };
             cmd.Execute(conn);
 
+            Assert.AreEqual(1, conn.post.Calls);
+        }
+
+        [Test]
+        public void ExecuteWithBasicOptions() {
+            var conn = new MSolrConnection();
+            conn.post += (url, content) => {
+                Assert.AreEqual("/update", url);
+                Assert.AreEqual("<optimize waitSearcher=\"true\" waitFlush=\"true\" />", content);
+                Console.WriteLine(content);
+                return null;
+            };
+            var cmd = new OptimizeCommand {
+                WaitFlush = true,
+                WaitSearcher = true
+            };
+            cmd.Execute(conn);
             Assert.AreEqual(1, conn.post.Calls);
         }
     }

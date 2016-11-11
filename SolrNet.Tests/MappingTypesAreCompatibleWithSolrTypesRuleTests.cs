@@ -28,11 +28,19 @@ namespace SolrNet.Tests {
     [TestFixture]
     public class MappingTypesAreCompatibleWithSolrTypesRuleTests {
         [Test]
+        public void MappingTypesAreCompatibleWithSolrTypesRule_with_nonexistant_rule() {
+            var rule = new MappingTypesAreCompatibleWithSolrTypesRule(new[] {new StringSolrFieldTypeChecker()});
+            var mappingManager = new MappingManager();
+            mappingManager.Add(typeof(SchemaMappingTestDocument).GetProperty("Name"));
+            var validations = rule.Validate(typeof(SchemaMappingTestDocument), new SolrSchema(), mappingManager).ToList();
+        }
+
+        [Test]
         public void StringMappedToIntShouldReturnError() {
             var mappingTypesCompatibleRule = new MappingTypesAreCompatibleWithSolrTypesRule(new[] {new StringSolrFieldTypeChecker()});
 
             var mgr = new MappingManager();
-            mgr.Add(typeof (SchemaMappingTestDocument).GetProperty("FieldNotSolrSchema"), "popularity");
+            mgr.Add(typeof(SchemaMappingTestDocument).GetProperty("FieldNotSolrSchema"), "popularity");
 
             var schemaManager = new MappingValidator(mgr, new[] {mappingTypesCompatibleRule});
 
@@ -40,7 +48,7 @@ namespace SolrNet.Tests {
             var solrSchemaParser = new SolrSchemaParser();
             var schema = solrSchemaParser.Parse(schemaXmlDocument);
 
-            var validationResults = schemaManager.EnumerateValidationResults(typeof (SchemaMappingTestDocument), schema).ToList();
+            var validationResults = schemaManager.EnumerateValidationResults(typeof(SchemaMappingTestDocument), schema).ToList();
             Assert.AreEqual(1, validationResults.Count);
         }
 
@@ -55,16 +63,8 @@ namespace SolrNet.Tests {
             var solrSchemaParser = new SolrSchemaParser();
             var schema = solrSchemaParser.Parse(schemaXmlDocument);
 
-            var validationResults = schemaManager.EnumerateValidationResults(typeof (SchemaMappingTestDocument), schema).ToList();
+            var validationResults = schemaManager.EnumerateValidationResults(typeof(SchemaMappingTestDocument), schema).ToList();
             Assert.AreEqual(0, validationResults.Count);
-        }
-
-        [Test]
-        public void MappingTypesAreCompatibleWithSolrTypesRule_with_nonexistant_rule() {
-            var rule = new MappingTypesAreCompatibleWithSolrTypesRule(new[] {new StringSolrFieldTypeChecker()});
-            var mappingManager = new MappingManager();
-            mappingManager.Add(typeof (SchemaMappingTestDocument).GetProperty("Name"));
-            var validations = rule.Validate(typeof (SchemaMappingTestDocument), new SolrSchema(), mappingManager).ToList();
         }
     }
 }

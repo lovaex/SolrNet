@@ -1,16 +1,20 @@
 ﻿using System;
-using System.Xml.Linq;
 using System.Globalization;
+using System.Xml.Linq;
 using SolrNet.Exceptions;
 
 namespace SolrNet.Impl.FieldParsers {
-    public class LocationFieldParser: ISolrFieldParser {
+    public class LocationFieldParser : ISolrFieldParser {
         public bool CanHandleSolrType(string solrType) {
             return solrType == "str";
         }
 
         public bool CanHandleType(Type t) {
             return t == typeof(Location);
+        }
+
+        public object Parse(XElement field, Type t) {
+            return Parse(field.Value);
         }
 
         public static Location Parse(string v) {
@@ -28,10 +32,6 @@ namespace SolrNet.Impl.FieldParsers {
             if (!ok)
                 throw new SolrNetException(string.Format("Invalid Location '{0}'", v));
             return new Location(latitude, longitude);
-        }
-
-        public object Parse(XElement field, Type t) {
-            return Parse(field.Value);
         }
     }
 }

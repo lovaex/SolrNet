@@ -1,47 +1,14 @@
 ﻿using System;
 
-namespace SolrNet.Commands.Parameters
-{
+namespace SolrNet.Commands.Parameters {
     /// <summary>
     /// Parameters for CollapsingQParserPlugin / ExpandComponent
     /// </summary>
-    public class CollapseExpandParameters 
-    {
-        private readonly string field;
+    public class CollapseExpandParameters {
         private readonly ExpandParameters expand;
+        private readonly string field;
         private readonly MinOrMax minOrMaxField;
         private readonly NullPolicyType nullPolicy;
-
-        /// <summary>
-        /// Field to group results by
-        /// </summary>
-        public string Field 
-        {
-            get { return field; }
-        }
-
-        /// <summary>
-        /// Used to expand the results.
-        /// Null if expansion is not requested.
-        /// </summary>
-        public ExpandParameters Expand 
-        {
-            get { return expand; }
-        }
-
-        /// <summary>
-        /// Field or function to use for min/max collapsing
-        /// </summary>
-        public MinOrMax MinOrMaxField {
-            get { return minOrMaxField; }
-        }
-
-        /// <summary>
-        /// Determines how to treat nulls while collapsing
-        /// </summary>
-        public NullPolicyType NullPolicy {
-            get { return nullPolicy; }
-        }
 
         /// <summary>
         /// Parameters for CollapsingQParserPlugin / ExpandComponent
@@ -59,20 +26,54 @@ namespace SolrNet.Commands.Parameters
             this.nullPolicy = nullPolicy;
         }
 
+        /// <summary>
+        /// Field to group results by
+        /// </summary>
+        public string Field
+        {
+            get { return field; }
+        }
+
+        /// <summary>
+        /// Used to expand the results.
+        /// Null if expansion is not requested.
+        /// </summary>
+        public ExpandParameters Expand
+        {
+            get { return expand; }
+        }
+
+        /// <summary>
+        /// Field or function to use for min/max collapsing
+        /// </summary>
+        public MinOrMax MinOrMaxField
+        {
+            get { return minOrMaxField; }
+        }
+
+        /// <summary>
+        /// Determines how to treat nulls while collapsing
+        /// </summary>
+        public NullPolicyType NullPolicy
+        {
+            get { return nullPolicy; }
+        }
+
         public abstract class MinOrMax {
             private readonly string field;
-
-            public string Field {
-                get { return field; }
-            }
 
             private MinOrMax(string field) {
                 this.field = field;
             }
 
+            public string Field
+            {
+                get { return field; }
+            }
+
             public abstract T Switch<T>(Func<Min, T> min, Func<Max, T> max);
 
-            public class Min: MinOrMax {
+            public class Min : MinOrMax {
                 public Min(string field) : base(field) {}
 
                 public override T Switch<T>(Func<Min, T> min, Func<Max, T> max) {
@@ -80,7 +81,7 @@ namespace SolrNet.Commands.Parameters
                 }
             }
 
-            public class Max: MinOrMax {
+            public class Max : MinOrMax {
                 public Max(string field) : base(field) {}
 
                 public override T Switch<T>(Func<Min, T> min, Func<Max, T> max) {
@@ -93,23 +94,6 @@ namespace SolrNet.Commands.Parameters
         /// Determines how to treat nulls while collapsing
         /// </summary>
         public class NullPolicyType : IEquatable<NullPolicyType> {
-            private readonly string policy;
-
-            private NullPolicyType(string policy) {
-                this.policy = policy;
-            }
-
-            /// <summary>
-            /// Determines how to treat nulls while collapsing
-            /// </summary>
-            public string Policy {
-                get { return policy; }
-            }
-
-            public override string ToString() {
-                return policy;
-            }
-
             /// <summary>
             /// Removes documents with a null value in the collapse field. This is the default.
             /// </summary>
@@ -125,12 +109,30 @@ namespace SolrNet.Commands.Parameters
             /// </summary>
             public static readonly NullPolicyType Collapse = new NullPolicyType("collapse");
 
+            private readonly string policy;
+
+            private NullPolicyType(string policy) {
+                this.policy = policy;
+            }
+
+            /// <summary>
+            /// Determines how to treat nulls while collapsing
+            /// </summary>
+            public string Policy
+            {
+                get { return policy; }
+            }
+
             public bool Equals(NullPolicyType other) {
                 if (ReferenceEquals(null, other))
                     return false;
                 if (ReferenceEquals(this, other))
                     return true;
                 return string.Equals(policy, other.policy);
+            }
+
+            public override string ToString() {
+                return policy;
             }
 
             public override bool Equals(object obj) {
@@ -161,38 +163,10 @@ namespace SolrNet.Commands.Parameters
     /// ExpandComponent parameters
     /// </summary>
     public class ExpandParameters {
-        private readonly SortOrder sort;
-        private readonly int? rows;
-        private readonly ISolrQuery query;
         private readonly ISolrQuery filterQuery;
-
-        /// <summary>
-        /// Orders the documents with the expanded groups.
-        /// </summary>
-        public SortOrder Sort {
-            get { return sort; }
-        }
-
-        /// <summary>
-        /// The number of rows to display in each group.
-        /// </summary>
-        public int? Rows {
-            get { return rows; }
-        }
-
-        /// <summary>
-        /// Overrides the main q parameter, determines which documents to include in the main group.
-        /// </summary>
-        public ISolrQuery Query {
-            get { return query; }
-        }
-
-        /// <summary>
-        /// Overrides main fq's, determines which documents to include in the main group.
-        /// </summary>
-        public ISolrQuery FilterQuery {
-            get { return filterQuery; }
-        }
+        private readonly ISolrQuery query;
+        private readonly int? rows;
+        private readonly SortOrder sort;
 
         /// <summary>
         /// ExpandComponent parameters
@@ -206,6 +180,38 @@ namespace SolrNet.Commands.Parameters
             this.rows = rows;
             this.query = query;
             this.filterQuery = filterQuery;
+        }
+
+        /// <summary>
+        /// Orders the documents with the expanded groups.
+        /// </summary>
+        public SortOrder Sort
+        {
+            get { return sort; }
+        }
+
+        /// <summary>
+        /// The number of rows to display in each group.
+        /// </summary>
+        public int? Rows
+        {
+            get { return rows; }
+        }
+
+        /// <summary>
+        /// Overrides the main q parameter, determines which documents to include in the main group.
+        /// </summary>
+        public ISolrQuery Query
+        {
+            get { return query; }
+        }
+
+        /// <summary>
+        /// Overrides main fq's, determines which documents to include in the main group.
+        /// </summary>
+        public ISolrQuery FilterQuery
+        {
+            get { return filterQuery; }
         }
     }
 }

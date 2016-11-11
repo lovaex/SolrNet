@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +13,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
-using System.Globalization;
 using System.Linq;
 
 namespace SolrNet.Impl.QuerySerializers {
@@ -27,7 +28,17 @@ namespace SolrNet.Impl.QuerySerializers {
         }
 
         public bool CanHandleType(Type t) {
-            return typeof (ISolrQueryByRange).IsAssignableFrom(t);
+            return typeof(ISolrQueryByRange).IsAssignableFrom(t);
+        }
+
+        public string Serialize(object q) {
+            var query = (ISolrQueryByRange) q;
+            return BuildRange(query.FieldName,
+                SerializeValue(query.From),
+                SerializeValue(query.To),
+                query.InclusiveFrom,
+                query.InclusiveTo
+            );
         }
 
         public static string BuildRange(string fieldName, string @from, string @to, bool inclusive) {
@@ -36,27 +47,17 @@ namespace SolrNet.Impl.QuerySerializers {
 
         public static string BuildRange(string fieldName, string @from, string @to, bool inclusiveFrom, bool inclusiveTo) {
             return "$field:$ii$from TO $to$if"
-                            .Replace("$field", QueryByFieldSerializer.EscapeSpaces(fieldName))
-                            .Replace("$ii", inclusiveFrom ? "[" : "{")
-                            .Replace("$if", inclusiveTo ? "]" : "}")
-                            .Replace("$from", @from)
-                            .Replace("$to", to);
+                .Replace("$field", QueryByFieldSerializer.EscapeSpaces(fieldName))
+                .Replace("$ii", inclusiveFrom ? "[" : "{")
+                .Replace("$if", inclusiveTo ? "]" : "}")
+                .Replace("$from", @from)
+                .Replace("$to", to);
         }
 
         public string SerializeValue(object o) {
             if (o == null)
                 return "*";
             return fieldSerializer.Serialize(o).First().FieldValue;
-        }
-
-        public string Serialize(object q) {
-            var query = (ISolrQueryByRange) q;
-            return BuildRange(query.FieldName, 
-                SerializeValue(query.From),
-                SerializeValue(query.To),
-                query.InclusiveFrom,
-                query.InclusiveTo
-                );
         }
     }
 }

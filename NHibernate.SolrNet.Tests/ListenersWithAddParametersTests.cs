@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2011 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using MbUnit.Framework;
 using NHibernate.SolrNet.Impl;
 using NUnit.Framework;
 using SolrNet;
@@ -23,7 +24,7 @@ using SolrNet.Tests.Utils;
 namespace NHibernate.SolrNet.Tests {
     [TestFixture]
     public class ListenersWithAddParametersTests : BaseNHTests {
-        readonly AddParameters addParameters = new AddParameters { CommitWithin = 4343 };
+        readonly AddParameters addParameters = new AddParameters {CommitWithin = 4343};
 
         protected override SolrNetListener<Entity> GetSolrNetListener(ISolrOperations<Entity> solr) {
             return new SolrNetListener<Entity>(solr) {AddParameters = addParameters};
@@ -31,7 +32,7 @@ namespace NHibernate.SolrNet.Tests {
 
         [Test]
         public void Add_includes_parameters_when_configured() {
-            var entity = new Entity { Description = "pepe" };
+            var entity = new Entity {Description = "pepe"};
             mockSolr.addDocParams += (doc, param) => {
                 Assert.AreSame(entity, doc);
                 Assert.AreSame(addParameters, param);

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -33,7 +35,7 @@ namespace SolrNet.DSL.Impl {
         }
 
         public void ById(string id) {
-            var cmd = new DeleteCommand(new DeleteByIdAndOrQueryParam(new[] { id }, null, GetQuerySerializer()), null);
+            var cmd = new DeleteCommand(new DeleteByIdAndOrQueryParam(new[] {id}, null, GetQuerySerializer()), null);
             cmd.Execute(connection);
         }
 
@@ -41,7 +43,7 @@ namespace SolrNet.DSL.Impl {
             var cmd = new DeleteCommand(new DeleteByIdAndOrQueryParam(ids, null, GetQuerySerializer()), null);
             cmd.Execute(connection);
         }
-       
+
         public void ByQuery(ISolrQuery q) {
             var cmd = new DeleteCommand(new DeleteByIdAndOrQueryParam(null, q, GetQuerySerializer()), null);
             cmd.Execute(connection);

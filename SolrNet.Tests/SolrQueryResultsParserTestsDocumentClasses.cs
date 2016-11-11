@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -21,7 +23,7 @@ using SolrNet.Attributes;
 
 namespace SolrNet.Tests {
     public partial class SolrQueryResultsParserTests {
-        public class Product  {
+        public class Product {
             [SolrUniqueKey("id")]
             public string Id { get; set; }
 
@@ -62,7 +64,7 @@ namespace SolrNet.Tests {
             public DateTime Timestamp { get; set; }
         }
 
-        public class TestDocument  {
+        public class TestDocument {
             [SolrField("advancedview")]
             public string AdvancedView { get; set; }
 
@@ -77,12 +79,12 @@ namespace SolrNet.Tests {
             public int Id { get; set; }
         }
 
-        public class TestDocumentWithNullableDouble  {
+        public class TestDocumentWithNullableDouble {
             [SolrField("price")]
             public double? Price { get; set; }
         }
 
-        public class TestDocumentWithArrays  {
+        public class TestDocumentWithArrays {
             [SolrField("cat")]
             public ICollection<string> Cat { get; set; }
 
@@ -114,27 +116,27 @@ namespace SolrNet.Tests {
             public ICollection<int> Numbers { get; set; }
         }
 
-        public class TestDocumentWithArrays2  {
+        public class TestDocumentWithArrays2 {
             [SolrField("numbers")]
             public int[] Numbers { get; set; }
         }
 
-        public class TestDocumentWithArrays3  {
+        public class TestDocumentWithArrays3 {
             [SolrField("numbers")]
             public ICollection Numbers { get; set; }
         }
 
-        public class TestDocumentWithArrays4  {
+        public class TestDocumentWithArrays4 {
             [SolrField("features")]
             public IEnumerable<string> Features { get; set; }
         }
 
-        public class TestDocumentWithDate  {
+        public class TestDocumentWithDate {
             [SolrField]
             public DateTime Fecha { get; set; }
         }
 
-        public class TestDocumentWithNullableDate  {
+        public class TestDocumentWithNullableDate {
             [SolrField]
             public DateTime? Fecha { get; set; }
         }
@@ -176,10 +178,10 @@ namespace SolrNet.Tests {
             private readonly int id;
 
             [SolrField]
-            public int Id {
+            public int Id
+            {
                 get { return id; }
             }
         }
-
     }
 }

@@ -7,6 +7,10 @@ namespace SolrNet.Tests.Mocks {
     public class HttpWebResponse : IHttpWebResponse {
         public Action dispose;
 
+        public Func<Stream> getResponseStream;
+
+        public Func<WebHeaderCollection> headers;
+
         public void Dispose() {
             dispose();
         }
@@ -15,40 +19,49 @@ namespace SolrNet.Tests.Mocks {
             throw new NotImplementedException();
         }
 
-        public CookieCollection Cookies {
+        public CookieCollection Cookies
+        {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
         }
 
-        public string ContentEncoding {
+        public string ContentEncoding
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public string CharacterSet {
+        public string CharacterSet
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public string Server {
+        public string Server
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public DateTime LastModified {
+        public DateTime LastModified
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public HttpStatusCode StatusCode {
+        public HttpStatusCode StatusCode
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public string StatusDescription {
+        public string StatusDescription
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public Version ProtocolVersion {
+        public Version ProtocolVersion
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public string Method {
+        public string Method
+        {
             get { throw new NotImplementedException(); }
         }
 
@@ -56,37 +69,39 @@ namespace SolrNet.Tests.Mocks {
             throw new NotImplementedException();
         }
 
-        public Func<Stream> getResponseStream;
-
         public Stream GetResponseStream() {
             return getResponseStream();
         }
 
-        public bool IsFromCache {
+        public bool IsFromCache
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public bool IsMutuallyAuthenticated {
+        public bool IsMutuallyAuthenticated
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public long ContentLength {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        public string ContentType {
+        public long ContentLength
+        {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
         }
 
-        public Uri ResponseUri {
+        public string ContentType
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public Uri ResponseUri
+        {
             get { throw new NotImplementedException(); }
         }
 
-        public Func<WebHeaderCollection> headers;
-
-        public WebHeaderCollection Headers {
+        public WebHeaderCollection Headers
+        {
             get { return headers(); }
         }
     }

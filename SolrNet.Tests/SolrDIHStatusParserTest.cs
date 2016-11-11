@@ -1,17 +1,16 @@
 ﻿using System;
+using NUnit.Framework;
 using SolrNet.Impl;
 using SolrNet.Tests.Utils;
-using NUnit.Framework;
 
-namespace SolrNet.Tests
-{
+namespace SolrNet.Tests {
     [TestFixture]
     public class SolrDIHStatusParserTest {
         [Test]
         public void SolrDIHStatusParsing() {
             var DIHStatusParser = new SolrDIHStatusParser();
             var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.solrDIHStatusBasic.xml");
-            SolrDIHStatus dihStatusDoc = DIHStatusParser.Parse(xml);
+            var dihStatusDoc = DIHStatusParser.Parse(xml);
 
             Assert.AreEqual(1, dihStatusDoc.TotalRequestToDataSource);
             Assert.AreEqual(DateTime.Parse("2010-12-09 00:00:00"), dihStatusDoc.Committed);
@@ -27,6 +26,5 @@ namespace SolrNet.Tests
             Assert.AreEqual(0, dihStatusDoc.TotalDocumentsSkipped);
             Assert.AreEqual(1500000, dihStatusDoc.TotalRowsFetched);
         }
-
     }
 }

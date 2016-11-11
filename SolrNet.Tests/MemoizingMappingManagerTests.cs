@@ -25,48 +25,48 @@ using SolrNet.Tests.Mocks;
 namespace SolrNet.Tests {
     [TestFixture]
     public class MemoizingMappingManagerTests {
+        public class TestDocument {
+            public int Id { get; set; }
+        }
+
         [Test]
         public void CallsInnerJustOnce() {
             var innerMapper = new MReadOnlyMappingManager();
             innerMapper.getFields += t => {
-                Assert.AreEqual(typeof (TestDocument), t);
+                Assert.AreEqual(typeof(TestDocument), t);
                 return new Dictionary<string, SolrFieldModel> {
-                    {"id", new SolrFieldModel (property : typeof (TestDocument).GetProperty("Id"), fieldName : "id")},
+                    {"id", new SolrFieldModel(property : typeof(TestDocument).GetProperty("Id"), fieldName : "id")},
                 };
             };
             var mapper = new MemoizingMappingManager(innerMapper);
-            mapper.GetFields(typeof (TestDocument));
-            mapper.GetFields(typeof (TestDocument));
+            mapper.GetFields(typeof(TestDocument));
+            mapper.GetFields(typeof(TestDocument));
             Assert.AreEqual(1, innerMapper.getFields.Calls);
+        }
+
+        [Test]
+        public void GetRegistered() {
+            var innerMapper = new MReadOnlyMappingManager();
+            innerMapper.getRegisteredTypes += () => new[] {typeof(TestDocument)};
+            var mapper = new MemoizingMappingManager(innerMapper);
+            var types = mapper.GetRegisteredTypes();
+            Assert.AreEqual(1, types.Count);
+            Assert.AreEqual(typeof(TestDocument), types.First());
+            mapper.GetRegisteredTypes();
         }
 
         [Test]
         public void GetUniqueKeyIsMemoized() {
             var innerMapper = new MReadOnlyMappingManager();
             innerMapper.getUniqueKey += t => {
-	            Assert.AreEqual(typeof (TestDocument), t);
-	            return new SolrFieldModel(property : typeof (TestDocument).GetProperty("Id"),
-	                                      fieldName : "id");
+                Assert.AreEqual(typeof(TestDocument), t);
+                return new SolrFieldModel(property : typeof(TestDocument).GetProperty("Id"),
+                    fieldName : "id");
             };
             var mapper = new MemoizingMappingManager(innerMapper);
             mapper.GetUniqueKey(typeof(TestDocument));
             mapper.GetUniqueKey(typeof(TestDocument));
             Assert.AreEqual(1, innerMapper.getUniqueKey.Calls);
-        }
-
-        [Test]
-        public void GetRegistered() {
-            var innerMapper = new MReadOnlyMappingManager();
-            innerMapper.getRegisteredTypes += () => new[] {typeof (TestDocument)};
-            var mapper = new MemoizingMappingManager(innerMapper);
-            var types = mapper.GetRegisteredTypes();
-            Assert.AreEqual(1, types.Count);
-            Assert.AreEqual(typeof (TestDocument), types.First());
-            mapper.GetRegisteredTypes();
-        }
-
-        public class TestDocument {
-            public int Id { get; set; }
         }
     }
 }

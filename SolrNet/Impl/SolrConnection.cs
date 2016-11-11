@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -24,7 +26,6 @@ using HttpWebAdapters;
 using HttpWebAdapters.Impl;
 using SolrNet.Exceptions;
 using SolrNet.Utils;
-using HttpUtility = SolrNet.Utils.HttpUtility;
 
 namespace SolrNet.Impl {
     /// <summary>
@@ -33,16 +34,6 @@ namespace SolrNet.Impl {
     public class SolrConnection : ISolrConnection {
         private string serverURL;
         private string version = "2.2";
-
-        /// <summary>
-        /// HTTP cache implementation
-        /// </summary>
-        public ISolrCache Cache { get; set; }
-
-        /// <summary>
-        /// HTTP request factory
-        /// </summary>
-        public IHttpWebRequestFactory HttpWebRequestFactory { get; set; }
 
         /// <summary>
         /// Manages HTTP connection with Solr
@@ -56,19 +47,29 @@ namespace SolrNet.Impl {
         }
 
         /// <summary>
+        /// HTTP cache implementation
+        /// </summary>
+        public ISolrCache Cache { get; set; }
+
+        /// <summary>
+        /// HTTP request factory
+        /// </summary>
+        public IHttpWebRequestFactory HttpWebRequestFactory { get; set; }
+
+        /// <summary>
         /// URL to Solr
         /// </summary>
-        public string ServerURL {
+        public string ServerURL
+        {
             get { return serverURL; }
-            set {
-                serverURL = UriValidator.ValidateHTTP(value);
-            }
+            set { serverURL = UriValidator.ValidateHTTP(value); }
         }
 
         /// <summary>
         /// Solr XML response syntax version
         /// </summary>
-        public string Version {
+        public string Version
+        {
             get { return version; }
             set { version = value; }
         }
@@ -120,13 +121,6 @@ namespace SolrNet.Impl {
             }
         }
 
-        private static void CopyTo(Stream input, Stream output) {
-            byte[] buffer = new byte[0x1000];
-            int read;
-            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                output.Write(buffer, 0, read);
-        }
-
         public string Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters) {
             var u = new UriBuilder(serverURL);
             u.Path += relativeUrl;
@@ -143,7 +137,7 @@ namespace SolrNet.Impl {
             }
             if (Timeout > 0) {
                 request.ReadWriteTimeout = Timeout;
-                request.Timeout = Timeout;                
+                request.Timeout = Timeout;
             }
             try {
                 var response = GetResponse(request);
@@ -165,6 +159,13 @@ namespace SolrNet.Impl {
                 }
                 throw new SolrConnectionException(e, u.Uri.ToString());
             }
+        }
+
+        private static void CopyTo(Stream input, Stream output) {
+            var buffer = new byte[0x1000];
+            int read;
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                output.Write(buffer, 0, read);
         }
 
         /// <summary>
@@ -206,20 +207,10 @@ namespace SolrNet.Impl {
         /// </summary>
         /// <param name="response">Web response from request to Solr</param>
         /// <returns></returns>
-        private string ReadResponseToString(IHttpWebResponse response)
-        {
+        private string ReadResponseToString(IHttpWebResponse response) {
             using (var responseStream = response.GetResponseStream())
-				using (var reader = new StreamReader(responseStream, TryGetEncoding(response))) {
-					return reader.ReadToEnd();
-            }
-        }
-
-        private struct SolrResponse {
-            public string ETag { get; private set; }
-            public string Data { get; private set; }
-            public SolrResponse(string eTag, string data) : this() {
-                ETag = eTag;
-                Data = data;
+            using (var reader = new StreamReader(responseStream, TryGetEncoding(response))) {
+                return reader.ReadToEnd();
             }
         }
 
@@ -228,6 +219,16 @@ namespace SolrNet.Impl {
                 return Encoding.GetEncoding(response.CharacterSet);
             } catch {
                 return Encoding.UTF8;
+            }
+        }
+
+        private struct SolrResponse {
+            public string ETag { get; private set; }
+            public string Data { get; private set; }
+
+            public SolrResponse(string eTag, string data) : this() {
+                ETag = eTag;
+                Data = data;
             }
         }
     }

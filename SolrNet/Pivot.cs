@@ -6,6 +6,13 @@ namespace SolrNet {
     /// </summary>
     public class Pivot {
         /// <summary>
+        /// Pivot facet
+        /// </summary>
+        public Pivot() {
+            HasChildPivots = false;
+        }
+
+        /// <summary>
         /// Pivot field name
         /// </summary>
         public string Field { get; set; }
@@ -23,12 +30,5 @@ namespace SolrNet {
         public List<Pivot> ChildPivots { get; set; }
 
         public bool HasChildPivots { get; set; }
-
-        /// <summary>
-        /// Pivot facet
-        /// </summary>
-        public Pivot() {
-            HasChildPivots = false;
-        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -23,6 +25,14 @@ namespace SolrNet.Commands.Parameters {
     /// <see href="http://wiki.apache.org/solr/StatsComponent"/>
     /// </summary>
     public class StatsParameters {
+        /// <summary>
+        /// Parameters to query stats
+        /// </summary>
+        public StatsParameters() {
+            FieldsWithFacets = new Dictionary<string, ICollection<string>>();
+            Facets = new List<string>();
+        }
+
         /// <summary>
         /// Dictionary of fields to get stats, and their associated facets (if any)
         /// </summary>
@@ -64,7 +74,7 @@ namespace SolrNet.Commands.Parameters {
         public StatsParameters AddFieldWithFacet(string field, string facet) {
             if (field == null)
                 throw new ArgumentNullException("field");
-            FieldsWithFacets[field] = new List<string> { facet };
+            FieldsWithFacets[field] = new List<string> {facet};
             return this;
         }
 
@@ -90,15 +100,7 @@ namespace SolrNet.Commands.Parameters {
         /// <param name="facets"></param>
         /// <returns></returns>
         public StatsParameters AddFieldWithFacets(string field, params string[] facets) {
-            return AddFieldWithFacets(field, (IEnumerable<string>)facets);
-        }
-
-        /// <summary>
-        /// Parameters to query stats
-        /// </summary>
-        public StatsParameters() {
-            FieldsWithFacets = new Dictionary<string, ICollection<string>>();
-            Facets = new List<string>();
+            return AddFieldWithFacets(field, (IEnumerable<string>) facets);
         }
     }
 }

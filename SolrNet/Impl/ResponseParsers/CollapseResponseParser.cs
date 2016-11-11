@@ -16,7 +16,6 @@
 
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -57,13 +56,13 @@ namespace SolrNet.Impl.ResponseParsers {
                 .Elements();
             return
                 results.Select(docNode => {
-                    string fieldValue = docNode.Elements("str")
+                    var fieldValue = docNode.Elements("str")
                         .First(X.AttrEq("name", "fieldValue"))
                         .Value;
                     var collapseCountRaw = docNode.Elements("int")
                         .First(X.AttrEq("name", "collapseCount"))
                         .Value;
-                    int collapseCount = int.Parse(collapseCountRaw);
+                    var collapseCount = int.Parse(collapseCountRaw);
                     return new CollapsedDocument {
                         Id = docNode.Attribute("name").Value,
                         FieldValue = fieldValue,

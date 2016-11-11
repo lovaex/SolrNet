@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -22,9 +24,9 @@ using SolrNet.Impl;
 
 namespace SolrNet.DSL.Impl {
     public class DSLRun<T> : IDSLRun<T> {
-        protected readonly ICollection<SortOrder> order = new List<SortOrder>();
         protected readonly ICollection<ISolrFacetQuery> facets = new List<ISolrFacetQuery>();
         protected readonly HighlightingParameters highlight;
+        protected readonly ICollection<SortOrder> order = new List<SortOrder>();
         protected ISolrConnection connection;
         protected ISolrQuery query;
 
@@ -45,15 +47,6 @@ namespace SolrNet.DSL.Impl {
             this.highlight = highlight;
         }
 
-        private ISolrQueryExecuter<T> NewQueryExecuter() {
-            return new SolrQueryExecuter<T>(
-                ServiceLocator.Current.GetInstance<ISolrAbstractResponseParser<T>>(),
-                connection,
-                ServiceLocator.Current.GetInstance<ISolrQuerySerializer>(),
-                ServiceLocator.Current.GetInstance<ISolrFacetQuerySerializer>(),
-                ServiceLocator.Current.GetInstance<ISolrMoreLikeThisHandlerQueryResultsParser<T>>());
-        }
-
         public SolrQueryResults<T> Run() {
             var exe = NewQueryExecuter();
             return exe.Execute(query, new QueryOptions {
@@ -66,7 +59,7 @@ namespace SolrNet.DSL.Impl {
         }
 
         public SolrQueryResults<T> Run(int start, int rows) {
-            var exe = NewQueryExecuter(); 
+            var exe = NewQueryExecuter();
             return exe.Execute(query, new QueryOptions {
                 OrderBy = order,
                 Facet = new FacetParameters {
@@ -111,6 +104,15 @@ namespace SolrNet.DSL.Impl {
             return WithHighlighting(new HighlightingParameters {
                 Fields = fields,
             });
+        }
+
+        private ISolrQueryExecuter<T> NewQueryExecuter() {
+            return new SolrQueryExecuter<T>(
+                ServiceLocator.Current.GetInstance<ISolrAbstractResponseParser<T>>(),
+                connection,
+                ServiceLocator.Current.GetInstance<ISolrQuerySerializer>(),
+                ServiceLocator.Current.GetInstance<ISolrFacetQuerySerializer>(),
+                ServiceLocator.Current.GetInstance<ISolrMoreLikeThisHandlerQueryResultsParser<T>>());
         }
 
         public override string ToString() {

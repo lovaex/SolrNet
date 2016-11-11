@@ -30,12 +30,13 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Text;
+
 #if NET_4_0
 using System.Web.Configuration;
 #endif
@@ -44,6 +45,7 @@ namespace SolrNet.Utils {
 #if NET_4_0
 	public
 #endif
+
     class HttpEncoder {
         static char[] hexChars = "0123456789abcdef".ToCharArray();
         static object entitiesLock = new object();
@@ -56,8 +58,10 @@ namespace SolrNet.Utils {
 #endif
         static HttpEncoder currentEncoder;
 
-        static IDictionary<string, char> Entities {
-            get {
+        static IDictionary<string, char> Entities
+        {
+            get
+            {
                 lock (entitiesLock) {
                     if (entities == null)
                         InitEntities();
@@ -67,8 +71,10 @@ namespace SolrNet.Utils {
             }
         }
 
-        public static HttpEncoder Current {
-            get {
+        public static HttpEncoder Current
+        {
+            get
+            {
 #if NET_4_0
 				if (currentEncoder == null)
 					currentEncoder = currentEncoderLazy.Value;
@@ -84,8 +90,10 @@ namespace SolrNet.Utils {
 #endif
         }
 
-        public static HttpEncoder Default {
-            get {
+        public static HttpEncoder Default
+        {
+            get
+            {
 #if NET_4_0
 				return defaultEncoder.Value;
 #else
@@ -104,14 +112,13 @@ namespace SolrNet.Utils {
 #endif
         }
 
-        public HttpEncoder() {
-        }
+        public HttpEncoder() {}
 #if NET_4_0	
 		protected internal virtual
 #else
         internal static
 #endif
- void HeaderNameValueEncode(string headerName, string headerValue, out string encodedHeaderName, out string encodedHeaderValue) {
+            void HeaderNameValueEncode(string headerName, string headerValue, out string encodedHeaderName, out string encodedHeaderValue) {
             if (String.IsNullOrEmpty(headerName))
                 encodedHeaderName = headerName;
             else
@@ -134,11 +141,11 @@ namespace SolrNet.Utils {
             StringBuilder sb = null;
             char ch;
 
-            for (int i = 0; i < input.Length; i++) {
+            for (var i = 0; i < input.Length; i++) {
                 ch = input[i];
 
                 if ((ch < 32 && ch != 9) || ch == 127)
-                    StringBuilderAppend(String.Format("%{0:x2}", (int)ch), ref sb);
+                    StringBuilderAppend(String.Format("%{0:x2}", (int) ch), ref sb);
             }
 
             if (sb != null)
@@ -146,6 +153,7 @@ namespace SolrNet.Utils {
 
             return input;
         }
+
 #if NET_4_0		
 		protected internal virtual void HtmlAttributeEncode (string value, TextWriter output)
 		{
@@ -205,24 +213,24 @@ namespace SolrNet.Utils {
 #else
         internal static
 #endif
- string UrlPathEncode(string value) {
+            string UrlPathEncode(string value) {
             if (String.IsNullOrEmpty(value))
                 return value;
 
-			using (MemoryStream result = new MemoryStream()) {
-				int length = value.Length;
-				for (int i = 0; i < length; i++)
-					UrlPathEncodeChar(value[i], result);
+            using (var result = new MemoryStream()) {
+                var length = value.Length;
+                for (var i = 0; i < length; i++)
+                    UrlPathEncodeChar(value[i], result);
 
-				return Encoding.ASCII.GetString(result.ToArray());
-			}
+                return Encoding.ASCII.GetString(result.ToArray());
+            }
         }
 
         internal static byte[] UrlEncodeToBytes(byte[] bytes, int offset, int count) {
             if (bytes == null)
                 throw new ArgumentNullException("bytes");
 
-            int blen = bytes.Length;
+            var blen = bytes.Length;
             if (blen == 0)
                 return new byte[0];
 
@@ -232,13 +240,13 @@ namespace SolrNet.Utils {
             if (count < 0 || count > blen - offset)
                 throw new ArgumentOutOfRangeException("count");
 
-			using (MemoryStream result = new MemoryStream(count)) {
-				int end = offset + count;
-				for (int i = offset; i < end; i++)
-					UrlEncodeChar((char) bytes[i], result, false);
+            using (var result = new MemoryStream(count)) {
+                var end = offset + count;
+                for (var i = offset; i < end; i++)
+                    UrlEncodeChar((char) bytes[i], result, false);
 
-				return result.ToArray();
-			}
+                return result.ToArray();
+            }
         }
 
         internal static string HtmlEncode(string s) {
@@ -248,14 +256,14 @@ namespace SolrNet.Utils {
             if (s.Length == 0)
                 return String.Empty;
 
-            bool needEncode = false;
-            for (int i = 0; i < s.Length; i++) {
-                char c = s[i];
+            var needEncode = false;
+            for (var i = 0; i < s.Length; i++) {
+                var c = s[i];
                 if (c == '&' || c == '"' || c == '<' || c == '>' || c > 159
 #if NET_4_0
 				    || c == '\''
 #endif
-) {
+                ) {
                     needEncode = true;
                     break;
                 }
@@ -264,11 +272,11 @@ namespace SolrNet.Utils {
             if (!needEncode)
                 return s;
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             char ch;
-            int len = s.Length;
+            var len = s.Length;
 
-            for (int i = 0; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 switch (s[i]) {
                     case '&':
                         output.Append("&amp;");
@@ -299,7 +307,7 @@ namespace SolrNet.Utils {
                         ch = s[i];
                         if (ch > 159 && ch < 256) {
                             output.Append("&#");
-                            output.Append(((int)ch).ToString(CultureInfo.InvariantCulture));
+                            output.Append(((int) ch).ToString(CultureInfo.InvariantCulture));
                             output.Append(";");
                         } else
                             output.Append(ch);
@@ -321,14 +329,14 @@ namespace SolrNet.Utils {
             if (s.Length == 0)
                 return String.Empty;
 #endif
-            bool needEncode = false;
-            for (int i = 0; i < s.Length; i++) {
-                char c = s[i];
+            var needEncode = false;
+            for (var i = 0; i < s.Length; i++) {
+                var c = s[i];
                 if (c == '&' || c == '"' || c == '<'
 #if NET_4_0
 				    || c == '\''
 #endif
-) {
+                ) {
                     needEncode = true;
                     break;
                 }
@@ -337,9 +345,9 @@ namespace SolrNet.Utils {
             if (!needEncode)
                 return s;
 
-            StringBuilder output = new StringBuilder();
-            int len = s.Length;
-            for (int i = 0; i < len; i++)
+            var output = new StringBuilder();
+            var len = s.Length;
+            for (var i = 0; i < len; i++)
                 switch (s[i]) {
                     case '&':
                         output.Append("&amp;");
@@ -375,20 +383,20 @@ namespace SolrNet.Utils {
 #if NET_4_0
 			StringBuilder rawEntity = new StringBuilder ();
 #endif
-            StringBuilder entity = new StringBuilder();
-            StringBuilder output = new StringBuilder();
-            int len = s.Length;
+            var entity = new StringBuilder();
+            var output = new StringBuilder();
+            var len = s.Length;
             // 0 -> nothing,
             // 1 -> right after '&'
             // 2 -> between '&' and ';' but no '#'
             // 3 -> '#' found after '&' and getting numbers
-            int state = 0;
-            int number = 0;
-            bool is_hex_value = false;
-            bool have_trailing_digits = false;
+            var state = 0;
+            var number = 0;
+            var is_hex_value = false;
+            var have_trailing_digits = false;
 
-            for (int i = 0; i < len; i++) {
-                char c = s[i];
+            for (var i = 0; i < len; i++) {
+                var c = s[i];
                 if (state == 0) {
                     if (c == '&') {
                         entity.Append(c);
@@ -437,7 +445,7 @@ namespace SolrNet.Utils {
                 } else if (state == 2) {
                     entity.Append(c);
                     if (c == ';') {
-                        string key = entity.ToString();
+                        var key = entity.ToString();
                         if (key.Length > 1 && Entities.ContainsKey(key.Substring(1, key.Length - 2)))
                             key = Entities[key.Substring(1, key.Length - 2)].ToString();
 
@@ -460,7 +468,7 @@ namespace SolrNet.Utils {
                             output.Append(number.ToString(CultureInfo.InvariantCulture));
                             output.Append(";");
                         } else {
-                            output.Append((char)number);
+                            output.Append((char) number);
                         }
                         state = 0;
                         entity.Length = 0;
@@ -469,13 +477,13 @@ namespace SolrNet.Utils {
 #endif
                         have_trailing_digits = false;
                     } else if (is_hex_value && Uri.IsHexDigit(c)) {
-                        number = number * 16 + Uri.FromHex(c);
+                        number = number*16 + Uri.FromHex(c);
                         have_trailing_digits = true;
 #if NET_4_0
 						rawEntity.Append (c);
 #endif
                     } else if (Char.IsDigit(c)) {
-                        number = number * 10 + ((int)c - '0');
+                        number = number*10 + ((int) c - '0');
                         have_trailing_digits = true;
 #if NET_4_0
 						rawEntity.Append (c);
@@ -507,9 +515,9 @@ namespace SolrNet.Utils {
         internal static bool NotEncoded(char c) {
             return (c == '!' || c == '(' || c == ')' || c == '*' || c == '-' || c == '.' || c == '_'
 #if !NET_4_0
- || c == '\''
+                    || c == '\''
 #endif
-);
+            );
         }
 
         internal static void UrlEncodeChar(char c, Stream result, bool isUnicode) {
@@ -518,27 +526,27 @@ namespace SolrNet.Utils {
                 //if (!isUnicode)
                 //	throw new ArgumentOutOfRangeException ("c", c, "c must be less than 256");
                 int idx;
-                int i = (int)c;
+                var i = (int) c;
 
-                result.WriteByte((byte)'%');
-                result.WriteByte((byte)'u');
+                result.WriteByte((byte) '%');
+                result.WriteByte((byte) 'u');
                 idx = i >> 12;
-                result.WriteByte((byte)hexChars[idx]);
+                result.WriteByte((byte) hexChars[idx]);
                 idx = (i >> 8) & 0x0F;
-                result.WriteByte((byte)hexChars[idx]);
+                result.WriteByte((byte) hexChars[idx]);
                 idx = (i >> 4) & 0x0F;
-                result.WriteByte((byte)hexChars[idx]);
+                result.WriteByte((byte) hexChars[idx]);
                 idx = i & 0x0F;
-                result.WriteByte((byte)hexChars[idx]);
+                result.WriteByte((byte) hexChars[idx]);
                 return;
             }
 
             if (c > ' ' && NotEncoded(c)) {
-                result.WriteByte((byte)c);
+                result.WriteByte((byte) c);
                 return;
             }
             if (c == ' ') {
-                result.WriteByte((byte)'+');
+                result.WriteByte((byte) '+');
                 return;
             }
             if ((c < '0') ||
@@ -546,37 +554,37 @@ namespace SolrNet.Utils {
                 (c > 'Z' && c < 'a') ||
                 (c > 'z')) {
                 if (isUnicode && c > 127) {
-                    result.WriteByte((byte)'%');
-                    result.WriteByte((byte)'u');
-                    result.WriteByte((byte)'0');
-                    result.WriteByte((byte)'0');
+                    result.WriteByte((byte) '%');
+                    result.WriteByte((byte) 'u');
+                    result.WriteByte((byte) '0');
+                    result.WriteByte((byte) '0');
                 } else
-                    result.WriteByte((byte)'%');
+                    result.WriteByte((byte) '%');
 
-                int idx = ((int)c) >> 4;
-                result.WriteByte((byte)hexChars[idx]);
-                idx = ((int)c) & 0x0F;
-                result.WriteByte((byte)hexChars[idx]);
+                var idx = ((int) c) >> 4;
+                result.WriteByte((byte) hexChars[idx]);
+                idx = ((int) c) & 0x0F;
+                result.WriteByte((byte) hexChars[idx]);
             } else
-                result.WriteByte((byte)c);
+                result.WriteByte((byte) c);
         }
 
         internal static void UrlPathEncodeChar(char c, Stream result) {
             if (c < 33 || c > 126) {
-                byte[] bIn = Encoding.UTF8.GetBytes(c.ToString());
-                for (int i = 0; i < bIn.Length; i++) {
-                    result.WriteByte((byte)'%');
-                    int idx = ((int)bIn[i]) >> 4;
-                    result.WriteByte((byte)hexChars[idx]);
-                    idx = ((int)bIn[i]) & 0x0F;
-                    result.WriteByte((byte)hexChars[idx]);
+                var bIn = Encoding.UTF8.GetBytes(c.ToString());
+                for (var i = 0; i < bIn.Length; i++) {
+                    result.WriteByte((byte) '%');
+                    var idx = ((int) bIn[i]) >> 4;
+                    result.WriteByte((byte) hexChars[idx]);
+                    idx = ((int) bIn[i]) & 0x0F;
+                    result.WriteByte((byte) hexChars[idx]);
                 }
             } else if (c == ' ') {
-                result.WriteByte((byte)'%');
-                result.WriteByte((byte)'2');
-                result.WriteByte((byte)'0');
+                result.WriteByte((byte) '%');
+                result.WriteByte((byte) '2');
+                result.WriteByte((byte) '0');
             } else
-                result.WriteByte((byte)c);
+                result.WriteByte((byte) c);
         }
 
         static void InitEntities() {

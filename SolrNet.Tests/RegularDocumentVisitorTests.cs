@@ -13,10 +13,10 @@ namespace SolrNet.Tests {
         public void InvalidCastReportsFieldName() {
             var mapper = new MReadOnlyMappingManager();
             mapper.getFields += type => {
-                Assert.AreEqual(typeof (Entity), type);
-                var model = new SolrFieldModel (
+                Assert.AreEqual(typeof(Entity), type);
+                var model = new SolrFieldModel(
                     fieldName : "id",
-                    property : typeof (Entity).GetProperty("Id"));
+                    property : typeof(Entity).GetProperty("Id"));
                 return new Dictionary<string, SolrFieldModel> {
                     {"Id", model}
                 };
@@ -26,7 +26,7 @@ namespace SolrNet.Tests {
             var parser = new MSolrFieldParser {
                 canHandleSolrType = _ => true,
                 canHandleType = _ => true,
-                parse = (a,b) => "something",
+                parse = (a, b) => "something",
             };
 
             var v = new RegularDocumentVisitor(parser, mapper);

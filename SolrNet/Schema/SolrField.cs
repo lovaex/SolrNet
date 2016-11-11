@@ -18,13 +18,11 @@
 
 using System;
 
-namespace SolrNet.Schema
-{
+namespace SolrNet.Schema {
     /// <summary>
     /// Repesents a field in the Solr schema.
     /// </summary>
-    public class SolrField
-    {
+    public class SolrField {
         /// <summary>
         /// Repesents a field in the Solr schema.
         /// </summary>
@@ -37,7 +35,7 @@ namespace SolrNet.Schema
                 throw new ArgumentNullException("type");
             Name = name;
             Type = type;
-        } 
+        }
 
         /// <summary>
         /// Field name

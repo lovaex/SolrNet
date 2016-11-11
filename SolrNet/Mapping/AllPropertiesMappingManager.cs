@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -27,7 +29,7 @@ namespace SolrNet.Mapping {
     public class AllPropertiesMappingManager : IReadOnlyMappingManager {
         private readonly IDictionary<Type, PropertyInfo> uniqueKeys = new Dictionary<Type, PropertyInfo>();
 
-        public IDictionary<string,SolrFieldModel> GetFields(Type type) {
+        public IDictionary<string, SolrFieldModel> GetFields(Type type) {
             var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var fldProps = props
                 .Select(prop => new SolrFieldModel(prop, prop.Name, null))
@@ -39,7 +41,7 @@ namespace SolrNet.Mapping {
         public SolrFieldModel GetUniqueKey(Type type) {
             try {
                 var propertyInfo = uniqueKeys[type];
-	            return new SolrFieldModel(propertyInfo, propertyInfo.Name, null);
+                return new SolrFieldModel(propertyInfo, propertyInfo.Name, null);
             } catch (KeyNotFoundException) {
                 return null;
             }

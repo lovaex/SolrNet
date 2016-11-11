@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SolrNet.Commands.Parameters {
+﻿namespace SolrNet.Commands.Parameters {
     /// <summary>
     /// Clustering algorithms.
     /// See details in:
@@ -98,6 +96,5 @@ namespace SolrNet.Commands.Parameters {
         /// Specifies where Carrot2 should get its lexical resources from. 
         /// </summary>
         public string LexicalResources { get; set; }
-
     }
 }

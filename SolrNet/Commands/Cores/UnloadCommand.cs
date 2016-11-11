@@ -22,9 +22,9 @@ namespace SolrNet.Commands.Cores {
             AddParameter("core", coreName);
             if (delete != null) {
                 var deleteKey = delete.Match<string>(
-                    index: () => "deleteIndex",
-                    data: () => "deleteDataDir",
-                    instance: () => "deleteInstanceDir");
+                    index : () => "deleteIndex",
+                    data : () => "deleteDataDir",
+                    instance : () => "deleteInstanceDir");
                 AddParameter(deleteKey, true.ToString().ToLower());
             }
         }
@@ -33,6 +33,32 @@ namespace SolrNet.Commands.Cores {
         /// Remove index data on core unload
         /// </summary>
         public sealed class Delete : IEquatable<Delete> {
+            private const int IndexTag = 0;
+            private const int DataTag = 1;
+            private const int InstanceTag = 2;
+
+            /// <summary>
+            /// Delete the index on core unload.
+            /// Requires Solr 3.3+
+            /// </summary>
+            public static readonly Delete Index = new Delete(IndexTag);
+
+            /// <summary>
+            /// Remove "data" and all sub-directories.
+            /// Requires Solr 4.0+
+            /// </summary>
+            public static readonly Delete Data = new Delete(DataTag);
+
+            /// <summary>
+            /// Remove everything related to the core, the index directory, the configuration files, etc.
+            /// Requires Solr 4.0+
+            /// </summary>
+            /// <remarks>
+            /// There is a bug in 4.0 (SOLR-3984) that prevents this from working 
+            /// unless you specify the absolute path in your core element.
+            /// </remarks>
+            public static readonly Delete Instance = new Delete(InstanceTag);
+
             private readonly int tag;
 
             private Delete(int tag) {
@@ -67,10 +93,6 @@ namespace SolrNet.Commands.Cores {
                 return !Equals(left, right);
             }
 
-            private const int IndexTag = 0;
-            private const int DataTag = 1;
-            private const int InstanceTag = 2;
-
             public T Match<T>(Func<T> index, Func<T> data, Func<T> instance) {
                 if (tag == IndexTag)
                     return index();
@@ -80,28 +102,6 @@ namespace SolrNet.Commands.Cores {
                     return instance();
                 throw new Exception("Invalid delete tag " + tag);
             }
-
-            /// <summary>
-            /// Delete the index on core unload.
-            /// Requires Solr 3.3+
-            /// </summary>
-            public static readonly Delete Index = new Delete(IndexTag);
-
-            /// <summary>
-            /// Remove "data" and all sub-directories.
-            /// Requires Solr 4.0+
-            /// </summary>
-            public static readonly Delete Data = new Delete(DataTag);
-
-            /// <summary>
-            /// Remove everything related to the core, the index directory, the configuration files, etc.
-            /// Requires Solr 4.0+
-            /// </summary>
-            /// <remarks>
-            /// There is a bug in 4.0 (SOLR-3984) that prevents this from working 
-            /// unless you specify the absolute path in your core element.
-            /// </remarks>
-            public static readonly Delete Instance = new Delete(InstanceTag);
         }
     }
 }

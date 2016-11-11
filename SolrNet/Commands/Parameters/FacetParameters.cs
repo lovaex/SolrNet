@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -21,6 +23,13 @@ namespace SolrNet.Commands.Parameters {
     /// Faceting parameters
     /// </summary>
     public class FacetParameters {
+        /// <summary>
+        /// Faceting parameters
+        /// </summary>
+        public FacetParameters() {
+            Queries = new List<ISolrFacetQuery>();
+        }
+
         /// <summary>
         /// Collection of facet queries
         /// </summary>
@@ -81,12 +90,5 @@ namespace SolrNet.Commands.Parameters {
         /// Requires Solr 4.5+
         /// </summary>
         public int? Threads { get; set; }
-
-        /// <summary>
-        /// Faceting parameters
-        /// </summary>
-        public FacetParameters() {
-            Queries = new List<ISolrFacetQuery>();
-        }
     }
 }

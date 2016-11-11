@@ -1,4 +1,5 @@
 #region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +13,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using SolrNet;
 using System;
+using SolrNet;
 
 namespace NHibernate.SolrNet {
     /// <summary>
     /// NHibernate <see cref="ISession"/> with SolrNet extensions for querying
     /// </summary>
     [Obsolete("Deprecated. Replace with your own integration.")]
-    public interface ISolrSession: ISession {
+    public interface ISolrSession : ISession {
         /// <summary>
         /// Creates a Solr query
         /// </summary>

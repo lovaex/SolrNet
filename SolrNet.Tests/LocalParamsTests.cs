@@ -23,41 +23,35 @@ using SolrNet.Impl.FieldSerializers;
 using SolrNet.Impl.QuerySerializers;
 using SolrNet.Utils;
 
-namespace SolrNet.Tests
-{
+namespace SolrNet.Tests {
     [TestFixture]
-    public class LocalParamsTests
-    {
+    public class LocalParamsTests {
         private static IEnumerable<TestCaseData> TestParams
         {
             get
             {
-                yield return new TestCaseData(KV.Create(new Dictionary<string, string> { { "type", "spatial" }, }, "{!type=spatial}"));
-                yield return new TestCaseData(KV.Create(new Dictionary<string, string> { { "type", "spatial" }, { "a", "b" }, }, "{!type=spatial a=b}"));
-                yield return new TestCaseData(KV.Create(new Dictionary<string, string> { { "type", "spatial" }, { "a", "1 2 3" }, }, "{!type=spatial a='1 2 3'}"));
-                yield return new TestCaseData(KV.Create(new Dictionary<string, string> { { "type", "spatial" }, { "a", "1 2 '3" }, }, "{!type=spatial a='1 2 \\'3'}"));
+                yield return new TestCaseData(KV.Create(new Dictionary<string, string> {{"type", "spatial"},}, "{!type=spatial}"));
+                yield return new TestCaseData(KV.Create(new Dictionary<string, string> {{"type", "spatial"}, {"a", "b"},}, "{!type=spatial a=b}"));
+                yield return new TestCaseData(KV.Create(new Dictionary<string, string> {{"type", "spatial"}, {"a", "1 2 3"},}, "{!type=spatial a='1 2 3'}"));
+                yield return new TestCaseData(KV.Create(new Dictionary<string, string> {{"type", "spatial"}, {"a", "1 2 '3"},}, "{!type=spatial a='1 2 \\'3'}"));
             }
         }
 
         [TestCaseSource(nameof(TestParams))]
-        public void  Tests(KeyValuePair<Dictionary<string, string>, string> customParams)
-        {
+        public void Tests(KeyValuePair<Dictionary<string, string>, string> customParams) {
             var expectedResult = customParams.Value;
             var localParams = customParams.Key;
             Assert.AreEqual(expectedResult, new LocalParams(localParams).ToString());
         }
 
-        public string SerializeQuery(object q)
-        {
+        public string SerializeQuery(object q) {
             var serializer = new DefaultQuerySerializer(new DefaultFieldSerializer());
             return serializer.Serialize(q);
         }
 
         [Test]
-        public void NullValueThrows()
-        {
-            Assert.Throws<SolrNetException>(() =>
-            {
+        public void NullValueThrows() {
+            Assert.Throws<SolrNetException>(() => {
                 var p = new LocalParams {
                     {"a", null}
                 };
@@ -66,8 +60,7 @@ namespace SolrNet.Tests
         }
 
         [Test]
-        public void OperatorPlus()
-        {
+        public void OperatorPlus() {
             var p = new LocalParams {
                 {"type", "spatial"},
             };
@@ -77,8 +70,7 @@ namespace SolrNet.Tests
         }
 
         [Test]
-        public void OperatorPlus_multiple_queries()
-        {
+        public void OperatorPlus_multiple_queries() {
             var p = new LocalParams {
                 {"type", "spatial"},
             };

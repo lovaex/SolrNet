@@ -7,6 +7,13 @@ namespace SolrNet {
     /// <typeparam name="T"></typeparam>
     public class Group<T> {
         /// <summary>
+        /// A single group of documents
+        /// </summary>
+        public Group() {
+            Documents = new List<T>();
+        }
+
+        /// <summary>
         /// The groupvalue for this group of documents
         /// </summary>
         public string GroupValue { get; set; }
@@ -21,12 +28,5 @@ namespace SolrNet {
         /// You can control the amount of documents in this collection by using the Limit property of the GroupingParameters
         /// </summary>
         public ICollection<T> Documents { get; set; }
-
-        /// <summary>
-        /// A single group of documents
-        /// </summary>
-        public Group() {
-            Documents = new List<T>();
-        }
     }
 }

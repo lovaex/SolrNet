@@ -10,65 +10,18 @@ using Unity.SolrNetIntegration.Config;
 namespace Unity.SolrNetIntegration.Tests {
     [TestFixture]
     public class UnityFixture {
+        internal static IUnityContainer SetupContainer() {
+            var solrConfig = (SolrConfigurationSection) ConfigurationManager.GetSection("solr");
+            var container = new UnityContainer();
+            new SolrNetContainerConfiguration().ConfigureContainer(solrConfig.SolrServers, container);
+            return container;
+        }
+
         [Test]
-        public void ResolveSolrOperations() {
+        public void Container_has_ISolrDocumentPropertyVisitor() {
             using (var container = SetupContainer()) {
-                var m = container.Resolve<ISolrOperations<Entity>>();
-                Assert.IsNotNull(m);
+                container.Resolve<ISolrDocumentPropertyVisitor>();
             }
-        }
-        [Test]
-        public void ResolveAllISolrAbstractResponseParser()
-        {
-            using (var container = SetupContainer()) {
-                var m = container.ResolveAll(typeof(ISolrAbstractResponseParser<UnityFixture>));
-                Assert.IsNotEmpty(m);
-            }
-        }
-
-        [Test]
-        public void RegistersSolrConnectionWithAppConfigServerUrl() {
-            using (var container = SetupContainer()) {
-                var instanceKey = "entity" + typeof (SolrConnection);
-
-                var solrConnection = (SolrConnection) container.Resolve<ISolrConnection>(instanceKey);
-
-                Assert.AreEqual("http://localhost:8983/solr/core0", solrConnection.ServerURL);
-            }
-        }
-
-        [Test]
-        public void Should_throw_exception_for_invalid_protocol_on_url() {
-            var solrServers = new SolrServers {
-                new SolrServerElement {
-                    Id = "test",
-                    Url = "htp://localhost:8893",
-                    DocumentType = typeof (Entity2).AssemblyQualifiedName,
-                }
-            };
-            Assert.Throws<InvalidURLException>(() => {
-                using (var container = new UnityContainer()) {
-                    new SolrNetContainerConfiguration().ConfigureContainer(solrServers, container);
-                    container.Resolve<ISolrConnection>();
-                }
-            });
-        }
-
-        [Test]
-        public void Should_throw_exception_for_invalid_url() {
-            var solrServers = new SolrServers {
-                new SolrServerElement {
-                    Id = "test",
-                    Url = "http:/localhost:8893",
-                    DocumentType = typeof (Entity2).AssemblyQualifiedName,
-                }
-            };
-            Assert.Throws<InvalidURLException>(() => {
-                using (var container = new UnityContainer()) {
-                    new SolrNetContainerConfiguration().ConfigureContainer(solrServers, container);
-                    container.Resolve<ISolrConnection>();
-                }
-            });
         }
 
         [Test]
@@ -83,13 +36,6 @@ namespace Unity.SolrNetIntegration.Tests {
         public void Container_has_ISolrFieldSerializer() {
             using (var container = SetupContainer()) {
                 container.Resolve<ISolrFieldSerializer>();
-            }
-        }
-
-        [Test]
-        public void Container_has_ISolrDocumentPropertyVisitor() {
-            using (var container = SetupContainer()) {
-                container.Resolve<ISolrDocumentPropertyVisitor>();
             }
         }
 
@@ -109,11 +55,65 @@ namespace Unity.SolrNetIntegration.Tests {
             }
         }
 
-        internal static IUnityContainer SetupContainer() {
-            var solrConfig = (SolrConfigurationSection) ConfigurationManager.GetSection("solr");
-            var container = new UnityContainer();
-            new SolrNetContainerConfiguration().ConfigureContainer(solrConfig.SolrServers, container);
-            return container;
+        [Test]
+        public void RegistersSolrConnectionWithAppConfigServerUrl() {
+            using (var container = SetupContainer()) {
+                var instanceKey = "entity" + typeof(SolrConnection);
+
+                var solrConnection = (SolrConnection) container.Resolve<ISolrConnection>(instanceKey);
+
+                Assert.AreEqual("http://localhost:8983/solr/core0", solrConnection.ServerURL);
+            }
+        }
+
+        [Test]
+        public void ResolveAllISolrAbstractResponseParser() {
+            using (var container = SetupContainer()) {
+                var m = container.ResolveAll(typeof(ISolrAbstractResponseParser<UnityFixture>));
+                Assert.IsNotEmpty(m);
+            }
+        }
+
+        [Test]
+        public void ResolveSolrOperations() {
+            using (var container = SetupContainer()) {
+                var m = container.Resolve<ISolrOperations<Entity>>();
+                Assert.IsNotNull(m);
+            }
+        }
+
+        [Test]
+        public void Should_throw_exception_for_invalid_protocol_on_url() {
+            var solrServers = new SolrServers {
+                new SolrServerElement {
+                    Id = "test",
+                    Url = "htp://localhost:8893",
+                    DocumentType = typeof(Entity2).AssemblyQualifiedName,
+                }
+            };
+            Assert.Throws<InvalidURLException>(() => {
+                using (var container = new UnityContainer()) {
+                    new SolrNetContainerConfiguration().ConfigureContainer(solrServers, container);
+                    container.Resolve<ISolrConnection>();
+                }
+            });
+        }
+
+        [Test]
+        public void Should_throw_exception_for_invalid_url() {
+            var solrServers = new SolrServers {
+                new SolrServerElement {
+                    Id = "test",
+                    Url = "http:/localhost:8893",
+                    DocumentType = typeof(Entity2).AssemblyQualifiedName,
+                }
+            };
+            Assert.Throws<InvalidURLException>(() => {
+                using (var container = new UnityContainer()) {
+                    new SolrNetContainerConfiguration().ConfigureContainer(solrServers, container);
+                    container.Resolve<ISolrConnection>();
+                }
+            });
         }
     }
 }

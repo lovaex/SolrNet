@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +13,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 namespace SolrNet.DSL.Impl {
     public class DSLQueryBetween<T, RT> : IDSLQueryBetween<T, RT> {
-        private readonly string fieldName;
         private readonly ISolrConnection connection;
-        private readonly ISolrQuery query;
+        private readonly string fieldName;
         private readonly RT from;
+        private readonly ISolrQuery query;
 
         public DSLQueryBetween(string fieldName, ISolrConnection connection, ISolrQuery query, RT from) {
             this.fieldName = fieldName;
@@ -30,11 +32,11 @@ namespace SolrNet.DSL.Impl {
 
         public IDSLQuery<T> And(RT i) {
             return new DSLQuery<T>(connection,
-                                   new SolrMultipleCriteriaQuery(
-                                       new[] {
-                                           query,
-                                           new SolrQueryByRange<RT>(fieldName, from, i)
-                                       }));
+                new SolrMultipleCriteriaQuery(
+                    new[] {
+                        query,
+                        new SolrQueryByRange<RT>(fieldName, from, i)
+                    }));
         }
     }
 }

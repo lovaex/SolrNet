@@ -15,15 +15,15 @@
 using System;
 
 namespace Unity.SolrNetIntegration {
-  internal class SolrCore {
-    public SolrCore(string id, Type documentType, string url) {
-      Id = id;
-      DocumentType = documentType;
-      Url = url;
-    }
+    internal class SolrCore {
+        public SolrCore(string id, Type documentType, string url) {
+            Id = id;
+            DocumentType = documentType;
+            Url = url;
+        }
 
-    public string Id { get; private set; }
-    public Type DocumentType { get; private set; }
-    public string Url { get; private set; }
-  }
+        public string Id { get; private set; }
+        public Type DocumentType { get; private set; }
+        public string Url { get; private set; }
+    }
 }

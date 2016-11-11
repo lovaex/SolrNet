@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ namespace SolrNet.DSL.Impl {
     public class DSLFacetFieldOptions<T> : DSLRun<T>, IDSLFacetFieldOptions<T> {
         private readonly SolrFacetFieldQuery facetQuery;
 
-        public DSLFacetFieldOptions(ISolrConnection connection, ISolrQuery query, ICollection<SortOrder> order, ICollection<ISolrFacetQuery> facets, SolrFacetFieldQuery facetQuery) 
+        public DSLFacetFieldOptions(ISolrConnection connection, ISolrQuery query, ICollection<SortOrder> order, ICollection<ISolrFacetQuery> facets, SolrFacetFieldQuery facetQuery)
             : base(connection, query, order, facets, null) {
             this.facetQuery = facetQuery;
         }
@@ -46,7 +48,7 @@ namespace SolrNet.DSL.Impl {
         }
 
         public IDSLFacetFieldOptions<T> StartingAt(int offset) {
-            facetQuery.Offset = offset; 
+            facetQuery.Offset = offset;
             return new DSLFacetFieldOptions<T>(connection, query, order, facets, facetQuery);
         }
 

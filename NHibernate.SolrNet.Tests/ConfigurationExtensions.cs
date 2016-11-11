@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +13,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
+using NHibernate.Cfg;
 using NHibernate.Connection;
 using NHibernate.Dialect;
 using NHibernate.Driver;
-using Environment=NHibernate.Cfg.Environment;
 
 namespace NHibernate.SolrNet.Tests {
     public static class ConfigurationExtensions {
-
         public static Configuration GetEmptyNHConfig() {
             var nhConfig = new Configuration {
                 Properties = new Dictionary<string, string> {
@@ -37,7 +38,7 @@ namespace NHibernate.SolrNet.Tests {
 
         public static Configuration GetNhConfig() {
             var nhConfig = GetEmptyNHConfig();
-            nhConfig.Register(typeof (Entity));
+            nhConfig.Register(typeof(Entity));
             return nhConfig;
         }
     }

@@ -3,6 +3,15 @@
     /// Contains the Fields to index along with the rich documents
     /// </summary>
     public class ExtractField {
+        /// <summary>
+        /// Constructs a new ExtractField with required values
+        /// </summary>
+        /// <param name="fieldName">The name of the field to index</param>
+        /// <param name="value">The value to index</param>
+        public ExtractField(string fieldName, string value) {
+            FieldName = fieldName;
+            Value = value;
+        }
 
         /// <summary>
         /// The name of the field to index
@@ -18,15 +27,5 @@
         /// Boost to apply to this field
         /// </summary>
         public string Boost { get; set; }
-
-        /// <summary>
-        /// Constructs a new ExtractField with required values
-        /// </summary>
-        /// <param name="fieldName">The name of the field to index</param>
-        /// <param name="value">The value to index</param>
-        public ExtractField(string fieldName, string value) {
-            FieldName = fieldName;
-            Value = value;
-        }
     }
 }

@@ -5,19 +5,8 @@ using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MServiceLocator : IServiceLocator {
+        public Func<Type, object> getInstance;
         public MFunc<Type, object> getService;
-
-        public static MFunc<Type, object> Table(IDictionary<Type, object> services) {
-            return new MFunc<Type, object>(t => services[t]);
-        }
-
-        public static MFunc<Type, object> One<I>(object o) {
-            return new MFunc<Type, object>(t => {
-                if (t == typeof (I))
-                    return o;
-                throw new ArgumentException("Unexpected type " + t);
-            });
-        }
 
         public object GetService(Type serviceType) {
             return getService.Invoke(serviceType);
@@ -35,8 +24,6 @@ namespace SolrNet.Tests.Mocks {
             throw new NotImplementedException();
         }
 
-        public Func<Type, object> getInstance;
-
         public TService GetInstance<TService>() {
             return (TService) getInstance.Invoke(typeof(TService));
         }
@@ -47,6 +34,18 @@ namespace SolrNet.Tests.Mocks {
 
         public IEnumerable<TService> GetAllInstances<TService>() {
             throw new NotImplementedException();
+        }
+
+        public static MFunc<Type, object> Table(IDictionary<Type, object> services) {
+            return new MFunc<Type, object>(t => services[t]);
+        }
+
+        public static MFunc<Type, object> One<I>(object o) {
+            return new MFunc<Type, object>(t => {
+                if (t == typeof(I))
+                    return o;
+                throw new ArgumentException("Unexpected type " + t);
+            });
         }
     }
 }

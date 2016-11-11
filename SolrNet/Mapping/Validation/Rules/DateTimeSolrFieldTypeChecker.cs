@@ -28,11 +28,11 @@ namespace SolrNet.Mapping.Validation.Rules {
         /// </summary>
         public DateTimeSolrFieldTypeChecker()
             : base(new[] {"solr.TrieDateField", "solr.DateField"},
-                   new[] {"solr.TextField", "solr.StrField"}) {}
+                new[] {"solr.TextField", "solr.StrField"}) {}
 
         public override bool CanHandleType(Type propertyType) {
-            return propertyType == typeof (DateTime) ||
-                propertyType == typeof(DateTime?);
+            return propertyType == typeof(DateTime) ||
+                   propertyType == typeof(DateTime?);
         }
     }
 }

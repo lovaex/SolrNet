@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -64,11 +66,13 @@ namespace NHibernate.SolrNet.Tests {
             this.dialect = dialect;
         }
 
-        public Mappings Mappings {
+        public Mappings Mappings
+        {
             get { return mappings; }
         }
 
-        public Dialect.Dialect Dialect {
+        public Dialect.Dialect Dialect
+        {
             get { return dialect; }
         }
 
@@ -82,19 +86,19 @@ namespace NHibernate.SolrNet.Tests {
             pclass.EntityName = entity.FullName;
             pclass.ClassName = entity.AssemblyQualifiedName;
             pclass.ProxyInterfaceName = entity.AssemblyQualifiedName;
-            string tableName = GetClassTableName(pclass);
-            Table table = mappings.AddTable(null, null, tableName, null, pclass.IsAbstract.GetValueOrDefault(), null);
+            var tableName = GetClassTableName(pclass);
+            var table = mappings.AddTable(null, null, tableName, null, pclass.IsAbstract.GetValueOrDefault(), null);
             ((ITableOwner) pclass).Table = table;
             pclass.IsMutable = true;
-            PropertyInfo[] propInfos = entity.GetProperties();
+            var propInfos = entity.GetProperties();
 
-            PropertyInfo toExclude = new IdBinder(this, propInfos).Bind(pclass, table);
+            var toExclude = new IdBinder(this, propInfos).Bind(pclass, table);
 
             pclass.CreatePrimaryKey(dialect);
             BindProperties(pclass, propInfos.Where(x => x != toExclude));
             mappings.AddClass(pclass);
 
-            string qualifiedName = pclass.MappedClass == null ? pclass.EntityName : pclass.MappedClass.AssemblyQualifiedName;
+            var qualifiedName = pclass.MappedClass == null ? pclass.EntityName : pclass.MappedClass.AssemblyQualifiedName;
             mappings.AddImport(qualifiedName, pclass.EntityName);
             if (mappings.IsAutoImport && pclass.EntityName.IndexOf('.') > 0) {
                 mappings.AddImport(qualifiedName, StringHelper.Unqualify(pclass.EntityName));
@@ -111,7 +115,7 @@ namespace NHibernate.SolrNet.Tests {
                 IValue value = new SimpleValue(table);
                 BindColumn((SimpleValue) value, true, propertyInfo.Name);
 
-                Property property = CreateProperty(value, propertyInfo, pclass.ClassName);
+                var property = CreateProperty(value, propertyInfo, pclass.ClassName);
                 //	property.IsUpdateable = false;
                 pclass.AddProperty(property);
             }
@@ -149,8 +153,8 @@ namespace NHibernate.SolrNet.Tests {
         public PropertyInfo Bind(PersistentClass pclass, Table table) {
             var identifier = new SimpleValue(table);
             pclass.Identifier = identifier;
-            PropertyInfo result = GetIdProperty();
-            string propName = result.Name;
+            var result = GetIdProperty();
+            var propName = result.Name;
             AddColumn(identifier, propName);
             CreateIdentifierProperty(pclass, identifier, propName);
             BindGenerator(identifier);
@@ -164,7 +168,7 @@ namespace NHibernate.SolrNet.Tests {
 
         private void CreateIdentifierProperty(PersistentClass pclass, IValue identifier, string propName) {
             identifier.SetTypeUsingReflection(pclass.MappedClass == null ? null : pclass.MappedClass.AssemblyQualifiedName,
-                                              propName, DefaultValues.Accessor);
+                propName, DefaultValues.Accessor);
 
             var property = new Property(identifier) {
                 Name = propName,
@@ -180,7 +184,7 @@ namespace NHibernate.SolrNet.Tests {
         }
 
         public PropertyInfo GetIdProperty() {
-            PropertyInfo result =
+            var result =
                 propInfos.FirstOrDefault(x => DefaultValues.PoIDBaseName.Equals(x.Name, StringComparison.InvariantCultureIgnoreCase));
             if (result != null) {
                 return result;
@@ -189,7 +193,7 @@ namespace NHibernate.SolrNet.Tests {
         }
 
         private void AddColumn(SimpleValue id, string propName) {
-            Column column = CreateColumn();
+            var column = CreateColumn();
             column.Value = id;
             column.Name = mapper.Mappings.NamingStrategy.ColumnName(propName);
 

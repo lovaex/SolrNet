@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,37 +13,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Impl.FieldParsers;
 
 namespace SolrNet.Tests {
     [TestFixture]
     public class FieldParserTests {
-        [Test]
-        public void FloatFieldParser_Parse() {
-            var p = new FloatFieldParser();
-            var xml = new XDocument();
-            xml.Add(new XElement("int", "31"));
-            var v = p.Parse(xml.Root, null);
-            Assert.IsInstanceOf<float>(v);
-            Assert.AreEqual(31f, v);
-        }
-
-        [Test]
-        public void FloatFieldParser_cant_handle_string() {
-            var p = new FloatFieldParser();
-            var xml = new XDocument();
-            xml.Add(new XElement("str", "pepe"));
-            Assert.Throws<FormatException>(() => p.Parse(xml.Root, null));
-        }
-
         [TestCase(typeof(string))]
         [TestCase(typeof(Dictionary<,>))]
         [TestCase(typeof(IDictionary<,>))]
@@ -71,12 +54,9 @@ namespace SolrNet.Tests {
             Assert.IsTrue(p.CanHandleType(t));
         }
 
-        [Test]
-        public void DoubleFieldParser() {
-            var p = new DoubleFieldParser();
-            var xml = new XDocument();
-            xml.Add(new XElement("item", "123.99"));
-            p.Parse(xml.Root, typeof(float));
+        private enum Numbers {
+            One,
+            Two
         }
 
         [Test]
@@ -89,14 +69,12 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void DecimalFieldParser_overflow()
-        {
-            Assert.Throws<OverflowException>(() =>
-            {
+        public void DecimalFieldParser_overflow() {
+            Assert.Throws<OverflowException>(() => {
                 var p = new DecimalFieldParser();
                 var xml = new XDocument();
                 xml.Add(new XElement("item", "6.66E53"));
-                var value = (decimal)p.Parse(xml.Root, typeof(decimal));
+                var value = (decimal) p.Parse(xml.Root, typeof(decimal));
             });
         }
 
@@ -110,6 +88,14 @@ namespace SolrNet.Tests {
         }
 
         [Test]
+        public void DoubleFieldParser() {
+            var p = new DoubleFieldParser();
+            var xml = new XDocument();
+            xml.Add(new XElement("item", "123.99"));
+            p.Parse(xml.Root, typeof(float));
+        }
+
+        [Test]
         public void EnumAsString() {
             var p = new EnumFieldParser();
             var xml = new XDocument();
@@ -118,8 +104,22 @@ namespace SolrNet.Tests {
             Assert.IsInstanceOf<Numbers>(r);
         }
 
-        private enum Numbers {
-            One, Two
+        [Test]
+        public void FloatFieldParser_cant_handle_string() {
+            var p = new FloatFieldParser();
+            var xml = new XDocument();
+            xml.Add(new XElement("str", "pepe"));
+            Assert.Throws<FormatException>(() => p.Parse(xml.Root, null));
+        }
+
+        [Test]
+        public void FloatFieldParser_Parse() {
+            var p = new FloatFieldParser();
+            var xml = new XDocument();
+            xml.Add(new XElement("int", "31"));
+            var v = p.Parse(xml.Root, null);
+            Assert.IsInstanceOf<float>(v);
+            Assert.AreEqual(31f, v);
         }
 
         [Test]
@@ -129,7 +129,7 @@ namespace SolrNet.Tests {
             var xml = new XDocument();
             xml.Add(new XElement("str", g.ToString()));
             var r = p.Parse(xml.Root, typeof(Guid));
-            var pg = (Guid)r;
+            var pg = (Guid) r;
             Assert.AreEqual(g, pg);
         }
 
@@ -140,7 +140,7 @@ namespace SolrNet.Tests {
             var xml = new XDocument();
             xml.Add(new XElement("str", g.ToString()));
             var r = p.Parse(xml.Root, typeof(Guid?));
-            var pg = (Guid?)r;
+            var pg = (Guid?) r;
             Assert.AreEqual(g, pg.Value);
         }
     }

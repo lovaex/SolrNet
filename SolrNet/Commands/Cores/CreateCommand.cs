@@ -13,7 +13,7 @@ namespace SolrNet.Commands.Cores {
         /// </summary>
         /// <param name="name">The name of the core.</param>
         /// <param name="instanceDir">The Solr instance directory.</param>
-        public CreateCommand(string name, string instanceDir): this(name, instanceDir, null, null, null) {}
+        public CreateCommand(string name, string instanceDir) : this(name, instanceDir, null, null, null) {}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCommand"/> class.

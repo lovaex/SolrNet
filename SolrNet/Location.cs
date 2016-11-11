@@ -31,6 +31,18 @@ namespace SolrNet {
             Longitude = longitude;
         }
 
+        public bool Equals(Location other) {
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            return Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude);
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider) {
+            return ToString();
+        }
+
         /// <summary>
         /// True if <paramref name="latitude"/> is a valid latitude. Otherwise false.
         /// </summary>
@@ -66,14 +78,6 @@ namespace SolrNet {
             return string.Format(CultureInfo.InvariantCulture, "{0},{1}", Latitude, Longitude);
         }
 
-        public bool Equals(Location other) {
-            if (ReferenceEquals(null, other))
-                return false;
-            if (ReferenceEquals(this, other))
-                return true;
-            return Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude);
-        }
-
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj))
                 return false;
@@ -88,10 +92,6 @@ namespace SolrNet {
             unchecked {
                 return (Latitude.GetHashCode()*397) ^ Longitude.GetHashCode();
             }
-        }
-
-        public string ToString(string format, IFormatProvider formatProvider) {
-            return ToString();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -28,7 +30,7 @@ namespace SolrNet.Utils {
         /// </summary>
         /// <typeparam name="T">Service type</typeparam>
         /// <param name="factory">Component factory method</param>
-        void Register<T>(Converter<IContainer,T> factory);
+        void Register<T>(Converter<IContainer, T> factory);
 
         /// <summary>
         /// Adds a component implementing <typeparamref name="T"/> with the specified key
@@ -36,7 +38,7 @@ namespace SolrNet.Utils {
         /// <typeparam name="T">Service type</typeparam>
         /// <param name="factory">Component factory method</param>
         /// <param name="key">Component key</param>
-        void Register<T>(string key, Converter<IContainer,T> factory);
+        void Register<T>(string key, Converter<IContainer, T> factory);
 
         /// <summary>
         /// Adds a component

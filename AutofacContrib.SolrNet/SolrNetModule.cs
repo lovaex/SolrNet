@@ -42,14 +42,9 @@ namespace AutofacContrib.SolrNet {
     /// Configures SolrNet in an Autofac container
     /// </summary>
     public class SolrNetModule : Module {
-        protected override void Load(ContainerBuilder builder) {
-            if (!string.IsNullOrEmpty(ServerUrl))
-                RegisterSingleCore(builder);
-            else if (solrServers != null)
-                RegisterMultiCore(builder);
-            else
-                throw new ConfigurationErrorsException("SolrNetModule Configurations Error!");
-        }
+        private readonly string ServerUrl;
+
+        private readonly SolrServers solrServers;
 
         /// <summary>
         ///   Register a single-core server
@@ -59,7 +54,13 @@ namespace AutofacContrib.SolrNet {
             ServerUrl = serverUrl;
         }
 
-        private readonly string ServerUrl;
+        /// <summary>
+        ///   Register multi-core server
+        /// </summary>
+        /// <param name = "solrServers"></param>
+        public SolrNetModule(SolrServers solrServers) {
+            this.solrServers = solrServers;
+        }
 
         /// <summary>
         /// Optional override for document mapper
@@ -71,14 +72,23 @@ namespace AutofacContrib.SolrNet {
         /// </summary>
         public IHttpWebRequestFactory HttpWebRequestFactory { get; set; }
 
+        protected override void Load(ContainerBuilder builder) {
+            if (!string.IsNullOrEmpty(ServerUrl))
+                RegisterSingleCore(builder);
+            else if (solrServers != null)
+                RegisterMultiCore(builder);
+            else
+                throw new ConfigurationErrorsException("SolrNetModule Configurations Error!");
+        }
+
         private void RegisterCommonComponents(ContainerBuilder builder) {
             var mapper = Mapper ?? new MemoizingMappingManager(new AttributesMappingManager());
             builder.RegisterInstance(mapper).As<IReadOnlyMappingManager>();
             // builder.RegisterType<HttpRuntimeCache>().As<ISolrCache>();
             builder.RegisterType<DefaultDocumentVisitor>().As<ISolrDocumentPropertyVisitor>();
             builder.RegisterType<DefaultFieldParser>().As<ISolrFieldParser>();
-            builder.RegisterGeneric(typeof (SolrDocumentActivator<>)).As(typeof (ISolrDocumentActivator<>));
-            builder.RegisterGeneric(typeof (SolrDocumentResponseParser<>)).As(typeof (ISolrDocumentResponseParser<>));
+            builder.RegisterGeneric(typeof(SolrDocumentActivator<>)).As(typeof(ISolrDocumentActivator<>));
+            builder.RegisterGeneric(typeof(SolrDocumentResponseParser<>)).As(typeof(ISolrDocumentResponseParser<>));
             builder.RegisterType<DefaultFieldSerializer>().As<ISolrFieldSerializer>();
             builder.RegisterType<DefaultQuerySerializer>().As<ISolrQuerySerializer>();
             builder.RegisterType<DefaultFacetQuerySerializer>().As<ISolrFacetQuerySerializer>();
@@ -87,17 +97,17 @@ namespace AutofacContrib.SolrNet {
             builder.RegisterType<HeaderResponseParser<string>>().As<ISolrHeaderResponseParser>();
             builder.RegisterType<ExtractResponseParser>().As<ISolrExtractResponseParser>();
             foreach (var p in new[] {
-                typeof (MappedPropertiesIsInSolrSchemaRule),
-                typeof (RequiredFieldsAreMappedRule),
-                typeof (UniqueKeyMatchesMappingRule),
+                typeof(MappedPropertiesIsInSolrSchemaRule),
+                typeof(RequiredFieldsAreMappedRule),
+                typeof(UniqueKeyMatchesMappingRule),
                 typeof(MultivaluedMappedToCollectionRule),
             })
-			
+
                 builder.RegisterType(p).As<IValidationRule>();
-            builder.RegisterType<SolrSchemaParser>().As<ISolrSchemaParser>();				
+            builder.RegisterType<SolrSchemaParser>().As<ISolrSchemaParser>();
             builder.RegisterGeneric(typeof(SolrMoreLikeThisHandlerQueryResultsParser<>)).As(typeof(ISolrMoreLikeThisHandlerQueryResultsParser<>));
             builder.RegisterGeneric(typeof(SolrQueryExecuter<>)).As(typeof(ISolrQueryExecuter<>));
-            builder.RegisterGeneric(typeof (SolrDocumentSerializer<>)).As(typeof (ISolrDocumentSerializer<>));
+            builder.RegisterGeneric(typeof(SolrDocumentSerializer<>)).As(typeof(ISolrDocumentSerializer<>));
             builder.RegisterType<SolrDIHStatusParser>().As<ISolrDIHStatusParser>();
             builder.RegisterType<MappingValidator>().As<IMappingValidator>();
             builder.RegisterType<SolrStatusResponseParser>().As<ISolrStatusResponseParser>();
@@ -109,28 +119,18 @@ namespace AutofacContrib.SolrNet {
         private void RegisterSingleCore(ContainerBuilder builder) {
             RegisterCommonComponents(builder);
 
-            SolrConnection solrConnection = new SolrConnection(ServerUrl);
+            var solrConnection = new SolrConnection(ServerUrl);
             if (HttpWebRequestFactory != null) {
                 solrConnection.HttpWebRequestFactory = HttpWebRequestFactory;
             }
             builder.RegisterInstance(solrConnection).As<ISolrConnection>();
 
-            builder.RegisterGeneric(typeof (SolrBasicServer<>))
-                .As(typeof (ISolrBasicOperations<>), typeof (ISolrBasicReadOnlyOperations<>))
+            builder.RegisterGeneric(typeof(SolrBasicServer<>))
+                .As(typeof(ISolrBasicOperations<>), typeof(ISolrBasicReadOnlyOperations<>))
                 .SingleInstance();
-            builder.RegisterGeneric(typeof (SolrServer<>))
-                .As(typeof (ISolrOperations<>), typeof (ISolrReadOnlyOperations<>))
+            builder.RegisterGeneric(typeof(SolrServer<>))
+                .As(typeof(ISolrOperations<>), typeof(ISolrReadOnlyOperations<>))
                 .SingleInstance();
-        }
-
-        private readonly SolrServers solrServers;
-
-        /// <summary>
-        ///   Register multi-core server
-        /// </summary>
-        /// <param name = "solrServers"></param>
-        public SolrNetModule(SolrServers solrServers) {
-            this.solrServers = solrServers;
         }
 
         private void RegisterMultiCore(ContainerBuilder builder) {
@@ -143,44 +143,44 @@ namespace AutofacContrib.SolrNet {
         ///   This method is meant to be used after the facility initialization
         /// </summary>
         private static void RegisterCore(SolrCore core, ContainerBuilder builder) {
-            var coreConnectionId = core.Id + typeof (SolrConnection);
+            var coreConnectionId = core.Id + typeof(SolrConnection);
 
-            builder.RegisterType(typeof (SolrConnection))
-                .Named(coreConnectionId, typeof (ISolrConnection))
+            builder.RegisterType(typeof(SolrConnection))
+                .Named(coreConnectionId, typeof(ISolrConnection))
                 .WithParameters(new[] {
                     new NamedParameter("serverURL", core.Url)
                 });
 
-            var ISolrQueryExecuter = typeof (ISolrQueryExecuter<>).MakeGenericType(core.DocumentType);
-            var SolrQueryExecuter = typeof (SolrQueryExecuter<>).MakeGenericType(core.DocumentType);
+            var ISolrQueryExecuter = typeof(ISolrQueryExecuter<>).MakeGenericType(core.DocumentType);
+            var SolrQueryExecuter = typeof(SolrQueryExecuter<>).MakeGenericType(core.DocumentType);
 
             builder.RegisterType(SolrQueryExecuter)
                 .Named(core.Id + SolrQueryExecuter, ISolrQueryExecuter)
                 .WithParameters(new[] {
-                    new ResolvedParameter((p, c) => p.Name == "connection", (p, c) => c.ResolveNamed(coreConnectionId, typeof (ISolrConnection))),
+                    new ResolvedParameter((p, c) => p.Name == "connection", (p, c) => c.ResolveNamed(coreConnectionId, typeof(ISolrConnection))),
                 });
 
-            var ISolrBasicOperations = typeof (ISolrBasicOperations<>).MakeGenericType(core.DocumentType);
-            var ISolrBasicReadOnlyOperations = typeof (ISolrBasicReadOnlyOperations<>).MakeGenericType(core.DocumentType);
-            var SolrBasicServer = typeof (SolrBasicServer<>).MakeGenericType(core.DocumentType);
+            var ISolrBasicOperations = typeof(ISolrBasicOperations<>).MakeGenericType(core.DocumentType);
+            var ISolrBasicReadOnlyOperations = typeof(ISolrBasicReadOnlyOperations<>).MakeGenericType(core.DocumentType);
+            var SolrBasicServer = typeof(SolrBasicServer<>).MakeGenericType(core.DocumentType);
 
             builder.RegisterType(SolrBasicServer)
                 .Named(core.Id + SolrBasicServer, ISolrBasicOperations)
                 .WithParameters(new[] {
-                    new ResolvedParameter((p, c) => p.Name == "connection", (p, c) => c.ResolveNamed(coreConnectionId, typeof (ISolrConnection))),
+                    new ResolvedParameter((p, c) => p.Name == "connection", (p, c) => c.ResolveNamed(coreConnectionId, typeof(ISolrConnection))),
                     new ResolvedParameter((p, c) => p.Name == "queryExecuter", (p, c) => c.ResolveNamed(core.Id + SolrQueryExecuter, ISolrQueryExecuter))
                 });
 
             builder.RegisterType(SolrBasicServer)
                 .Named(core.Id + SolrBasicServer, ISolrBasicReadOnlyOperations)
                 .WithParameters(new[] {
-                    new ResolvedParameter((p, c) => p.Name == "connection", (p, c) => c.ResolveNamed(coreConnectionId, typeof (ISolrConnection))),
+                    new ResolvedParameter((p, c) => p.Name == "connection", (p, c) => c.ResolveNamed(coreConnectionId, typeof(ISolrConnection))),
                     new ResolvedParameter((p, c) => p.Name == "queryExecuter", (p, c) => c.ResolveNamed(core.Id + SolrQueryExecuter, ISolrQueryExecuter))
                 });
 
-            var ISolrOperations = typeof (ISolrOperations<>).MakeGenericType(core.DocumentType);
-            var ISolrReadOnlyOperations = typeof (ISolrReadOnlyOperations<>).MakeGenericType(core.DocumentType);
-            var SolrServer = typeof (SolrServer<>).MakeGenericType(core.DocumentType);
+            var ISolrOperations = typeof(ISolrOperations<>).MakeGenericType(core.DocumentType);
+            var ISolrReadOnlyOperations = typeof(ISolrReadOnlyOperations<>).MakeGenericType(core.DocumentType);
+            var SolrServer = typeof(SolrServer<>).MakeGenericType(core.DocumentType);
 
             builder.RegisterType(SolrServer)
                 .Named(core.Id, ISolrOperations)

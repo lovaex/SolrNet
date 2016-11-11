@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +13,33 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet.Impl.FieldSerializers;
 using SolrNet.Impl.QuerySerializers;
-using System;
-using NUnit.Framework;
 
 namespace SolrNet.Tests {
-	[TestFixture]
-	public class SolrQueryByFieldTests {
-		public class TestDocument {}
+    [TestFixture]
+    public class SolrQueryByFieldTests {
+        public class TestDocument {}
 
         public string Serialize(object q) {
             var serializer = new DefaultQuerySerializer(new DefaultFieldSerializer());
             return serializer.Serialize(q);
+        }
+
+        [Test]
+        public void Basic() {
+            var q = new SolrQueryByField("id", "123456");
+            Assert.AreEqual("id:(123456)", Serialize(q));
+        }
+
+        [Test]
+        public void EmptyValue() {
+            var q = new SolrQueryByField("id", "");
+            Assert.AreEqual("id:(\"\")", Serialize(q));
         }
 
 
@@ -44,33 +56,21 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void EmptyValue() {
-            var q = new SolrQueryByField("id", "");
-            Assert.AreEqual("id:(\"\")", Serialize(q));
-        }
-
-		[Test]
-		public void Basic() {
-			var q = new SolrQueryByField("id", "123456");
-            Assert.AreEqual("id:(123456)", Serialize(q));
-		}
-
-		[Test]
-		public void ShouldQuoteSpaces() {
-			var q = new SolrQueryByField("id", "hello world");
-            Assert.AreEqual("id:(\"hello world\")", Serialize(q));
-		}
-
-		[Test]
-		public void ShouldQuoteSpecialChar() {
-			var q = new SolrQueryByField("id", "hello+world-bye&&q||w!e(r)t{y}[u]^i\"o~p:a\\s+d;;?*/");
-            Assert.AreEqual(@"id:(hello\+world\-bye\&&q\||w\!e\(r\)t\{y\}\[u\]\^i\""o\~p\:a\\s\+d\;\;\?\*\/)", Serialize(q));
-		}
-
-        [Test]
         public void QuotedFalse() {
-            var q = new SolrQueryByField("id", "hello?wor/ld*") { Quoted = false };
+            var q = new SolrQueryByField("id", "hello?wor/ld*") {Quoted = false};
             Assert.AreEqual("id:(hello?wor/ld*)", Serialize(q));
         }
-	}
+
+        [Test]
+        public void ShouldQuoteSpaces() {
+            var q = new SolrQueryByField("id", "hello world");
+            Assert.AreEqual("id:(\"hello world\")", Serialize(q));
+        }
+
+        [Test]
+        public void ShouldQuoteSpecialChar() {
+            var q = new SolrQueryByField("id", "hello+world-bye&&q||w!e(r)t{y}[u]^i\"o~p:a\\s+d;;?*/");
+            Assert.AreEqual(@"id:(hello\+world\-bye\&&q\||w\!e\(r\)t\{y\}\[u\]\^i\""o\~p\:a\\s\+d\;\;\?\*\/)", Serialize(q));
+        }
+    }
 }

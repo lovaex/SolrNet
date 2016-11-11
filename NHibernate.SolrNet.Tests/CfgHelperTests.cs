@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -28,7 +30,7 @@ namespace NHibernate.SolrNet.Tests {
         [Test]
         public void Configure_from_servicelocator() {
             var mapper = new MReadOnlyMappingManager();
-            mapper.getRegisteredTypes += () => new[] {typeof (Entity)};
+            mapper.getRegisteredTypes += () => new[] {typeof(Entity)};
 
             var serviceLocator = new MServiceLocator();
             serviceLocator.getInstance += MServiceLocator.One<IReadOnlyMappingManager>(mapper);
@@ -52,12 +54,12 @@ namespace NHibernate.SolrNet.Tests {
 
             var provider = new MServiceProvider();
             var mapper = new MReadOnlyMappingManager();
-            mapper.getRegisteredTypes += () => new[] {typeof (Entity)};
+            mapper.getRegisteredTypes += () => new[] {typeof(Entity)};
 
             var solr = new MSolrOperations<Entity>();
             provider.getService += MServiceLocator.Table(new Dictionary<System.Type, object> {
-                {typeof (IReadOnlyMappingManager), mapper},
-                {typeof (ISolrOperations<Entity>), solr},
+                {typeof(IReadOnlyMappingManager), mapper},
+                {typeof(ISolrOperations<Entity>), solr},
             });
             var helper = new CfgHelper(provider);
             helper.Configure(nhConfig, true);
@@ -72,7 +74,7 @@ namespace NHibernate.SolrNet.Tests {
         public void Configure_with_addparameters() {
             var nhConfig = ConfigurationExtensions.GetNhConfig();
             var mapper = new MReadOnlyMappingManager();
-            mapper.getRegisteredTypes += () => new[] {typeof (Entity)};
+            mapper.getRegisteredTypes += () => new[] {typeof(Entity)};
             var solr = new MSolrOperations<Entity>();
 
             var provider = new MServiceProvider();
@@ -86,7 +88,7 @@ namespace NHibernate.SolrNet.Tests {
             helper.Configure(nhConfig, true, addParameters);
             var listener = nhConfig.EventListeners.PostInsertEventListeners[0];
             Assert.IsInstanceOf<SolrNetListener<Entity>>(listener);
-            Assert.AreEqual(addParameters, ((IListenerSettings)listener).AddParameters);
+            Assert.AreEqual(addParameters, ((IListenerSettings) listener).AddParameters);
         }
 
         [Test]
@@ -97,7 +99,7 @@ namespace NHibernate.SolrNet.Tests {
             nhConfig.SetListener(ListenerType.PostInsert, mockListener);
 
             var mapper = new MReadOnlyMappingManager();
-            mapper.getRegisteredTypes += () => new[] {typeof (Entity)};
+            mapper.getRegisteredTypes += () => new[] {typeof(Entity)};
 
             var solr = new MSolrOperations<Entity>();
 
@@ -111,6 +113,5 @@ namespace NHibernate.SolrNet.Tests {
             helper.Configure(nhConfig, true);
             Assert.AreEqual(2, nhConfig.EventListeners.PostInsertEventListeners.Length);
         }
-
     }
 }

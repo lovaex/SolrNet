@@ -5,17 +5,17 @@ namespace SolrNet {
     /// <summary>
     /// Money type, for use with Solr CurrencyField
     /// </summary>
-    [Serializable]    
+    [Serializable]
     public class Money {
-        /// <summary>
-        /// Nominal value
-        /// </summary>
-        public readonly decimal Value;
-
         /// <summary>
         /// Currency code (e.g. USD)
         /// </summary>
         public readonly string Currency;
+
+        /// <summary>
+        /// Nominal value
+        /// </summary>
+        public readonly decimal Value;
 
         /// <summary>
         /// Money type, for use with Solr CurrencyField

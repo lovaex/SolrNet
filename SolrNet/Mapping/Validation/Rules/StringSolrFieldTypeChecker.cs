@@ -28,10 +28,10 @@ namespace SolrNet.Mapping.Validation.Rules {
         /// </summary>
         public StringSolrFieldTypeChecker()
             : base(new[] {"solr.StrField", "solr.TextField"},
-                   null) {}
+                null) {}
 
         public override bool CanHandleType(Type propertyType) {
-            return propertyType == typeof (string);
+            return propertyType == typeof(string);
         }
     }
 }

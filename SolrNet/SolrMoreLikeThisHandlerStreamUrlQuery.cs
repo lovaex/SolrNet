@@ -16,7 +16,8 @@ namespace SolrNet {
             this.url = url;
         }
 
-        public Uri Url {
+        public Uri Url
+        {
             get { return url; }
         }
 

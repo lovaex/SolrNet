@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +13,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace SolrNet {
     /// <summary>
     /// Date faceting result
     /// </summary>
     public class DateFacetingResult {
+        /// <summary>
+        /// Date faceting result
+        /// </summary>
+        public DateFacetingResult() {
+            DateResults = new List<KeyValuePair<DateTime, int>>();
+            OtherResults = new Dictionary<FacetDateOther, int>();
+        }
 
-		/// <summary>
-		/// Date range gap (e.g. "+1DAY")
-		/// </summary>
+        /// <summary>
+        /// Date range gap (e.g. "+1DAY")
+        /// </summary>
         public string Gap { get; set; }
 
         /// <summary>
@@ -33,22 +42,14 @@ namespace SolrNet {
         /// </summary>
         public DateTime End { get; set; }
 
-		/// <summary>
-		/// The date faceting results.
-		/// </summary>
-		public IList<KeyValuePair<DateTime, int>> DateResults { get; set; }
+        /// <summary>
+        /// The date faceting results.
+        /// </summary>
+        public IList<KeyValuePair<DateTime, int>> DateResults { get; set; }
 
         /// <summary>
         /// Other date faceting results.
         /// </summary>
         public IDictionary<FacetDateOther, int> OtherResults { get; set; }
-
-        /// <summary>
-        /// Date faceting result
-        /// </summary>
-		public DateFacetingResult() {
-			DateResults = new List<KeyValuePair<DateTime, int>>();
-            OtherResults = new Dictionary<FacetDateOther, int>();
-        }
     }
 }

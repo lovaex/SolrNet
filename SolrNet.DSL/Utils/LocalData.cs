@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2005 - 2007 Ayende Rahien (ayende@ayende.com)
 // All rights reserved.
 // 
@@ -24,20 +25,29 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 #endregion
 
 using System;
 using System.Collections;
 using System.Web;
 
-namespace SolrNet.DSL.Utils
-{
-    internal class Local
-    {
+namespace SolrNet.DSL.Utils {
+    internal class Local {
         static ILocalData current = new LocalData();
         static object LocalDataHashtableKey = new object();
-        private class LocalData : ILocalData
+
+        public static ILocalData Data
         {
+            get { return current; }
+        }
+
+        public static bool RunningInWeb
+        {
+            get { return HttpContext.Current != null; }
+        }
+
+        private class LocalData : ILocalData {
             [ThreadStatic]
             static Hashtable thread_hashtable;
 
@@ -45,16 +55,14 @@ namespace SolrNet.DSL.Utils
             {
                 get
                 {
-                    if (!RunningInWeb)
-                    {
+                    if (!RunningInWeb) {
                         return thread_hashtable ??
-                        (
-                            thread_hashtable = new Hashtable()
-                        );
+                               (
+                                   thread_hashtable = new Hashtable()
+                               );
                     }
-                    Hashtable web_hashtable = HttpContext.Current.Items[LocalDataHashtableKey] as Hashtable;
-                    if(web_hashtable==null)
-                    {
+                    var web_hashtable = HttpContext.Current.Items[LocalDataHashtableKey] as Hashtable;
+                    if (web_hashtable == null) {
                         HttpContext.Current.Items[LocalDataHashtableKey] = web_hashtable = new Hashtable();
                     }
                     return web_hashtable;
@@ -67,20 +75,9 @@ namespace SolrNet.DSL.Utils
                 set { Local_Hashtable[key] = value; }
             }
 
-            public void Clear()
-            {
+            public void Clear() {
                 Local_Hashtable.Clear();
             }
-        }
-
-        public static ILocalData Data
-        {
-            get { return current; }
-        }
-
-        public static bool RunningInWeb
-        {
-            get { return HttpContext.Current != null; }
         }
     }
 }

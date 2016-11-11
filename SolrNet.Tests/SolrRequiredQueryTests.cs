@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Impl.FieldSerializers;
 using SolrNet.Impl.QuerySerializers;
@@ -23,38 +23,9 @@ using SolrNet.Impl.QuerySerializers;
 namespace SolrNet.Tests {
     [TestFixture]
     public class SolrRequiredQueryTests {
-
         public string Serialize(object q) {
             var serializer = new DefaultQuerySerializer(new DefaultFieldSerializer());
             return serializer.Serialize(q);
-        }
-
-        [Test]
-        public void SimpleQuery() {
-            var q = new SolrQuery("desc:samsung");
-            var requiredq = new SolrRequiredQuery(q);
-            Assert.AreEqual("+desc:samsung", Serialize(requiredq));
-        }
-
-        [Test]
-        public void QueryByField() {
-            var q = new SolrQueryByField("desc", "samsung");
-            var requiredq = new SolrRequiredQuery(q);
-            Assert.AreEqual("+desc:(samsung)", Serialize(requiredq));
-        }
-
-        [Test]
-        public void RangeQuery() {
-            var q = new SolrQueryByRange<decimal>("price", 100, 200);
-            var requiredq = new SolrRequiredQuery(q);
-            Assert.AreEqual("+price:[100 TO 200]", Serialize(requiredq));
-        }
-
-        [Test]
-        public void QueryInList() {
-            var q = new SolrQueryInList("desc", "samsung", "hitachi", "fujitsu");
-            var requiredq = new SolrRequiredQuery(q);
-            Assert.AreEqual("+(desc:((samsung) OR (hitachi) OR (fujitsu)))", Serialize(requiredq));
         }
 
         [Test]
@@ -71,8 +42,36 @@ namespace SolrNet.Tests {
         }
 
         [Test]
+        public void QueryByField() {
+            var q = new SolrQueryByField("desc", "samsung");
+            var requiredq = new SolrRequiredQuery(q);
+            Assert.AreEqual("+desc:(samsung)", Serialize(requiredq));
+        }
+
+        [Test]
+        public void QueryInList() {
+            var q = new SolrQueryInList("desc", "samsung", "hitachi", "fujitsu");
+            var requiredq = new SolrRequiredQuery(q);
+            Assert.AreEqual("+(desc:((samsung) OR (hitachi) OR (fujitsu)))", Serialize(requiredq));
+        }
+
+        [Test]
+        public void RangeQuery() {
+            var q = new SolrQueryByRange<decimal>("price", 100, 200);
+            var requiredq = new SolrRequiredQuery(q);
+            Assert.AreEqual("+price:[100 TO 200]", Serialize(requiredq));
+        }
+
+        [Test]
         public void RequiredQuery_is_AbstractSolrQuery() {
-            AbstractSolrQuery q = new SolrQuery("").Required();
+            var q = new SolrQuery("").Required();
+        }
+
+        [Test]
+        public void SimpleQuery() {
+            var q = new SolrQuery("desc:samsung");
+            var requiredq = new SolrRequiredQuery(q);
+            Assert.AreEqual("+desc:samsung", Serialize(requiredq));
         }
     }
 }

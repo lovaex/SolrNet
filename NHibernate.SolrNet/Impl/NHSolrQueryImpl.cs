@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -22,7 +24,7 @@ using NHibernate.Engine.Query;
 using NHibernate.Impl;
 using SolrNet;
 using SolrNet.Commands.Parameters;
-using Order=NHibernate.Criterion.Order;
+using Order = NHibernate.Criterion.Order;
 
 namespace NHibernate.SolrNet.Impl {
     /// <summary>
@@ -32,9 +34,17 @@ namespace NHibernate.SolrNet.Impl {
         private readonly QueryOptions options = new QueryOptions();
         private readonly IServiceProvider provider;
 
-        public NHSolrQueryImpl(IServiceProvider provider, string queryString, FlushMode flushMode, ISessionImplementor session, ParameterMetadata parameterMetadata) : 
+        public NHSolrQueryImpl(IServiceProvider provider, string queryString, FlushMode flushMode, ISessionImplementor session, ParameterMetadata parameterMetadata) :
             base(queryString, flushMode, session, parameterMetadata) {
             this.provider = provider;
+        }
+
+        /// <summary>
+        /// Null
+        /// </summary>
+        protected override IDictionary<string, LockMode> LockModes
+        {
+            get { return null; }
         }
 
         /// <summary>
@@ -99,19 +109,6 @@ namespace NHibernate.SolrNet.Impl {
         }
 
         /// <summary>
-        /// Null
-        /// </summary>
-        protected override IDictionary<string, LockMode> LockModes {
-            get { return null; }
-        }
-
-        private ICollection<T> Execute<T>() {
-            var solrType = typeof(ISolrReadOnlyOperations<>).MakeGenericType(typeof(T));
-            var solr = (ISolrReadOnlyOperations<T>) provider.GetService(solrType);
-            return solr.Query(QueryString, options);
-        }
-
-        /// <summary>
         /// Set the maximum number of rows to retrieve.
         /// </summary>
         /// <param name="maxResults">The maximum number of rows to retreive</param>
@@ -131,10 +128,6 @@ namespace NHibernate.SolrNet.Impl {
             return this;
         }
 
-        private SortOrder ConvertOrder(Order o) {
-            return SortOrder.Parse(o.ToString());
-        }
-
         /// <summary>
         /// Sets sort order
         /// </summary>
@@ -143,6 +136,16 @@ namespace NHibernate.SolrNet.Impl {
         public INHSolrQuery SetSort(Order o) {
             options.OrderBy = new[] {ConvertOrder(o)};
             return this;
+        }
+
+        private ICollection<T> Execute<T>() {
+            var solrType = typeof(ISolrReadOnlyOperations<>).MakeGenericType(typeof(T));
+            var solr = (ISolrReadOnlyOperations<T>) provider.GetService(solrType);
+            return solr.Query(QueryString, options);
+        }
+
+        private SortOrder ConvertOrder(Order o) {
+            return SortOrder.Parse(o.ToString());
         }
     }
 }

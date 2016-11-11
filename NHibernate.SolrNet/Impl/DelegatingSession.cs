@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -347,46 +349,56 @@ namespace NHibernate.SolrNet.Impl {
             return session.GetSession(entityMode);
         }
 
-        public EntityMode ActiveEntityMode {
+        public EntityMode ActiveEntityMode
+        {
             get { return session.ActiveEntityMode; }
         }
 
-        public FlushMode FlushMode {
+        public FlushMode FlushMode
+        {
             get { return session.FlushMode; }
             set { session.FlushMode = value; }
         }
 
-        public CacheMode CacheMode {
+        public CacheMode CacheMode
+        {
             get { return session.CacheMode; }
             set { session.CacheMode = value; }
         }
 
-        public ISessionFactory SessionFactory {
+        public ISessionFactory SessionFactory
+        {
             get { return session.SessionFactory; }
         }
 
-        public IDbConnection Connection {
+        public IDbConnection Connection
+        {
             get { return session.Connection; }
         }
 
-        public bool IsOpen {
+        public bool IsOpen
+        {
             get { return session.IsOpen; }
         }
 
-        public bool IsConnected {
+        public bool IsConnected
+        {
             get { return session.IsConnected; }
         }
 
-        public bool DefaultReadOnly {
+        public bool DefaultReadOnly
+        {
             get { return session.DefaultReadOnly; }
             set { session.DefaultReadOnly = value; }
         }
 
-        public ITransaction Transaction {
+        public ITransaction Transaction
+        {
             get { return session.Transaction; }
         }
 
-        public ISessionStatistics Statistics {
+        public ISessionStatistics Statistics
+        {
             get { return session.Statistics; }
         }
     }

@@ -1,20 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SolrNet
-{
+namespace SolrNet {
     /// <summary>
     /// By default, the ranges used to compute date faceting between facet.date.start and facet.date.end are all inclusive of both endpoints, 
     /// while the the "before" and "after" ranges are not inclusive. This behavior can be modified by the facet.date.include param, which can be any combination of the following options...
     /// </summary>
-    public class FacetDateInclude
-    {
+    public class FacetDateInclude {
         protected readonly string value;
 
-        protected FacetDateInclude(string value)
-        {
+        protected FacetDateInclude(string value) {
             this.value = value;
         }
 
@@ -60,21 +52,18 @@ namespace SolrNet
             get { return new FacetDateInclude("all"); }
         }
 
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             var o = obj as FacetDateInclude;
             if (o == null)
                 return false;
             return o.value == value;
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return value.GetHashCode();
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return value;
         }
     }

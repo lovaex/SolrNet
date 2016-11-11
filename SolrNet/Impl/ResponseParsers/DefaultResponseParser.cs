@@ -1,8 +1,7 @@
-﻿using System;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace SolrNet.Impl.ResponseParsers {
-    public class DefaultResponseParser<T>: ISolrAbstractResponseParser<T> {
+    public class DefaultResponseParser<T> : ISolrAbstractResponseParser<T> {
         private readonly AggregateResponseParser<T> parser;
 
         public DefaultResponseParser(ISolrDocumentResponseParser<T> docParser) {
@@ -21,7 +20,7 @@ namespace SolrNet.Impl.ResponseParsers {
                 new TermsResponseParser<T>(),
                 new MoreLikeThisHandlerMatchResponseParser<T>(docParser),
                 new InterestingTermsResponseParser<T>(),
-				new TermVectorResultsParser<T>(),
+                new TermVectorResultsParser<T>(),
                 new DebugResponseParser<T>()
             });
         }

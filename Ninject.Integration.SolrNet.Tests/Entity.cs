@@ -1,6 +1,5 @@
 ﻿// 
+
 namespace Ninject.Integration.SolrNet.Tests {
-    public class Entity {
-         
-    }
+    public class Entity {}
 }

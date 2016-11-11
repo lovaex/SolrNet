@@ -5,6 +5,16 @@ namespace AutofacContrib.SolrNet.Config {
     /// Solr cores / instances configuration
     /// </summary>
     public class SolrServers : ConfigurationElementCollection {
+        public override ConfigurationElementCollectionType CollectionType
+        {
+            get { return ConfigurationElementCollectionType.BasicMap; }
+        }
+
+        protected override string ElementName
+        {
+            get { return "server"; }
+        }
+
         /// <summary>
         /// Adds a new core / instance to the config
         /// </summary>
@@ -20,14 +30,6 @@ namespace AutofacContrib.SolrNet.Config {
         protected override object GetElementKey(ConfigurationElement element) {
             var solrServerElement = (SolrServerElement) element;
             return solrServerElement.Url + solrServerElement.DocumentType;
-        }
-
-        public override ConfigurationElementCollectionType CollectionType {
-            get { return ConfigurationElementCollectionType.BasicMap; }
-        }
-
-        protected override string ElementName {
-            get { return "server"; }
         }
     }
 }

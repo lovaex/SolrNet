@@ -1,12 +1,34 @@
-﻿using System;
-
-namespace SolrNet.Impl 
-{
+﻿namespace SolrNet.Impl {
     /// <summary>
     /// ReplicationDetailsResponse class
     /// </summary>
-    public class ReplicationDetailsResponse
-    {
+    public class ReplicationDetailsResponse {
+        /// <summary>
+        /// ReplicationDetailsResponse constructor
+        /// </summary>
+        /// <param name="ResponseHeader"></param>
+        /// <param name="IndexSize"></param>
+        /// <param name="IndexPath"></param>
+        /// <param name="IsMaster"></param>
+        /// <param name="IsSlave"></param>
+        /// <param name="IndexVersion"></param>
+        /// <param name="Generation"></param>
+        /// <param name="IsReplicating"></param>
+        /// <param name="TotalPercent"></param>
+        /// <param name="TimeRemaining"></param>
+        public ReplicationDetailsResponse(ResponseHeader ResponseHeader, string IndexSize, string IndexPath, string IsMaster, string IsSlave, long IndexVersion, long Generation, string IsReplicating, string TotalPercent, string TimeRemaining) {
+            responseHeader = ResponseHeader;
+            indexSize = IndexSize;
+            indexPath = IndexPath;
+            isMaster = IsMaster;
+            isSlave = IsSlave;
+            indexVersion = IndexVersion;
+            generation = Generation;
+            isReplicating = IsReplicating;
+            totalPercent = TotalPercent;
+            timeRemaining = TimeRemaining;
+        }
+
         /// <summary>
         /// Gets or sets the Core's Index Result.
         /// </summary>
@@ -56,33 +78,5 @@ namespace SolrNet.Impl
         /// Time remaining.
         /// </summary>
         public string timeRemaining { get; private set; }
-
-        /// <summary>
-        /// ReplicationDetailsResponse constructor
-        /// </summary>
-        /// <param name="ResponseHeader"></param>
-        /// <param name="IndexSize"></param>
-        /// <param name="IndexPath"></param>
-        /// <param name="IsMaster"></param>
-        /// <param name="IsSlave"></param>
-        /// <param name="IndexVersion"></param>
-        /// <param name="Generation"></param>
-        /// <param name="IsReplicating"></param>
-        /// <param name="TotalPercent"></param>
-        /// <param name="TimeRemaining"></param>
-        public ReplicationDetailsResponse(ResponseHeader ResponseHeader, string IndexSize, string IndexPath, string IsMaster, string IsSlave, long IndexVersion, long Generation, string IsReplicating, string TotalPercent, string TimeRemaining)
-        {
-            responseHeader = ResponseHeader;
-            indexSize = IndexSize;
-            indexPath = IndexPath;
-            isMaster = IsMaster;
-            isSlave = IsSlave;
-            indexVersion = IndexVersion;
-            generation = Generation;
-            isReplicating = IsReplicating;
-            totalPercent = TotalPercent;
-            timeRemaining = TimeRemaining;
-        }
-
     }
 }

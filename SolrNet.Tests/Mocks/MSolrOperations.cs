@@ -8,6 +8,10 @@ using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MSolrOperations<T> : ISolrOperations<T> {
+        public MFunc<T, AddParameters, ResponseHeader> addDocParams;
+
+        public MFunc<string, QueryOptions, SolrQueryResults<T>> queryStringOptions;
+
         public SolrQueryResults<T> Query(ISolrQuery query, QueryOptions options) {
             throw new NotImplementedException();
         }
@@ -35,8 +39,6 @@ namespace SolrNet.Tests.Mocks {
         public SolrQueryResults<T> Query(string q, ICollection<SortOrder> orders) {
             throw new NotImplementedException();
         }
-
-        public MFunc<string, QueryOptions, SolrQueryResults<T>> queryStringOptions;
 
         public SolrQueryResults<T> Query(string q, QueryOptions options) {
             return queryStringOptions.Invoke(q, options);
@@ -69,8 +71,6 @@ namespace SolrNet.Tests.Mocks {
         public ResponseHeader Add(T doc) {
             throw new NotImplementedException();
         }
-
-        public MFunc<T, AddParameters, ResponseHeader> addDocParams;
 
         public ResponseHeader Add(T doc, AddParameters parameters) {
             return addDocParams.Invoke(doc, parameters);

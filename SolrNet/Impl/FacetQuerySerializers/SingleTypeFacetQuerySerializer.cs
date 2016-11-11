@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -20,7 +22,7 @@ using System.Collections.Generic;
 namespace SolrNet.Impl.FacetQuerySerializers {
     public abstract class SingleTypeFacetQuerySerializer<T> : ISolrFacetQuerySerializer {
         public bool CanHandleType(Type t) {
-            return t == typeof (T);
+            return t == typeof(T);
         }
 
         public IEnumerable<KeyValuePair<string, string>> Serialize(object q) {

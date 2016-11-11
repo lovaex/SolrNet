@@ -31,17 +31,6 @@ namespace SolrNet.Impl {
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
     public class SolrQueryExecuter<T> : ISolrQueryExecuter<T> {
-        private readonly ISolrAbstractResponseParser<T> resultParser;
-        private readonly ISolrMoreLikeThisHandlerQueryResultsParser<T> mlthResultParser;
-        private readonly ISolrConnection connection;
-        private readonly ISolrQuerySerializer querySerializer;
-        private readonly ISolrFacetQuerySerializer facetQuerySerializer;
-
-        /// <summary>
-        /// When the row count is not defined, use this row count by default
-        /// </summary>
-        public int DefaultRows { get; set; }
-
         /// <summary>
         /// When row limit is not defined, this value is used
         /// </summary>
@@ -57,15 +46,11 @@ namespace SolrNet.Impl {
         /// </summary>
         public static readonly string DefaultMoreLikeThisHandler = "/mlt";
 
-        /// <summary>
-        /// Solr query request handler to use. By default "/select"
-        /// </summary>
-        public string Handler { get; set; }
-
-        /// <summary>
-        /// Solr request handler to use for MoreLikeThis-handler queries. By default "/mlt"
-        /// </summary>
-        public string MoreLikeThisHandler { get; set; }
+        private readonly ISolrConnection connection;
+        private readonly ISolrFacetQuerySerializer facetQuerySerializer;
+        private readonly ISolrMoreLikeThisHandlerQueryResultsParser<T> mlthResultParser;
+        private readonly ISolrQuerySerializer querySerializer;
+        private readonly ISolrAbstractResponseParser<T> resultParser;
 
         /// <summary>
         /// Constructor
@@ -87,6 +72,47 @@ namespace SolrNet.Impl {
         }
 
         /// <summary>
+        /// When the row count is not defined, use this row count by default
+        /// </summary>
+        public int DefaultRows { get; set; }
+
+        /// <summary>
+        /// Solr query request handler to use. By default "/select"
+        /// </summary>
+        public string Handler { get; set; }
+
+        /// <summary>
+        /// Solr request handler to use for MoreLikeThis-handler queries. By default "/mlt"
+        /// </summary>
+        public string MoreLikeThisHandler { get; set; }
+
+        /// <summary>
+        /// Executes the query and returns results
+        /// </summary>
+        /// <returns>query results</returns>
+        public SolrQueryResults<T> Execute(ISolrQuery q, QueryOptions options) {
+            var param = GetAllParameters(q, options);
+            var results = new SolrQueryResults<T>();
+            var r = connection.Get(Handler, param);
+            var xml = XDocument.Parse(r);
+            resultParser.Parse(xml, results);
+            return results;
+        }
+
+        /// <summary>
+        /// Executes a MoreLikeThis handler query
+        /// </summary>
+        /// <param name="q"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public SolrMoreLikeThisHandlerResults<T> Execute(SolrMLTQuery q, MoreLikeThisHandlerQueryOptions options) {
+            var param = GetAllMoreLikeThisHandlerParameters(q, options).ToList();
+            var r = connection.Get(MoreLikeThisHandler, param);
+            var qr = mlthResultParser.Parse(r);
+            return qr;
+        }
+
+        /// <summary>
         /// Serializes common query parameters
         /// </summary>
         /// <param name="options"></param>
@@ -97,8 +123,8 @@ namespace SolrNet.Impl {
 
             if (options.StartOrCursor != null) {
                 yield return options.StartOrCursor.Switch(
-                                    start => KV.Create("start", start.Row.ToString()),
-                                    cursor => KV.Create("cursorMark", cursor.ToString()));
+                    start => KV.Create("start", start.Row.ToString()),
+                    cursor => KV.Create("cursorMark", cursor.ToString()));
             } else if (options.Start.HasValue) {
                 yield return KV.Create("start", options.Start.ToString());
             }
@@ -119,7 +145,7 @@ namespace SolrNet.Impl {
                 foreach (var p in options.ExtraParams)
                     yield return p;
 
-            if (options.Debug) 
+            if (options.Debug)
                 yield return KV.Create("debugQuery", "true");
         }
 
@@ -160,8 +186,8 @@ namespace SolrNet.Impl {
             foreach (var p in GetCollapseQueryOptions(options))
                 yield return p;
 
-			foreach (var p in GetTermVectorQueryOptions(options))
-				yield return p;
+            foreach (var p in GetTermVectorQueryOptions(options))
+                yield return p;
 
             foreach (var p in GetGroupingQueryOptions(options))
                 yield return p;
@@ -182,9 +208,9 @@ namespace SolrNet.Impl {
         public IEnumerable<KeyValuePair<string, string>> GetAllMoreLikeThisHandlerParameters(SolrMLTQuery query, MoreLikeThisHandlerQueryOptions options) {
             yield return
                 query.Switch<KeyValuePair<string, string>>(
-                             query: q => KV.Create("q", querySerializer.Serialize(q)),
-                             streamBody: body => KV.Create("stream.body", body),
-                             streamUrl: url => KV.Create("stream.url", url.ToString()));
+                    query : q => KV.Create("q", querySerializer.Serialize(q)),
+                    streamBody : body => KV.Create("stream.body", body),
+                    streamUrl : url => KV.Create("stream.url", url.ToString()));
 
             if (options == null)
                 yield break;
@@ -455,16 +481,16 @@ namespace SolrNet.Impl {
             }
         }
 
-		/// <summary>
-		/// Gets the Solr parameters for collapse queries
-		/// </summary>
-		/// <param name="options"></param>
-		/// <returns></returns>
-		public static IEnumerable<KeyValuePair<string, string>> GetTermVectorQueryOptions(QueryOptions options) {
-			if (options.TermVector == null || !options.TermVector.Fields.Any())
-				yield break;
+        /// <summary>
+        /// Gets the Solr parameters for collapse queries
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static IEnumerable<KeyValuePair<string, string>> GetTermVectorQueryOptions(QueryOptions options) {
+            if (options.TermVector == null || !options.TermVector.Fields.Any())
+                yield break;
 
-			yield return KV.Create("tv", "true");
+            yield return KV.Create("tv", "true");
             if (options.TermVector.Fields != null) {
                 var fields = string.Join(",", options.TermVector.Fields.ToArray());
                 if (!string.IsNullOrEmpty(fields))
@@ -473,7 +499,7 @@ namespace SolrNet.Impl {
 
             foreach (var o in GetTermVectorParameterOptions(options.TermVector.Options).Distinct())
                 yield return KV.Create(o, "true");
-		}
+        }
 
         /// <summary>
         /// Gets the Solr parameters for collapse queries
@@ -486,10 +512,8 @@ namespace SolrNet.Impl {
 
             yield return KV.Create("group", true.ToString().ToLowerInvariant());
 
-            if (options.Grouping.Fields != null)
-            {
-                foreach (var groupfield in options.Grouping.Fields)
-                {
+            if (options.Grouping.Fields != null) {
+                foreach (var groupfield in options.Grouping.Fields) {
                     if (string.IsNullOrEmpty(groupfield))
                         continue;
                     yield return KV.Create("group.field", groupfield);
@@ -505,10 +529,8 @@ namespace SolrNet.Impl {
             if (options.Grouping.Main.HasValue)
                 yield return KV.Create("group.main", options.Grouping.Main.ToString().ToLowerInvariant());
 
-            if (options.Grouping.Query != null)
-            {
-                foreach (var query in options.Grouping.Query.Where(query => query != null))
-                {
+            if (options.Grouping.Query != null) {
+                foreach (var query in options.Grouping.Query.Where(query => query != null)) {
                     yield return KV.Create("group.query", querySerializer.Serialize(query));
                 }
             }
@@ -542,8 +564,8 @@ namespace SolrNet.Impl {
 
             if (options.MinOrMaxField != null)
                 yield return options.MinOrMaxField.Switch<KeyValuePair<string, string>>(
-                    min: x => KV.Create("min", x.Field),
-                    max: x => KV.Create("max", x.Field));
+                    min : x => KV.Create("min", x.Field),
+                    max : x => KV.Create("max", x.Field));
         }
 
         public static IEnumerable<KeyValuePair<string, string>> GetExpandOptions(ExpandParameters parameters, Func<ISolrQuery, string> serializer) {
@@ -573,8 +595,7 @@ namespace SolrNet.Impl {
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        public static IEnumerable<KeyValuePair<string, string>> GetCollapseExpandOptions(CollapseExpandParameters options, Func<ISolrQuery, string> serializer)
-        {
+        public static IEnumerable<KeyValuePair<string, string>> GetCollapseExpandOptions(CollapseExpandParameters options, Func<ISolrQuery, string> serializer) {
             if (options == null)
                 yield break;
 
@@ -660,32 +681,6 @@ namespace SolrNet.Impl {
             if (terms.RegexFlag != null)
                 foreach (var flag in terms.RegexFlag)
                     yield return KV.Create("terms.regex.flag", flag.ToString());
-        }
-
-        /// <summary>
-        /// Executes the query and returns results
-        /// </summary>
-        /// <returns>query results</returns>
-        public SolrQueryResults<T> Execute(ISolrQuery q, QueryOptions options) {
-            var param = GetAllParameters(q, options);
-            var results = new SolrQueryResults<T>();
-            var r = connection.Get(Handler, param);
-            var xml = XDocument.Parse(r);
-            resultParser.Parse(xml, results);
-            return results;
-        }
-
-        /// <summary>
-        /// Executes a MoreLikeThis handler query
-        /// </summary>
-        /// <param name="q"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public SolrMoreLikeThisHandlerResults<T> Execute(SolrMLTQuery q, MoreLikeThisHandlerQueryOptions options) {
-            var param = GetAllMoreLikeThisHandlerParameters(q, options).ToList();
-            var r = connection.Get(MoreLikeThisHandler, param);
-            var qr = mlthResultParser.Parse(r);
-            return qr;
         }
     }
 }

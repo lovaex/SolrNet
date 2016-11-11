@@ -33,10 +33,10 @@ namespace SolrNet.Impl.FieldSerializers {
         }
 
         public bool CanHandleType(Type t) {
-            return t != typeof (string) &&
-                   typeof (IEnumerable).IsAssignableFrom(t) &&
-                   !typeof (IDictionary).IsAssignableFrom(t) &&
-                   !TypeHelper.IsGenericAssignableFrom(typeof (IDictionary<,>), t);
+            return t != typeof(string) &&
+                   typeof(IEnumerable).IsAssignableFrom(t) &&
+                   !typeof(IDictionary).IsAssignableFrom(t) &&
+                   !TypeHelper.IsGenericAssignableFrom(typeof(IDictionary<,>), t);
         }
 
         public IEnumerable<PropertyNode> Serialize(object obj) {

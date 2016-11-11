@@ -37,7 +37,7 @@ namespace NHibernate.SolrNet.Tests {
         public void QueryAll() {
             var serviceLocator = new MServiceLocator();
             serviceLocator.getService += t => {
-                if (t == typeof (ISolrReadOnlyOperations<Entity>))
+                if (t == typeof(ISolrReadOnlyOperations<Entity>))
                     return mockSolr;
                 throw new Exception("unexpected type");
             };
@@ -54,14 +54,13 @@ namespace NHibernate.SolrNet.Tests {
 
         [Test]
         public void QueryAll_with_pagination() {
-
             var querySerializer = new MSolrQuerySerializer();
             querySerializer.serialize += _ => "id:123456";
 
             var serviceLocator = new MServiceLocator();
             serviceLocator.getService = MServiceLocator.Table(new Dictionary<System.Type, object> {
-                {typeof (ISolrReadOnlyOperations<Entity>), mockSolr},
-                {typeof (ISolrQuerySerializer), querySerializer},
+                {typeof(ISolrReadOnlyOperations<Entity>), mockSolr},
+                {typeof(ISolrQuerySerializer), querySerializer},
             });
 
             ServiceLocator.SetLocatorProvider(() => serviceLocator);

@@ -19,28 +19,6 @@ namespace NHibernate.SolrNet.Tests {
     public class IntegrationTests2 {
         private const string _httpSolrTest = "http://localhost:8983/solr/core0";
 
-        [Test]
-        public void InsertAGraph() {
-            using (var session = cfgHelper.OpenSession(sessionFactory)) {
-                session.FlushMode = FlushMode.Never;
-                var parent = new Parent {Id = "1", ParentProp1 = "Test"};
-
-                var child1 = parent.AddChild(new Child {ChildProp1 = "Child1", Id = "2"});
-                var child2 = parent.AddChild(new Child {ChildProp1 = "Child2", Id = "3"});
-                var child3 = parent.AddChild(new Child {ChildProp1 = "Child3", Id = "4"});
-
-                session.Save(parent);
-                session.Save(child1);
-                session.Save(child2);
-                session.Save(child3);
-                session.Flush();
-            }
-
-            var solr = ServiceLocator.Current.GetInstance<ISolrReadOnlyOperations<Dictionary<string,object>>>();
-            var all = solr.Query(SolrQuery.All);
-            Assert.AreEqual(4, all.Count);
-        }
-
         private static Configuration SetupNHibernate() {
             var cfg = ConfigurationExtensions.GetEmptyNHConfig();
             cfg.AddXmlString(
@@ -91,7 +69,7 @@ namespace NHibernate.SolrNet.Tests {
 
             Startup.Init<Child>(connection);
             Startup.Init<Parent>(connection);
-            Startup.Init<Dictionary<string,object>>(connection);
+            Startup.Init<Dictionary<string, object>>(connection);
             Startup.Container.RemoveAll<ISolrDocumentResponseParser<Dictionary<string, object>>>();
             Startup.Container.Register<ISolrDocumentResponseParser<Dictionary<string, object>>>(c => new SolrDictionaryDocumentResponseParser(c.GetInstance<ISolrFieldParser>()));
 
@@ -104,9 +82,9 @@ namespace NHibernate.SolrNet.Tests {
         private static IMappingManager Mappings(IMappingManager mapper) {
             if (mapper == null)
                 mapper = new MappingManager();
-            mapper.Add(typeof (Child).GetProperty("Id"), "id");
-            mapper.Add(typeof (Child).GetProperty("ChildProp1"), "name_s");
-            mapper.Add(typeof (Parent).GetProperty("Id"), "id");
+            mapper.Add(typeof(Child).GetProperty("Id"), "id");
+            mapper.Add(typeof(Child).GetProperty("ChildProp1"), "name_s");
+            mapper.Add(typeof(Parent).GetProperty("Id"), "id");
             mapper.Add(typeof(Parent).GetProperty("ParentProp1"), "name_s");
             return mapper;
         }
@@ -131,6 +109,28 @@ namespace NHibernate.SolrNet.Tests {
         private Configuration cfg;
         private CfgHelper cfgHelper;
         private ISessionFactory sessionFactory;
+
+        [Test]
+        public void InsertAGraph() {
+            using (var session = cfgHelper.OpenSession(sessionFactory)) {
+                session.FlushMode = FlushMode.Never;
+                var parent = new Parent {Id = "1", ParentProp1 = "Test"};
+
+                var child1 = parent.AddChild(new Child {ChildProp1 = "Child1", Id = "2"});
+                var child2 = parent.AddChild(new Child {ChildProp1 = "Child2", Id = "3"});
+                var child3 = parent.AddChild(new Child {ChildProp1 = "Child3", Id = "4"});
+
+                session.Save(parent);
+                session.Save(child1);
+                session.Save(child2);
+                session.Save(child3);
+                session.Flush();
+            }
+
+            var solr = ServiceLocator.Current.GetInstance<ISolrReadOnlyOperations<Dictionary<string, object>>>();
+            var all = solr.Query(SolrQuery.All);
+            Assert.AreEqual(4, all.Count);
+        }
     }
 
     public class Parent {

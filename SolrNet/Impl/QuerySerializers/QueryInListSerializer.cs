@@ -16,7 +16,6 @@
 
 #endregion
 
-using System;
 using System.Linq;
 
 namespace SolrNet.Impl.QuerySerializers {
@@ -31,8 +30,8 @@ namespace SolrNet.Impl.QuerySerializers {
             if (string.IsNullOrEmpty(q.FieldName) || q.List == null || !q.List.Any())
                 return null;
 
-            var array = q.List.Select(x =>"(" + QueryByFieldSerializer.Quote(x) + ")").ToArray();
-            return "(" + serializer.Serialize(new SolrQueryByField(QueryByFieldSerializer.EscapeSpaces(q.FieldName),string.Join(" OR ",array)){Quoted = false}) + ")";
+            var array = q.List.Select(x => "(" + QueryByFieldSerializer.Quote(x) + ")").ToArray();
+            return "(" + serializer.Serialize(new SolrQueryByField(QueryByFieldSerializer.EscapeSpaces(q.FieldName), string.Join(" OR ", array)) {Quoted = false}) + ")";
         }
     }
 }

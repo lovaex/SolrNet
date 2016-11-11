@@ -3,8 +3,7 @@
 using System.Configuration;
 
 namespace Ninject.Integration.SolrNet.Config {
-    public class SolrServerElement : ConfigurationElement
-    {
+    public class SolrServerElement : ConfigurationElement {
         private const string ID = "id";
         private const string URL = "url";
         private const string DOCUMENT_TYPE = "documentType";
@@ -30,8 +29,7 @@ namespace Ninject.Integration.SolrNet.Config {
             set { base[DOCUMENT_TYPE] = value; }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format("Id: {0} Url: {1} DocType: {2}", Id, Url, DocumentType);
         }
     }

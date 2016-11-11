@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -23,14 +25,14 @@ namespace SolrNet.Mapping {
     /// Memoizing decorator for a mapping manager
     /// </summary>
     public class MemoizingMappingManager : IReadOnlyMappingManager {
-        private readonly Converter<Type, IDictionary<string,SolrFieldModel>> memoGetFields;
-        private readonly Converter<Type, SolrFieldModel> memoGetUniqueKey;
         private readonly IReadOnlyMappingManager mapper;
-        private ICollection<Type> registeredTypes;
+        private readonly Converter<Type, IDictionary<string, SolrFieldModel>> memoGetFields;
+        private readonly Converter<Type, SolrFieldModel> memoGetUniqueKey;
         private readonly object registeredTypesLock = new object();
+        private ICollection<Type> registeredTypes;
 
         public MemoizingMappingManager(IReadOnlyMappingManager mapper) {
-            memoGetFields = Memoizer.Memoize<Type, IDictionary<string,SolrFieldModel>>(mapper.GetFields);
+            memoGetFields = Memoizer.Memoize<Type, IDictionary<string, SolrFieldModel>>(mapper.GetFields);
             memoGetUniqueKey = Memoizer.Memoize<Type, SolrFieldModel>(mapper.GetUniqueKey);
             this.mapper = mapper;
         }
@@ -40,7 +42,7 @@ namespace SolrNet.Mapping {
         /// </summary>
         /// <param name="type"></param>
         /// <returns>Null if <paramref name="type"/> is not mapped</returns>
-        public IDictionary<string,SolrFieldModel> GetFields(Type type) {
+        public IDictionary<string, SolrFieldModel> GetFields(Type type) {
             return memoGetFields(type);
         }
 

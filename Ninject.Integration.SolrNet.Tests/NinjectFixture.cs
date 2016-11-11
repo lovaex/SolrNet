@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +13,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet;
 
 namespace Ninject.Integration.SolrNet.Tests {
     [TestFixture]
     public class NinjectFixture {
+        public class Entity {}
 
         [Test]
         public void ReplaceMapper() {
@@ -38,7 +39,5 @@ namespace Ninject.Integration.SolrNet.Tests {
             c.Load(new SolrNetModule("http://localhost:8983/solr"));
             var m = c.Get<ISolrOperations<Entity>>();
         }
-
-        public class Entity {}
     }
 }

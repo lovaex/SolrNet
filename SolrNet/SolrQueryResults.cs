@@ -26,6 +26,15 @@ namespace SolrNet {
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
     public class SolrQueryResults<T> : AbstractSolrQueryResults<T> {
+        public SolrQueryResults() {
+            SpellChecking = new SpellCheckResults();
+            SimilarResults = new Dictionary<string, IList<T>>();
+            Stats = new Dictionary<string, StatsResult>();
+            Collapsing = new CollapseResults();
+            Grouping = new Dictionary<string, GroupedResults<T>>();
+            Terms = new TermsResults();
+        }
+
         /// <summary>
         /// Highlight results
         /// </summary>
@@ -67,9 +76,9 @@ namespace SolrNet {
         /// </summary>
         public TermsResults Terms { get; set; }
 
-		/// <summary>
-		/// TermVectorComponent results
-		/// </summary>
+        /// <summary>
+        /// TermVectorComponent results
+        /// </summary>
         public ICollection<TermVectorDocumentResult> TermVectorResults { get; set; }
 
         /// <summary>
@@ -81,15 +90,6 @@ namespace SolrNet {
         /// Debug results
         /// </summary>
         public DebugResults Debug { set; get; }
-
-        public SolrQueryResults() {
-            SpellChecking = new SpellCheckResults();
-            SimilarResults = new Dictionary<string, IList<T>>();
-            Stats = new Dictionary<string, StatsResult>();
-            Collapsing = new CollapseResults();
-            Grouping = new Dictionary<string, GroupedResults<T>>();
-            Terms = new TermsResults();
-        }
 
         public override R Switch<R>(Func<SolrQueryResults<T>, R> query, Func<SolrMoreLikeThisHandlerResults<T>, R> moreLikeThis) {
             return query(this);

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -35,7 +37,7 @@ namespace SolrNet.Impl.ResponseParsers {
                 results.FacetQueries = ParseFacetQueries(mainFacetNode);
                 results.FacetFields = ParseFacetFields(mainFacetNode);
                 results.FacetDates = ParseFacetDates(mainFacetNode);
-				results.FacetPivots = ParseFacetPivots(mainFacetNode);
+                results.FacetPivots = ParseFacetPivots(mainFacetNode);
             }
         }
 
@@ -116,8 +118,8 @@ namespace SolrNet.Impl.ResponseParsers {
                         // not seen in Solr 1.4 to the facet date response – just ignore this element.
                         if (dateFacetingNode.Name != "int")
                             break;
-                            
-                        var count = (int) intParser.Parse(dateFacetingNode, typeof (int));
+
+                        var count = (int) intParser.Parse(dateFacetingNode, typeof(int));
                         if (name == FacetDateOther.After.ToString())
                             r.OtherResults[FacetDateOther.After] = count;
                         else if (name == FacetDateOther.Before.ToString())
@@ -134,14 +136,13 @@ namespace SolrNet.Impl.ResponseParsers {
             return r;
         }
 
-		/// <summary>
-		/// Parses facet pivot results
-		/// </summary>
-		/// <param name="node"></param>
-		/// <returns></returns>
-		public IDictionary<string, IList<Pivot>> ParseFacetPivots(XElement node)
-		{
-			var d = new Dictionary<string, IList<Pivot>>();
+        /// <summary>
+        /// Parses facet pivot results
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public IDictionary<string, IList<Pivot>> ParseFacetPivots(XElement node) {
+            var d = new Dictionary<string, IList<Pivot>>();
             var facetPivotNode = node.Elements("lst")
                 .Where(X.AttrEq("name", "facet_pivot"));
             foreach (var fieldNode in facetPivotNode.Elements()) {
@@ -149,31 +150,27 @@ namespace SolrNet.Impl.ResponseParsers {
                 d[name] = fieldNode.Elements("lst").Select(ParsePivotNode).ToArray();
             }
             return d;
-		}
+        }
 
-		public Pivot ParsePivotNode(XElement node)
-		{
-			Pivot pivot = new Pivot();
+        public Pivot ParsePivotNode(XElement node) {
+            var pivot = new Pivot();
 
             pivot.Field = node.Elements("str").First(X.AttrEq("name", "field")).Value;
             pivot.Value = node.Elements().First(X.AttrEq("name", "value")).Value;
             pivot.Count = int.Parse(node.Elements("int").First(X.AttrEq("name", "count")).Value);
 
             var childPivotNodes = node.Elements("arr").Where(X.AttrEq("name", "pivot")).ToList();
-			if (childPivotNodes.Count > 0)
-			{
-				pivot.HasChildPivots = true;
-				pivot.ChildPivots = new List<Pivot>();
+            if (childPivotNodes.Count > 0) {
+                pivot.HasChildPivots = true;
+                pivot.ChildPivots = new List<Pivot>();
 
-				foreach (var childNode in childPivotNodes.Elements())
-				{
-					pivot.ChildPivots.Add(ParsePivotNode(childNode));
-				}
-			}
+                foreach (var childNode in childPivotNodes.Elements()) {
+                    pivot.ChildPivots.Add(ParsePivotNode(childNode));
+                }
+            }
 
 
-			return pivot;
-		}
-
+            return pivot;
+        }
     }
 }

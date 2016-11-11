@@ -16,15 +16,12 @@ using SolrNet.Schema;
 using SolrNet.Utils;
 using StructureMap.SolrNetIntegration.Config;
 
-namespace StructureMap.SolrNetIntegration
-{
-    public class SolrNetRegistry : Configuration.DSL.Registry
-    {
-        public SolrNetRegistry(SolrServers solrServers)
-        {          
+namespace StructureMap.SolrNetIntegration {
+    public class SolrNetRegistry : Configuration.DSL.Registry {
+        public SolrNetRegistry(SolrServers solrServers) {
             For<IReadOnlyMappingManager>().Use<MemoizingMappingManager>()
                 .Ctor<IReadOnlyMappingManager>("mapper").Is(new AttributesMappingManager());
-            For(typeof (ISolrDocumentActivator<>)).Use(typeof (SolrDocumentActivator<>));
+            For(typeof(ISolrDocumentActivator<>)).Use(typeof(SolrDocumentActivator<>));
             For(typeof(ISolrQueryExecuter<>)).Use(typeof(SolrQueryExecuter<>));
             For<ISolrDocumentPropertyVisitor>().Use<DefaultDocumentVisitor>();
             For<IMappingValidator>().Use<MappingValidator>();
@@ -40,13 +37,13 @@ namespace StructureMap.SolrNetIntegration
 
         private void RegisterValidationRules() {
             var validationRules = new[] {
-                                            typeof(MappedPropertiesIsInSolrSchemaRule),
-                                            typeof(RequiredFieldsAreMappedRule),
-                                            typeof(UniqueKeyMatchesMappingRule),
-                                            typeof(MultivaluedMappedToCollectionRule),
-                                        };
+                typeof(MappedPropertiesIsInSolrSchemaRule),
+                typeof(RequiredFieldsAreMappedRule),
+                typeof(UniqueKeyMatchesMappingRule),
+                typeof(MultivaluedMappedToCollectionRule),
+            };
             foreach (var validationRule in validationRules)
-                For(typeof (IValidationRule)).Use(validationRule);
+                For(typeof(IValidationRule)).Use(validationRule);
         }
 
         private void RegisterSerializers() {
@@ -70,7 +67,7 @@ namespace StructureMap.SolrNetIntegration
             For<ISolrDocumentResponseParser<Dictionary<string, object>>>()
                 .Use<SolrDictionaryDocumentResponseParser>();
 
-            For(typeof (ISolrAbstractResponseParser<>)).Use(typeof (DefaultResponseParser<>));
+            For(typeof(ISolrAbstractResponseParser<>)).Use(typeof(DefaultResponseParser<>));
 
             For<ISolrHeaderResponseParser>().Use<HeaderResponseParser<string>>();
             For<ISolrExtractResponseParser>().Use<ExtractResponseParser>();
@@ -119,8 +116,7 @@ namespace StructureMap.SolrNetIntegration
                 .Child("basicServer").IsNamedInstance(core.Id + SolrBasicServer);
         }
 
-        private void AddCoresFromConfig(SolrServers solrServers)
-        {
+        private void AddCoresFromConfig(SolrServers solrServers) {
             if (solrServers == null)
                 return;
 
@@ -136,8 +132,7 @@ namespace StructureMap.SolrNetIntegration
             }
         }
 
-        private static SolrCore GetCoreFrom(SolrServerElement server)
-        {
+        private static SolrCore GetCoreFrom(SolrServerElement server) {
             var id = server.Id ?? Guid.NewGuid().ToString();
             var documentType = GetCoreDocumentType(server);
             var coreUrl = GetCoreUrl(server);
@@ -145,35 +140,30 @@ namespace StructureMap.SolrNetIntegration
             return new SolrCore(id, documentType, coreUrl);
         }
 
-        private static string GetCoreUrl(SolrServerElement server) 
-        {
+        private static string GetCoreUrl(SolrServerElement server) {
             var url = server.Url;
             if (string.IsNullOrEmpty(url))
                 throw new ConfigurationErrorsException("Core url missing in SolrNet core configuration");
             return url;
         }
 
-        private static Type GetCoreDocumentType(SolrServerElement server) 
-        {
+        private static Type GetCoreDocumentType(SolrServerElement server) {
             var documentType = server.DocumentType;
-            
+
             if (string.IsNullOrEmpty(documentType))
                 throw new ConfigurationErrorsException("Document type missing in SolrNet core configuration");
-            
+
             Type type;
-            
-            try 
-            {
+
+            try {
                 type = Type.GetType(documentType);
-            }
-            catch (Exception e) 
-            {
+            } catch (Exception e) {
                 throw new ConfigurationErrorsException(string.Format("Error getting document type '{0}'", documentType), e);
             }
-            
+
             if (type == null)
                 throw new ConfigurationErrorsException(string.Format("Error getting document type '{0}'", documentType));
-            
+
             return type;
         }
     }

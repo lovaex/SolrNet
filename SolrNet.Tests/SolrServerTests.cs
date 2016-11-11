@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -28,6 +29,39 @@ using SolrNet.Tests.Utils;
 namespace SolrNet.Tests {
     [TestFixture]
     public class SolrServerTests {
+        public class TestDocument {
+            [SolrUniqueKey]
+            public int id
+            {
+                get { return 0; }
+            }
+        }
+
+        [Test]
+        public void Add_enumerable_calls_operations_with_null_add_parameters() {
+            var basicServer = new MSolrBasicOperations<TestDocument>();
+            basicServer.addWithBoost += (docs, p) => {
+                Assert.IsNull(p);
+                return null;
+            };
+            var s = new SolrServer<TestDocument>(basicServer, null, null);
+            var t = new[] {new TestDocument(), new TestDocument()};
+            s.AddRange(t);
+            basicServer.addWithBoost.Verify();
+        }
+
+        [Test]
+        public void Add_enumerable_with_add_parameters_calls_operations_with_same_add_parameters() {
+            var parameters = new AddParameters {CommitWithin = 4343};
+            var basicServer = new MSolrBasicOperations<TestDocument>();
+            basicServer.addWithBoost += (docs, p) => {
+                Assert.AreSame(parameters, p);
+                return null;
+            };
+            var s = new SolrServer<TestDocument>(basicServer, null, null);
+            var t = new[] {new TestDocument(), new TestDocument()};
+            s.AddRange(t, parameters);
+        }
 
         [Test]
         public void Add_single_doc_calls_operations_with_null_add_parameters() {
@@ -49,7 +83,7 @@ namespace SolrNet.Tests {
 
         [Test]
         public void Add_single_doc_with_add_parameters_calls_operations_with_same_add_parameters() {
-            var parameters = new AddParameters { CommitWithin = 4343 };
+            var parameters = new AddParameters {CommitWithin = 4343};
             var basicServer = new MSolrBasicOperations<TestDocument>();
             basicServer.addWithBoost += (_, p) => {
                 Assert.AreEqual(parameters, p);
@@ -69,7 +103,7 @@ namespace SolrNet.Tests {
         [Test]
         public void AddWithBoost_single_doc_calls_operations_with_null_add_parameters() {
             var basicServer = new MSolrBasicOperations<TestDocument>();
-            basicServer.addWithBoost += (a,b) => {
+            basicServer.addWithBoost += (a, b) => {
                 Assert.IsNull(b);
                 return null;
             };
@@ -87,7 +121,7 @@ namespace SolrNet.Tests {
         [Test]
         public void AddWithBoost_single_doc_with_add_parameters_calls_operations_with_same_add_parameters() {
             var basicServer = new MSolrBasicOperations<TestDocument>();
-            var parameters = new AddParameters { CommitWithin = 4343 };
+            var parameters = new AddParameters {CommitWithin = 4343};
             var t = new TestDocument();
             basicServer.addWithBoost += (docs, p) => {
                 Assert.AreSame(parameters, p);
@@ -105,29 +139,22 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void Add_enumerable_calls_operations_with_null_add_parameters() {
-            var basicServer = new MSolrBasicOperations<TestDocument>();
-            basicServer.addWithBoost += (docs, p) => {
-                Assert.IsNull(p);
-                return null;
+        public void Commit() {
+            var basicServer = new MSolrBasicOperations<TestDocument> {
+                commit = _ => new ResponseHeader {QTime = 2}
             };
             var s = new SolrServer<TestDocument>(basicServer, null, null);
-            var t = new[] { new TestDocument(), new TestDocument() };
-            s.AddRange(t);
-            basicServer.addWithBoost.Verify();
+            var r = s.Commit();
+            Assert.AreEqual(2, r.QTime);
         }
 
         [Test]
-        public void Add_enumerable_with_add_parameters_calls_operations_with_same_add_parameters() {
-            var parameters = new AddParameters { CommitWithin = 4343 };
+        public void GetSchema() {
             var basicServer = new MSolrBasicOperations<TestDocument>();
-            basicServer.addWithBoost += (docs, p) => {
-                Assert.AreSame(parameters, p);
-                return null;
-            };
+            basicServer.getSchema += () => new SolrSchema {UniqueKey = "bla"};
             var s = new SolrServer<TestDocument>(basicServer, null, null);
-            var t = new[] { new TestDocument(), new TestDocument() };
-            s.AddRange(t, parameters);
+            var r = s.GetSchema();
+            Assert.AreEqual("bla", r.UniqueKey);
         }
 
         [Test]
@@ -137,16 +164,6 @@ namespace SolrNet.Tests {
             };
             var s = new SolrServer<TestDocument>(basicServer, null, null);
             var r = s.Ping();
-            Assert.AreEqual(2, r.QTime);
-        }
-
-        [Test]
-        public void Commit() {
-            var basicServer = new MSolrBasicOperations<TestDocument> {
-                commit = _ => new ResponseHeader { QTime = 2}
-            };
-            var s = new SolrServer<TestDocument>(basicServer, null, null);
-            var r = s.Commit();
             Assert.AreEqual(2, r.QTime);
         }
 
@@ -161,15 +178,6 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void GetSchema() {
-            var basicServer = new MSolrBasicOperations<TestDocument>();
-            basicServer.getSchema += () => new SolrSchema {UniqueKey = "bla"};            
-            var s = new SolrServer<TestDocument>(basicServer, null, null);
-            var r = s.GetSchema();
-            Assert.AreEqual("bla", r.UniqueKey);
-        }
-
-        [Test]
         public void Validate() {
             var basicServer = new MSolrBasicOperations<TestDocument>();
             basicServer.getSchema += () => new SolrSchema();
@@ -179,13 +187,6 @@ namespace SolrNet.Tests {
             s.EnumerateValidationResults().ToList();
             Assert.AreEqual(1, basicServer.getSchema.Calls);
             Assert.AreEqual(1, validator.enumerate.Calls);
-        }
-
-        public class TestDocument {
-            [SolrUniqueKey]
-            public int id {
-                get { return 0; }
-            }
         }
     }
 }
