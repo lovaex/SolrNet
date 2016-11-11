@@ -20,20 +20,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using HttpWebAdapters;
-using MbUnit.Framework;
-using Moroco;
+using HttpWebAdapters.Impl;
+using NUnit.Framework;
 using SolrNet.Exceptions;
 using SolrNet.Impl;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests {
 	[TestFixture]
 	public class SolrConnectionTests {
         private const string solrURL = "http://localhost:8983/solr";
 
-		[Test]
-		[Category("Integration")]
-		[Ignore]
+		[Test, Ignore("")]
 		public void ActualConnection() {
             var conn = new SolrConnection(solrURL) { HttpWebRequestFactory = new HttpWebRequestFactory() };
 			var p = new Dictionary<string, string>();
@@ -43,9 +41,7 @@ namespace SolrNet.Tests {
 			Console.WriteLine(conn.Get("/select/", p));
 		}
 
-		[Test]
-		[Category("Integration")]
-		[Ignore]
+        [Test, Ignore("")]
 		public void ActualConnectionWithException() {
             var conn = new SolrConnection(solrURL);
 			var p = new Dictionary<string, string>();
@@ -82,34 +78,41 @@ namespace SolrNet.Tests {
 		}
 
 		[Test]
-		[ExpectedException(typeof (SolrConnectionException))]
 		public void InvalidHostGet_ShouldThrowException() {
-		    var reqFactory = new Mocks.HttpWebRequestFactory {
-		        create = _ => new Mocks.HttpWebRequest {
-		            getResponse = () => { throw new WebException();}
-		        }
-		    };
-            var conn = new SolrConnection("http://lalala:12345") { HttpWebRequestFactory = reqFactory };
-            conn.Get("", new Dictionary<string, string>());
+		    Assert.Throws<SolrConnectionException>(() => {
+		        var reqFactory = new Mocks.HttpWebRequestFactory {
+		            create = _ => new Mocks.HttpWebRequest {
+		                getResponse = () => {
+		                    throw new WebException();
+		                }
+		            }
+		        };
+		        var conn = new SolrConnection("http://lalala:12345") {HttpWebRequestFactory = reqFactory};
+		        conn.Get("", new Dictionary<string, string>());
+		    });
 		}
 
 		[Test]
-		[ExpectedException(typeof (SolrConnectionException))]
 		public void InvalidHostPost_ShouldThrowException() {
-		    var reqFactory = new Mocks.HttpWebRequestFactory {
-		        create = _ => new Mocks.HttpWebRequest {
-		            getRequestStream = () => { throw new WebException(); },
-                    requestUri = () => new Uri("http://lalala:12345/update"),
-		        }
-		    };
-            var conn = new SolrConnection("http://lalala:12345") { HttpWebRequestFactory = reqFactory };
-            conn.Post("/update", "");
+		    Assert.Throws<SolrConnectionException>(() => {
+		        var reqFactory = new Mocks.HttpWebRequestFactory {
+		            create = _ => new Mocks.HttpWebRequest {
+		                getRequestStream = () => {
+		                    throw new WebException();
+		                },
+		                requestUri = () => new Uri("http://lalala:12345/update"),
+		            }
+		        };
+		        var conn = new SolrConnection("http://lalala:12345") {HttpWebRequestFactory = reqFactory};
+		        conn.Post("/update", "");
+		    });
 		}
 
 		[Test]
-		[ExpectedException(typeof (InvalidURLException))]
 		public void InvalidUrl_ShouldThrowException() {
-		    new SolrConnection("http:/locl");
+		    Assert.Throws<InvalidURLException>(() => {
+		        new SolrConnection("http:/locl");
+		    });
 		}
 
 		[Test]
@@ -123,13 +126,13 @@ namespace SolrNet.Tests {
 		}
 
 		[Test]
-		[ExpectedException(typeof (InvalidURLException))]
 		public void UrlNotHttp_ShouldThrowException() {
-		    new SolrConnection("ftp://pepe");
+		    Assert.Throws<InvalidURLException>(() => {
+		        new SolrConnection("ftp://pepe");
+		    });
 		}
 
-        [Test]
-        [Ignore("need to mock WebException!")]
+        [Test, Ignore("need to mock WebException!")]
         public void Cache_mocked() {
             var cache = new Mocks.MSolrCache();
             cache.get += url => {
@@ -170,8 +173,7 @@ namespace SolrNet.Tests {
             });
         }
 
-        [Test]
-        [Ignore]
+        [Test, Ignore("")]
         public void Cache() {
             var conn = new SolrConnection(solrURL);
             conn.Get("/select/", new Dictionary<string, string> {
@@ -182,8 +184,7 @@ namespace SolrNet.Tests {
             });
         }
 
-        [Test]
-        [Ignore]
+        [Test, Ignore("")]
         public void Cache_performance() {
             var conn = new SolrConnection(solrURL) {
                 Cache = new HttpRuntimeCache(),
@@ -191,8 +192,7 @@ namespace SolrNet.Tests {
             TestCache(conn);
         }
 
-        [Test]
-        [Ignore]
+        [Test, Ignore("")]
         public void NoCache_performance() {
             var conn = new SolrConnection(solrURL) {
                 Cache = new NullCache(),

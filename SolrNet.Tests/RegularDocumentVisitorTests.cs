@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using MbUnit.Framework;
-using Moroco;
+using NUnit.Framework;
 using SolrNet.Impl.DocumentPropertyVisitors;
 using SolrNet.Tests.Mocks;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests {
     [TestFixture]
@@ -36,7 +36,7 @@ namespace SolrNet.Tests {
                 v.Visit(doc, "Id", field);
                 Assert.Fail("Should have failed with invalid cast");
             } catch (ArgumentException e) {
-                Assert.Contains(e.Message, "property 'Id'");
+                Assert.That(e.Message.Contains("property 'Id'"), Is.True);
                 Console.WriteLine(e.Message);
             }
 

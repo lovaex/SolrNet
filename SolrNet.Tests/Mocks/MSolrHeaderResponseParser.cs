@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Linq;
-using Moroco;
 using SolrNet.Impl;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MSolrHeaderResponseParser : ISolrHeaderResponseParser {

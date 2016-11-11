@@ -16,13 +16,13 @@
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Framework;
-using Moroco;
+using NUnit.Framework;
 using SolrNet.Attributes;
 using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using SolrNet.Tests;
 using SolrNet.Tests.Mocks;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.DSL.Tests {
     /// <summary>
@@ -46,7 +46,7 @@ namespace SolrNet.DSL.Tests {
 
         public delegate string Writer(string s, IDictionary<string, string> q);
 
-        [FixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetup() {
             Startup.Container.Clear();
             Startup.InitContainer();

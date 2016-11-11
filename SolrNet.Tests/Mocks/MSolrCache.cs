@@ -1,6 +1,6 @@
 ﻿using System;
-using Moroco;
 using SolrNet.Impl;
+using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MSolrCache : ISolrCache {

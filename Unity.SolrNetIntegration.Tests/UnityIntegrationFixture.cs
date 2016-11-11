@@ -2,31 +2,29 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using MbUnit.Framework;
 using Microsoft.Practices.Unity;
+using NUnit.Framework;
 using SolrNet;
 using Unity.SolrNetIntegration.Config;
 
 namespace Unity.SolrNetIntegration.Tests {
     [TestFixture]
-    [Category("Integration")]
     public class UnityIntegrationFixture {
         internal static readonly SolrServers TestServers = new SolrServers {
             new SolrServerElement {
                 Id = "entity",
                 DocumentType = typeof (Entity).AssemblyQualifiedName,
-                Url = "http://localhost:8983/solr/entity",
+                Url = "http://localhost:8983/solr/core0",
             },
             new SolrServerElement {
                 Id = "entity2Dict",
                 DocumentType = typeof (Dictionary<string, object>).AssemblyQualifiedName,
-                Url = "http://localhost:8983/solr/entity2",
+                Url = "http://localhost:8983/solr/core1",
             },
             new SolrServerElement {
                 Id = "entity2",
                 DocumentType = typeof (Entity2).AssemblyQualifiedName,
-                Url = "http://localhost:8983/solr/entity2",
+                Url = "http://localhost:8983/solr/core1",
             },
         };
 
@@ -37,24 +35,26 @@ namespace Unity.SolrNetIntegration.Tests {
             {
                 var solr = container.Resolve<ISolrOperations<Entity>>();
                 solr.Ping();
-                Console.WriteLine(solr.Query(SolrQuery.All).Count);
+                var count = solr.Query(SolrQuery.All).Count;
+                Assert.That(count, Is.GreaterThan(0));
             }
         }
 
         [Test]
         public void DictionaryDocument()
         {
+            DictionaryDocumentAdd();
             using (var container = new UnityContainer())
             {
                 new SolrNetContainerConfiguration().ConfigureContainer(TestServers, container);
                 var solr = container.Resolve<ISolrOperations<Entity2>>();
                 var results = solr.Query(SolrQuery.All);
-                Assert.GreaterThan(results.Count, 0);
+                Assert.That(results.Count, Is.GreaterThan(0));
             }
         }
 
-        [Test]
-        public void DictionaryDocument_add()
+       
+        private void DictionaryDocumentAdd()
         {
             using (var container = new UnityContainer())
             {
@@ -68,6 +68,7 @@ namespace Unity.SolrNetIntegration.Tests {
                     {"popularity", 55},
                     {"timestamp", DateTime.UtcNow},
                 });
+                solr.Commit();
             }
         }
     }

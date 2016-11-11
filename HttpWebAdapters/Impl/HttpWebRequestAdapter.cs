@@ -19,7 +19,7 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
-namespace HttpWebAdapters.Adapters {
+namespace HttpWebAdapters.Impl {
 	public class HttpWebRequestAdapter : IHttpWebRequest {
 		private HttpWebRequest request;
 

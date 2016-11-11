@@ -1,13 +1,12 @@
 ﻿// 
 
 using System;
-using MbUnit.Framework;
 using Ninject.Integration.SolrNet.Config;
+using NUnit.Framework;
 using SolrNet;
 
 namespace Ninject.Integration.SolrNet.Tests {
     [TestFixture]
-    [Category("Integration")]
     public class NinjectIntegrationFixture {
         private StandardKernel kernel;
         [SetUp]
@@ -20,7 +19,7 @@ namespace Ninject.Integration.SolrNet.Tests {
         public void Ping_And_Query()
         {
             var c = new StandardKernel();
-            c.Load(new SolrNetModule("http://localhost:8983/solr"));
+            c.Load(new SolrNetModule("http://localhost:8983/solr/core0"));
             var solr = c.Get<ISolrOperations<NinjectFixture.Entity>>();
             solr.Ping();
             Console.WriteLine(solr.Query(SolrQuery.All).Count);

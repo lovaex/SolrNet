@@ -15,7 +15,7 @@
 #endregion
 
 using System;
-using MbUnit.Framework;
+using NUnit.Framework;
 
 namespace SolrNet.Tests {
     [TestFixture]
@@ -25,7 +25,8 @@ namespace SolrNet.Tests {
             var r = new RandomSortOrder("random");
             var rndSort = r.ToString();
             Console.WriteLine(rndSort);
-            Assert.Like(rndSort, "random_\\d+ asc");
+            Assert.That(rndSort.Contains("random_"), Is.True);
+            Assert.That(rndSort.Contains(" asc"), Is.True);
         }
 
         [Test]
@@ -34,7 +35,7 @@ namespace SolrNet.Tests {
             var r = new RandomSortOrder("random", seed);
             var rndSort = r.ToString();
             Console.WriteLine(rndSort);
-            Assert.Like(rndSort, string.Format("random_{0} asc", seed));
+            Assert.AreEqual(rndSort, string.Format("random_{0} asc", seed));
         }
 
         [Test]
@@ -42,7 +43,8 @@ namespace SolrNet.Tests {
             var r = new RandomSortOrder("random", Order.DESC);
             var rndSort = r.ToString();
             Console.WriteLine(rndSort);
-            Assert.Like(rndSort, "random_\\d+ desc");
+            Assert.That(rndSort.Contains("random_"), Is.True);
+            Assert.That(rndSort.Contains(" desc"), Is.True);
         }
 
         [Test]
@@ -51,7 +53,8 @@ namespace SolrNet.Tests {
             var r = new RandomSortOrder("random", seed, Order.DESC);
             var rndSort = r.ToString();
             Console.WriteLine(rndSort);
-            Assert.Like(rndSort, string.Format("random_{0} desc", seed));
+            //Assert.Like(rndSort, string.Format("random_{0} desc", seed));
+            Assert.AreEqual(rndSort, string.Format("random_{0} desc", seed));
         }
     }
 }

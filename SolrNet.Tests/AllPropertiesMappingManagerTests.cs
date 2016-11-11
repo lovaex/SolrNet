@@ -15,8 +15,7 @@
 #endregion
 
 using System;
-using MbUnit.Framework;
-using SolrNet.Exceptions;
+using NUnit.Framework;
 using SolrNet.Mapping;
 
 namespace SolrNet.Tests {
@@ -64,10 +63,11 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void SetUniqueKey_null_throws() {
-            var m = new AllPropertiesMappingManager();
-            m.SetUniqueKey(null);
+            Assert.Throws<ArgumentNullException>(() => {
+                var m = new AllPropertiesMappingManager();
+                m.SetUniqueKey(null);
+            });
         }
 
         [Test]

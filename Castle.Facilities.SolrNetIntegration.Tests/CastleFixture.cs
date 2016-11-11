@@ -14,7 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Castle.Core.Configuration;
@@ -24,7 +23,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet;
 using SolrNet.Impl;
 using SolrNet.Mapping.Validation;
@@ -34,32 +33,35 @@ namespace Castle.Facilities.SolrNetIntegration.Tests {
     [TestFixture]
     public class CastleFixture {
         [Test]
-        [ExpectedException(typeof(FacilityException))]
         public void NoConfig_throws() {
-            var container = new WindsorContainer();
-            container.AddFacility<SolrNetFacility>();
+            Assert.Throws<FacilityException>(() => {
+                var container = new WindsorContainer();
+                container.AddFacility<SolrNetFacility>();
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(FacilityException))]
         public void InvalidUrl_throws() {
-            var configStore = new DefaultConfigurationStore();
-            var configuration = new MutableConfiguration("facility");
-            configuration.Attributes.Add("type", typeof(SolrNetFacility).FullName);
-            configuration.CreateChild("solrURL", "123");
-            configStore.AddFacilityConfiguration(typeof(SolrNetFacility).FullName, configuration);
-            new WindsorContainer(configStore);
+            Assert.Throws<FacilityException>(() => {
+                var configStore = new DefaultConfigurationStore();
+                var configuration = new MutableConfiguration("facility");
+                configuration.Attributes.Add("type", typeof(SolrNetFacility).FullName);
+                configuration.CreateChild("solrURL", "123");
+                configStore.AddFacilityConfiguration(typeof(SolrNetFacility).FullName, configuration);
+                new WindsorContainer(configStore);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(FacilityException))]
         public void InvalidProtocol_throws() {
-            var configStore = new DefaultConfigurationStore();
-            var configuration = new MutableConfiguration("facility");
-            configuration.Attribute("type", typeof(SolrNetFacility).AssemblyQualifiedName);
-            configuration.CreateChild("solrURL", "ftp://localhost");
-            configStore.AddFacilityConfiguration(typeof(SolrNetFacility).FullName, configuration);
-            new WindsorContainer(configStore);
+            Assert.Throws<FacilityException>(() => {
+                var configStore = new DefaultConfigurationStore();
+                var configuration = new MutableConfiguration("facility");
+                configuration.Attribute("type", typeof(SolrNetFacility).AssemblyQualifiedName);
+                configuration.CreateChild("solrURL", "ftp://localhost");
+                configStore.AddFacilityConfiguration(typeof(SolrNetFacility).FullName, configuration);
+                new WindsorContainer(configStore);
+            });
         }
 
         [Test]
@@ -190,9 +192,9 @@ namespace Castle.Facilities.SolrNetIntegration.Tests {
                 }
             };
 
-            Assert.IsInstanceOfType<ISolrOperations<Document>>(container.Resolve<ISolrOperations<Document>>("core0-id"));
-            Assert.IsInstanceOfType<ISolrOperations<Document>>(container.Resolve<ISolrOperations<Document>>("core1-id"));
-            Assert.IsInstanceOfType<ISolrOperations<Core1Entity>>(container.Resolve<ISolrOperations<Core1Entity>>("core2-id"));
+            Assert.IsInstanceOf<ISolrOperations<Document>>(container.Resolve<ISolrOperations<Document>>("core0-id"));
+            Assert.IsInstanceOf<ISolrOperations<Document>>(container.Resolve<ISolrOperations<Document>>("core1-id"));
+            Assert.IsInstanceOf<ISolrOperations<Core1Entity>>(container.Resolve<ISolrOperations<Core1Entity>>("core2-id"));
         }
 
 
@@ -211,7 +213,7 @@ namespace Castle.Facilities.SolrNetIntegration.Tests {
             var container = new WindsorContainer();
             container.AddFacility("solr", solrFacility);
             var parser = container.Resolve<ISolrDocumentResponseParser<Dictionary<string, object>>>();
-            Assert.IsInstanceOfType<SolrDictionaryDocumentResponseParser>(parser);
+            Assert.IsInstanceOf<SolrDictionaryDocumentResponseParser>(parser);
         }
 
         [Test]
@@ -220,7 +222,7 @@ namespace Castle.Facilities.SolrNetIntegration.Tests {
             var container = new WindsorContainer();
             container.AddFacility("solr", solrFacility);
             var serializer = container.Resolve<ISolrDocumentSerializer<Dictionary<string, object>>>();
-            Assert.IsInstanceOfType<SolrDictionarySerializer>(serializer);
+            Assert.IsInstanceOf<SolrDictionarySerializer>(serializer);
         }
 
         [Test]

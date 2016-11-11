@@ -15,7 +15,7 @@
 #endregion
 
 using System.Linq;
-using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet.Exceptions;
 
 namespace SolrNet.Tests {
@@ -25,7 +25,7 @@ namespace SolrNet.Tests {
         public void All_exceptions_are_serializable() {
             var allExceptions = typeof (SolrNetException).Assembly.GetTypes().Where(t => typeof (SolrNetException).IsAssignableFrom(t));
             foreach (var e in allExceptions) {
-                Assert.IsSerializableType(e);
+                Assert.That(e.IsSerializable, Is.True);
             }
         }
     }

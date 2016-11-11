@@ -14,7 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
 using System.Collections.Generic;
 using NHibernate.Connection;
 using NHibernate.Dialect;

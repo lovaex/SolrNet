@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using MbUnit.Framework;
-using Moroco;
+using NUnit.Framework;
 using SolrNet.Attributes;
 using SolrNet.Commands.Parameters;
 using SolrNet.Exceptions;
@@ -113,7 +113,7 @@ namespace SolrNet.Tests {
                     KV.Create("literal.id", parameters.Id),
                     KV.Create("resource.name", parameters.ResourceName),
                 };
-                Assert.AreElementsEqualIgnoringOrder(expectedParams, param);
+                CollectionAssert.AreEquivalent(expectedParams, param);
                 return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.responseWithExtractContent.xml");
             };
             var docSerializer = new SolrDocumentSerializer<TestDocumentWithoutUniqueKey>(new AttributesMappingManager(), new DefaultFieldSerializer());
@@ -242,16 +242,17 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof (SolrNetException))]
         public void DeleteDocumentWithoutUniqueKey_ShouldThrow() {
-            var mapper = new MReadOnlyMappingManager();
-            mapper.getUniqueKey += t => {
-                Assert.AreEqual(typeof(TestDocumentWithoutUniqueKey), t);
-                return null;
-            };
-            var ops = new SolrServer<TestDocumentWithoutUniqueKey>(null, mapper, null);
-            ops.Delete(new TestDocumentWithoutUniqueKey());
-            Assert.AreEqual(1, mapper.getUniqueKey.Calls);
+            Assert.Throws<SolrNetException>(() => {
+                var mapper = new MReadOnlyMappingManager();
+                mapper.getUniqueKey += t => {
+                    Assert.AreEqual(typeof(TestDocumentWithoutUniqueKey), t);
+                    return null;
+                };
+                var ops = new SolrServer<TestDocumentWithoutUniqueKey>(null, mapper, null);
+                ops.Delete(new TestDocumentWithoutUniqueKey());
+                Assert.AreEqual(1, mapper.getUniqueKey.Calls);
+            });
         }
 
         [Test]
@@ -334,7 +335,7 @@ namespace SolrNet.Tests {
                     {"mlt.fl", "id"},
                     {"mlt.match.include", "true"},
                 };
-                Assert.AreElementsEqualIgnoringOrder(expectedParams, param);
+                CollectionAssert.AreEquivalent(expectedParams, param);
                 return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.responseWithInterestingTermsDetails.xml");
             };
 
@@ -363,7 +364,7 @@ namespace SolrNet.Tests {
                     {"start", start.ToString()},
                     {"rows", rows.ToString()},
                 };
-                Assert.AreElementsEqualIgnoringOrder(expectedParams, param);
+                CollectionAssert.AreEquivalent(expectedParams, param);
                 return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
             };
 
@@ -392,7 +393,7 @@ namespace SolrNet.Tests {
                     {"rows", SolrQueryExecuter<TestDocumentWithUniqueKey>.ConstDefaultRows.ToString()},
                     {"sort", "id asc,name desc"},
                 };
-                Assert.AreElementsEqualIgnoringOrder(expectedParams, param);
+                CollectionAssert.AreEquivalent(expectedParams, param);
                 return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
             };
 
@@ -430,7 +431,7 @@ namespace SolrNet.Tests {
                     {"rows", rows.ToString()},
                     {"sort", "id asc,name desc"},
                 };
-                Assert.AreElementsEqualIgnoringOrder(expectedParams, param);
+                CollectionAssert.AreEquivalent(expectedParams, param);
                 return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
             };
 
@@ -466,7 +467,7 @@ namespace SolrNet.Tests {
                     {"facet", "true"},
                     {"facet.query", "id:1"},
                 };
-                Assert.AreElementsEqualIgnoringOrder(expectedParams, param);
+                CollectionAssert.AreEquivalent(expectedParams, param);
                 return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
             };
 
@@ -499,7 +500,7 @@ namespace SolrNet.Tests {
                     {"facet.field", "id"},
                     {"f.id.facet.limit", "3"},
                 };
-                Assert.AreElementsEqualIgnoringOrder(expectedParams, param);
+                CollectionAssert.AreEquivalent(expectedParams, param);
                 return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
             };
 
@@ -525,7 +526,7 @@ namespace SolrNet.Tests {
         [Test]
         public void SearchResults_ShouldBeIterable() {
             var results = new SolrQueryResults<string>();
-            Assert.IsInstanceOfType(typeof(IEnumerable<string>), results);
+            Assert.IsInstanceOf<IEnumerable<string>>(results);
         }
     }
 }

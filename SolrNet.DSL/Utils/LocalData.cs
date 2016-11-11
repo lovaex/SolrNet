@@ -29,9 +29,8 @@
 using System;
 using System.Collections;
 using System.Web;
-using Rhino.Commons.LocalDataImpl;
 
-namespace Rhino.Commons
+namespace SolrNet.DSL.Utils
 {
     internal class Local
     {

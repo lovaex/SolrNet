@@ -17,10 +17,10 @@
 using System.Configuration;
 using Autofac;
 using AutofacContrib.SolrNet.Config;
-using MbUnit.Framework;
 using SolrNet;
 using SolrNet.Impl;
 using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace AutofacContrib.SolrNet.Tests
 {

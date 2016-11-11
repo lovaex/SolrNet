@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using MbUnit.Framework;
+using NUnit.Framework;
 using SolrNet.Impl.FieldParsers;
 
 namespace SolrNet.Tests {
@@ -30,7 +31,7 @@ namespace SolrNet.Tests {
             var xml = new XDocument();
             xml.Add(new XElement("int", "31"));
             var v = p.Parse(xml.Root, null);
-            Assert.IsInstanceOfType(typeof(float), v);
+            Assert.IsInstanceOf<float>(v);
             Assert.AreEqual(31f, v);
         }
 
@@ -42,31 +43,29 @@ namespace SolrNet.Tests {
             Assert.Throws<FormatException>(() => p.Parse(xml.Root, null));
         }
 
-        [Test]
-        [Row(typeof(string))]
-        [Row(typeof(Dictionary<,>))]
-        [Row(typeof(IDictionary<,>))]
-        [Row(typeof(IDictionary<int, int>))]
-        [Row(typeof(IDictionary))]
-        [Row(typeof(Hashtable))]
+        [TestCase(typeof(string))]
+        [TestCase(typeof(Dictionary<,>))]
+        [TestCase(typeof(IDictionary<,>))]
+        [TestCase(typeof(IDictionary<int, int>))]
+        [TestCase(typeof(IDictionary))]
+        [TestCase(typeof(Hashtable))]
         public void CollectionFieldParser_cant_handle_types(Type t) {
             var p = new CollectionFieldParser(null);
             Assert.IsFalse(p.CanHandleType(t));
         }
 
-        [Test]
-        [Row(typeof(IEnumerable))]
-        [Row(typeof(IEnumerable<>))]
-        [Row(typeof(IEnumerable<int>))]
-        [Row(typeof(ICollection))]
-        [Row(typeof(ICollection<>))]
-        [Row(typeof(ICollection<int>))]
-        [Row(typeof(IList))]
-        [Row(typeof(IList<>))]
-        [Row(typeof(IList<int>))]
-        [Row(typeof(ArrayList))]
-        [Row(typeof(List<>))]
-        [Row(typeof(List<int>))]
+        [TestCase(typeof(IEnumerable))]
+        [TestCase(typeof(IEnumerable<>))]
+        [TestCase(typeof(IEnumerable<int>))]
+        [TestCase(typeof(ICollection))]
+        [TestCase(typeof(ICollection<>))]
+        [TestCase(typeof(ICollection<int>))]
+        [TestCase(typeof(IList))]
+        [TestCase(typeof(IList<>))]
+        [TestCase(typeof(IList<int>))]
+        [TestCase(typeof(ArrayList))]
+        [TestCase(typeof(List<>))]
+        [TestCase(typeof(List<int>))]
         public void CollectionFieldParser_can_handle_types(Type t) {
             var p = new CollectionFieldParser(null);
             Assert.IsTrue(p.CanHandleType(t));
@@ -90,12 +89,15 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof(OverflowException))]
-        public void DecimalFieldParser_overflow() {
-            var p = new DecimalFieldParser();
-            var xml = new XDocument();
-            xml.Add(new XElement("item", "6.66E53"));
-            var value = (decimal)p.Parse(xml.Root, typeof(decimal));
+        public void DecimalFieldParser_overflow()
+        {
+            Assert.Throws<OverflowException>(() =>
+            {
+                var p = new DecimalFieldParser();
+                var xml = new XDocument();
+                xml.Add(new XElement("item", "6.66E53"));
+                var value = (decimal)p.Parse(xml.Root, typeof(decimal));
+            });
         }
 
         [Test]
@@ -104,7 +106,7 @@ namespace SolrNet.Tests {
             var xml = new XDocument();
             xml.Add(new XElement("str", "One"));
             var r = p.Parse(xml.Root, typeof(Numbers));
-            Assert.IsInstanceOfType(typeof(Numbers), r);
+            Assert.IsInstanceOf<Numbers>(r);
         }
 
         [Test]
@@ -113,7 +115,7 @@ namespace SolrNet.Tests {
             var xml = new XDocument();
             xml.Add(new XElement("str", "One"));
             var r = p.Parse(xml.Root, typeof(Numbers));
-            Assert.IsInstanceOfType(typeof(Numbers), r);
+            Assert.IsInstanceOf<Numbers>(r);
         }
 
         private enum Numbers {

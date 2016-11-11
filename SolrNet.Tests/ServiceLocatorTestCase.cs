@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MbUnit.Framework;
 using Microsoft.Practices.ServiceLocation;
+using NUnit.Framework;
 
 namespace SolrNet.Tests {
     /// <summary>
@@ -43,33 +44,36 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        [ExpectedException(typeof (ActivationException))]
         public void AskingForInvalidComponentShouldRaiseActivationException() {
-            locator.GetInstance<IDictionary>();
+            Assert.Throws<ActivationException>(() => {
+                locator.GetInstance<IDictionary>();
+            });
         }
 
         [Test]
         public void GetNamedInstance() {
             var instance = locator.GetInstance<ILogger>(typeof (AdvancedLogger).FullName);
-            Assert.IsInstanceOfType(typeof (AdvancedLogger), instance, "Should be an advanced logger");
+            Assert.IsInstanceOf<AdvancedLogger>(instance, "Should be an advanced logger");
         }
 
         [Test]
         public void GetNamedInstance2() {
             var instance = locator.GetInstance<ILogger>(typeof (SimpleLogger).FullName);
-            Assert.IsInstanceOfType(typeof (SimpleLogger), instance, "Should be a simple logger");
+            Assert.IsInstanceOf<SimpleLogger>(instance, "Should be a simple logger");
         }
 
         [Test]
-        [ExpectedException(typeof (ActivationException))]
         public void GetNamedInstance_WithZeroLenName() {
-            locator.GetInstance<ILogger>("");
+            Assert.Throws<ActivationException>(() => {
+                locator.GetInstance<ILogger>("");
+            });
         }
 
         [Test]
-        [ExpectedException(typeof (ActivationException))]
         public void GetUnknownInstance2() {
-            locator.GetInstance<ILogger>("test");
+            Assert.Throws<ActivationException>(() => {
+                locator.GetInstance<ILogger>("test");
+            });
         }
 
         [Test]
