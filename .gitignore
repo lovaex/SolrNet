@@ -31,4 +31,4 @@ packages/*
 .vs/*
 **/data/*
 **/logs/*
-solr_5.5.3/server/solr/hsperfdata_*/*
+solr/
