@@ -8,8 +8,15 @@ using SolrNet;
 
 namespace Castle.Facilities.SolrNetIntegration.Tests {
     [TestFixture]
-    public class CastleIntegrationFixture {
+    public class CastleIntegrationFixture
+    {
         private string solrServiceUrl = "http://localhost:8983/solr/core0";
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            DictionaryDocumentAdd();
+        }
 
         [Test]
         public void Ping_Query()
@@ -29,6 +36,7 @@ namespace Castle.Facilities.SolrNetIntegration.Tests {
         [Test]
         public void DictionaryDocument()
         {
+
             var solrFacility = new SolrNetFacility(solrServiceUrl);
             var container = new WindsorContainer();
             container.AddFacility("solr", solrFacility);
@@ -42,9 +50,8 @@ namespace Castle.Facilities.SolrNetIntegration.Tests {
                     Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
             }
         }
-
-        [Test]
-        public void DictionaryDocument_add()
+        
+        private void DictionaryDocumentAdd()
         {
             var solrFacility = new SolrNetFacility(solrServiceUrl);
             var container = new WindsorContainer();

@@ -1,5 +1,7 @@
 rd /s /q server\solr\core0
 rd /s /q server\solr\core1
+rd /s /q server\solr\core-new
+rd /s /q server\solr\core-swap
 
 mkdir server\solr\core0
 echo name=core0> server\solr\core0\core.properties
