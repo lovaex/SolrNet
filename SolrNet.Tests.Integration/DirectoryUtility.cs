@@ -8,6 +8,7 @@ namespace SolrNet.Tests.Integration
     {
         private const string TestFilePath = @"..\..\FileForTests\test.pdf";
         private const string XmlFilespath = @"..\..\FileForTests\exampledocs";
+        private const string IstanceDir = @"..\..\..\";
         private static string AssemblyDirectory
         {
             get
@@ -31,6 +32,12 @@ namespace SolrNet.Tests.Integration
             var assemblyPath = AssemblyDirectory;
 
             return Path.Combine(assemblyPath, XmlFilespath);
+        }
+
+        public static string GetIstanceDirectory()
+        {
+            var assemplyPath = AssemblyDirectory;
+            return string.Empty;
         }
     }
 }
