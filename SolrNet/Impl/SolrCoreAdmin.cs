@@ -32,6 +32,7 @@ namespace SolrNet.Impl {
         /// </remarks>
         /// <param name="coreName">The name or alias of an existing core.</param>
         /// <param name="otherName">The additional name by which this core should be known.</param>
+        [Obsolete]
         public ResponseHeader Alias(string coreName, string otherName) {
             return SendAndParseHeader(new AliasCommand(coreName, otherName));
         }

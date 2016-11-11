@@ -10,6 +10,7 @@ namespace SolrNet.Commands.Cores {
         /// </summary>
         /// <param name="coreName">Existing Name of the core.</param>
         /// <param name="aliasName">New alias to use for the same core.</param>
+        [Obsolete]
         public AliasCommand(string coreName, string aliasName) {
             if (string.IsNullOrEmpty(coreName))
                 throw new ArgumentException("Core Name must be specified.", "coreName");
