@@ -24,6 +24,8 @@ using SolrNet.Tests.Utils;
 namespace SolrNet.Tests {
     [TestFixture]
     public class CollapseResponseParserTests {
+        public class TestDoc {}
+
         [Test]
         public void Parse() {
             var parser = new CollapseResponseParser<TestDoc>();
@@ -53,7 +55,5 @@ namespace SolrNet.Tests {
             Assert.AreEqual(1, firstCollapse.CollapseCount);
             Assert.AreEqual("Belkin", firstCollapse.FieldValue);
         }
-
-        public class TestDoc {}
     }
 }

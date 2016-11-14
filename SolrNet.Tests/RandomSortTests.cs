@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -30,21 +32,21 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void RandomWithSeed() {
-            const string seed = "234asd";
-            var r = new RandomSortOrder("random", seed);
-            var rndSort = r.ToString();
-            Console.WriteLine(rndSort);
-            Assert.AreEqual(rndSort, string.Format("random_{0} asc", seed));
-        }
-
-        [Test]
         public void RandomWithOrder() {
             var r = new RandomSortOrder("random", Order.DESC);
             var rndSort = r.ToString();
             Console.WriteLine(rndSort);
             Assert.That(rndSort.Contains("random_"), Is.True);
             Assert.That(rndSort.Contains(" desc"), Is.True);
+        }
+
+        [Test]
+        public void RandomWithSeed() {
+            const string seed = "234asd";
+            var r = new RandomSortOrder("random", seed);
+            var rndSort = r.ToString();
+            Console.WriteLine(rndSort);
+            Assert.AreEqual(rndSort, string.Format("random_{0} asc", seed));
         }
 
         [Test]

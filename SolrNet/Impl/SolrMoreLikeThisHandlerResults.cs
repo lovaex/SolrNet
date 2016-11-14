@@ -8,6 +8,13 @@ namespace SolrNet.Impl {
     /// <typeparam name="T"></typeparam>
     public class SolrMoreLikeThisHandlerResults<T> : AbstractSolrQueryResults<T> {
         /// <summary>
+        /// More-like-this handler results
+        /// </summary>
+        public SolrMoreLikeThisHandlerResults() {
+            InterestingTerms = new List<KeyValuePair<string, float>>();
+        }
+
+        /// <summary>
         /// Matched document
         /// </summary>
         public T Match { get; set; }
@@ -16,13 +23,6 @@ namespace SolrNet.Impl {
         /// Interesting terms in More-like-this query
         /// </summary>
         public IList<KeyValuePair<string, float>> InterestingTerms { get; set; }
-
-        /// <summary>
-        /// More-like-this handler results
-        /// </summary>
-        public SolrMoreLikeThisHandlerResults() {
-            InterestingTerms = new List<KeyValuePair<string, float>>();
-        }
 
         /// <summary>
         /// Visitor / pattern match

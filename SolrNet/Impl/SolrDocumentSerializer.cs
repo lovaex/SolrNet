@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Web.UI;
 using System.Xml.Linq;
 
 namespace SolrNet.Impl {
@@ -26,22 +26,15 @@ namespace SolrNet.Impl {
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
     public class SolrDocumentSerializer<T> : ISolrDocumentSerializer<T> {
-        private readonly IReadOnlyMappingManager mappingManager;
+        private static readonly Regex ControlCharacters =
+            new Regex(@"[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-u10FFFF]", RegexOptions.Compiled);
+
         private readonly ISolrFieldSerializer fieldSerializer;
+        private readonly IReadOnlyMappingManager mappingManager;
 
         public SolrDocumentSerializer(IReadOnlyMappingManager mappingManager, ISolrFieldSerializer fieldSerializer) {
             this.mappingManager = mappingManager;
             this.fieldSerializer = fieldSerializer;
-        }
-
-        private static readonly Regex ControlCharacters =
-            new Regex(@"[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-u10FFFF]", RegexOptions.Compiled);
-
-        // http://stackoverflow.com/a/14323524/21239
-        public static string RemoveControlCharacters(string xml) {
-            if (xml == null)
-                return null;
-            return ControlCharacters.Replace(xml, "");
         }
 
         public XElement Serialize(T doc, double? boost) {
@@ -77,6 +70,13 @@ namespace SolrNet.Impl {
                 }
             }
             return docNode;
+        }
+
+        // http://stackoverflow.com/a/14323524/21239
+        public static string RemoveControlCharacters(string xml) {
+            if (xml == null)
+                return null;
+            return ControlCharacters.Replace(xml, "");
         }
     }
 }

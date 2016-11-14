@@ -37,13 +37,12 @@ namespace SolrNet.Mapping.Validation.Rules {
         /// A collection of <see cref="ValidationResult"/> objects with any issues found during validation.
         /// </returns>
         public IEnumerable<ValidationResult> Validate(Type documentType, SolrSchema solrSchema, IReadOnlyMappingManager mappingManager) {
-
-            foreach (SolrField solrField in solrSchema.SolrFields) {
+            foreach (var solrField in solrSchema.SolrFields) {
                 if (solrField.IsRequired) {
-                    bool fieldFoundInMappingOrCopyFields = mappingManager.GetFields(documentType).ContainsKey(solrField.Name);
+                    var fieldFoundInMappingOrCopyFields = mappingManager.GetFields(documentType).ContainsKey(solrField.Name);
 
                     if (!fieldFoundInMappingOrCopyFields) {
-                        foreach (SolrCopyField copyField in solrSchema.SolrCopyFields) {
+                        foreach (var copyField in solrSchema.SolrCopyFields) {
                             if (copyField.Destination.Equals(solrField.Name)) {
                                 fieldFoundInMappingOrCopyFields = true;
                                 break;
@@ -53,7 +52,7 @@ namespace SolrNet.Mapping.Validation.Rules {
 
                     if (!fieldFoundInMappingOrCopyFields)
                         yield return new ValidationError(String.Format("Required field '{0}' in the Solr schema is not mapped in type '{1}'.",
-                                                     solrField.Name, documentType.FullName));
+                            solrField.Name, documentType.FullName));
                 }
             }
         }

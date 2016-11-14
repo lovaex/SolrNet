@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Xml.Linq;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Impl.FieldParsers;
 
@@ -51,24 +52,24 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void ParseNullableInt() {
-            var doc = new XDocument();
-            doc.Add(new XElement("int", "31"));
-            var p = new DefaultFieldParser();
-            var i = p.Parse(doc.Root, typeof (int?));
-            Assert.IsInstanceOf<int?>(i);
-            var ii = (int?) i;
-            Assert.IsTrue(ii.HasValue);
-            Assert.AreEqual(31, ii.Value);
-        }
-
-        [Test]
         public void ParseLocation() {
             var doc = new XDocument();
             doc.Add(new XElement("str", "31.2,-44.2"));
             var p = new DefaultFieldParser();
             var l = p.Parse(doc.Root, typeof(Location));
             Assert.IsInstanceOf<Location>(l);
+        }
+
+        [Test]
+        public void ParseNullableInt() {
+            var doc = new XDocument();
+            doc.Add(new XElement("int", "31"));
+            var p = new DefaultFieldParser();
+            var i = p.Parse(doc.Root, typeof(int?));
+            Assert.IsInstanceOf<int?>(i);
+            var ii = (int?) i;
+            Assert.IsTrue(ii.HasValue);
+            Assert.AreEqual(31, ii.Value);
         }
     }
 }

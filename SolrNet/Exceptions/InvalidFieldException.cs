@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -23,30 +25,31 @@ namespace SolrNet.Exceptions {
     /// </summary>
     [Serializable]
     [Obsolete("No longer thrown, catch SolrNetException or SolrConnectionException instead")]
-	public class InvalidFieldException : SolrNetException {
+    public class InvalidFieldException : SolrNetException {
         /// <summary>
         /// Solr did not understand one the specified fields
         /// </summary>
         /// <param name="innerException"></param>
-		public InvalidFieldException(Exception innerException) : base(innerException) {}
+        public InvalidFieldException(Exception innerException) : base(innerException) {}
 
         /// <summary>
         /// Solr did not understand one the specified fields
         /// </summary>
         /// <param name="message"></param>
-		public InvalidFieldException(string message) : base(message) {}
+        public InvalidFieldException(string message) : base(message) {}
 
         /// <summary>
         /// Solr did not understand one the specified fields
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-		public InvalidFieldException(string message, Exception innerException) : base(message, innerException) {}
+        public InvalidFieldException(string message, Exception innerException) : base(message, innerException) {}
 
         /// <summary>
         /// Solr did not understand one the specified fields
         /// </summary>
-		public InvalidFieldException() {}
+        public InvalidFieldException() {}
+
         protected InvalidFieldException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+    }
 }

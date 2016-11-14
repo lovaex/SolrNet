@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("SolrNet.Tests")]
+[assembly : InternalsVisibleTo("SolrNet.Tests")]

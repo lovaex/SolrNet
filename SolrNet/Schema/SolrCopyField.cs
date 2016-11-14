@@ -24,9 +24,9 @@ namespace SolrNet.Schema {
     /// </summary>
     public class SolrCopyField {
         public SolrCopyField(string source, string destination) {
-            if (source == null) 
+            if (source == null)
                 throw new ArgumentNullException("source");
-            if (destination == null) 
+            if (destination == null)
                 throw new ArgumentNullException("destination");
             Source = source;
             Destination = destination;

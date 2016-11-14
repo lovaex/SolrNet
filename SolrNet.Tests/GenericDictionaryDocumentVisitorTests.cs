@@ -10,6 +10,10 @@ using SolrNet.Tests.Utils;
 namespace SolrNet.Tests {
     [TestFixture]
     public class GenericDictionaryDocumentVisitorTests {
+        class Entity {
+            [SolrField("attr_")]
+            public IDictionary<string, ICollection<int>> Attributes { get; set; }
+        }
 
         [Test]
         public void ParseDictionaryOfCollection() {
@@ -28,11 +32,6 @@ namespace SolrNet.Tests {
             CollectionAssert.Contains(attr2, 65);
             CollectionAssert.Contains(attr2, 66);
             CollectionAssert.Contains(attr2, 102);
-        }
-
-        class Entity {
-            [SolrField("attr_")]
-            public IDictionary<string, ICollection<int>> Attributes { get; set; }
         }
     }
 }

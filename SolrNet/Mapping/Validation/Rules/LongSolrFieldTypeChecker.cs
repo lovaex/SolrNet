@@ -28,11 +28,11 @@ namespace SolrNet.Mapping.Validation.Rules {
         /// </summary>
         public LongSolrFieldTypeChecker()
             : base(new[] {"solr.TrieLongField", "solr.LongField", "solr.SortableLongField"},
-                   new[] {"solr.TextField", "solr.StrField"}) {}
+                new[] {"solr.TextField", "solr.StrField"}) {}
 
         public override bool CanHandleType(Type propertyType) {
-            return propertyType == typeof (long) ||
-                propertyType == typeof(long?);
+            return propertyType == typeof(long) ||
+                   propertyType == typeof(long?);
         }
     }
 }

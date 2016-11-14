@@ -18,13 +18,22 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using SolrNet.Utils;
 
 namespace SolrNet.Schema {
     /// <summary>
     /// Represents a Solr schema.
     /// </summary>
     public class SolrSchema {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SolrSchema"/> class.
+        /// </summary>
+        public SolrSchema() {
+            SolrFieldTypes = new List<SolrFieldType>();
+            SolrFields = new List<SolrField>();
+            SolrDynamicFields = new List<SolrDynamicField>();
+            SolrCopyFields = new List<SolrCopyField>();
+        }
+
         /// <summary>
         /// Gets or sets the solr fields types.
         /// </summary>
@@ -57,22 +66,12 @@ namespace SolrNet.Schema {
         public string UniqueKey { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SolrSchema"/> class.
-        /// </summary>
-        public SolrSchema() {
-            SolrFieldTypes = new List<SolrFieldType>();
-            SolrFields = new List<SolrField>();
-            SolrDynamicFields = new List<SolrDynamicField>();
-            SolrCopyFields = new List<SolrCopyField>();
-        }
-
-        /// <summary>
         /// Finds the solr field by name.
         /// </summary>
         /// <param name="name">The name of the solr field to find.</param>
         /// <returns>The solr field if found. Null otherwise.</returns>
         public SolrField FindSolrFieldByName(string name) {
-            foreach(var field in SolrFields) {
+            foreach (var field in SolrFields) {
                 if (field.Name.Equals(name))
                     return field;
             }

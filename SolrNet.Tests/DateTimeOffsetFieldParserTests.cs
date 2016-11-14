@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -24,8 +26,7 @@ using SolrNet.Impl.FieldSerializers;
 using SolrNet.Utils;
 
 namespace SolrNet.Tests {
-    public class DateTimeOffsetFieldParserTests
-    {
+    public class DateTimeOffsetFieldParserTests {
         private static IEnumerable<TestCaseData> ParsedDates
         {
             get
@@ -37,7 +38,7 @@ namespace SolrNet.Tests {
                 yield return new TestCaseData(KV.Create("2012-05-10T14:17:23.6Z", new DateTimeOffset(new DateTime(2012, 5, 10, 14, 17, 23, 600), TimeSpan.Zero)));
             }
         }
-        
+
         private static IEnumerable<TestCaseData> DateTimes
         {
             get
@@ -51,27 +52,24 @@ namespace SolrNet.Tests {
         }
 
         [TestCaseSource(nameof(ParsedDates))]
-        public void ParseYears(KeyValuePair<string, DateTimeOffset> dateValuePair)
-        {
+        public void ParseYears(KeyValuePair<string, DateTimeOffset> dateValuePair) {
             Assert.AreEqual(dateValuePair.Value, DateTimeOffsetFieldParser.Parse(dateValuePair.Key));
         }
 
         [TestCaseSource(nameof(DateTimes))]
-        public void RoundTrip(DateTimeOffset dateTimeOffset)
-        {
+        public void RoundTrip(DateTimeOffset dateTimeOffset) {
             var value = DateTimeOffsetFieldParser.Parse(DateTimeOffsetFieldSerializer.Serialize(dateTimeOffset));
             Assert.AreEqual(dateTimeOffset, value);
         }
 
         [TestCaseSource(nameof(DateTimes))]
-        public void NullableRoundTrips(DateTimeOffset dateTimeOffset)
-        {
+        public void NullableRoundTrips(DateTimeOffset dateTimeOffset) {
             var parser = new NullableFieldParser(new DateTimeOffsetFieldParser());
             var serializer = new NullableFieldSerializer(new DateTimeOffsetFieldSerializer());
             var s = serializer.Serialize(dateTimeOffset).First().FieldValue;
             var xml = new XDocument();
             xml.Add(new XElement("date", s));
-            var value = (DateTimeOffset?)parser.Parse(xml.Root, typeof(DateTimeOffset?));
+            var value = (DateTimeOffset?) parser.Parse(xml.Root, typeof(DateTimeOffset?));
             Assert.AreEqual(dateTimeOffset, value);
         }
     }

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -30,18 +32,20 @@ namespace SolrNet.DSL {
     /// </summary>
     [Obsolete("Deprecated. Use ISolrOperations instead")]
     public static class Solr {
-        public static DeleteBy Delete {
+        private static readonly string SolrConnectionKey = "ISolrConnection";
+
+        public static DeleteBy Delete
+        {
             get { return new DeleteBy(Connection); }
         }
-
-        private static readonly string SolrConnectionKey = "ISolrConnection";
 
         /// <summary>
         /// thread-local or webcontext-local connection
         /// </summary>
         /// <seealso href="http://www.ayende.com/Blog/archive/7447.aspx"/>
         /// <seealso href="http://rhino-tools.svn.sourceforge.net/svnroot/rhino-tools/trunk/rhino-commons/Rhino.Commons/LocalDataImpl/"/>
-        public static ISolrConnection Connection {
+        public static ISolrConnection Connection
+        {
             private get { return (ISolrConnection) Local.Data[SolrConnectionKey]; }
             set { Local.Data[SolrConnectionKey] = value; }
         }
@@ -51,8 +55,8 @@ namespace SolrNet.DSL {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="document"></param>
-        public static void Add<T>( T document ) {
-            Add<T>( new[] { document } );
+        public static void Add<T>(T document) {
+            Add<T>(new[] {document});
         }
 
         /// <summary>
@@ -61,8 +65,8 @@ namespace SolrNet.DSL {
         /// <typeparam name="T"></typeparam>
         /// <param name="document">The document.</param>
         /// <param name="boostValue">The boost value to apply to the document.</param>
-        public static void Add<T>( T document, double? boostValue ) {
-            Add<T>( new[] { document }, boostValue );
+        public static void Add<T>(T document, double? boostValue) {
+            Add<T>(new[] {document}, boostValue);
         }
 
         /// <summary>
@@ -70,10 +74,10 @@ namespace SolrNet.DSL {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="documents"></param>
-        public static void Add<T>( IEnumerable<T> documents ) {
-            var docs = documents.Select( d => new KeyValuePair<T, double?>( d, null ) );
-            var cmd = new AddCommand<T>( docs, ServiceLocator.Current.GetInstance<ISolrDocumentSerializer<T>>(), null );
-            cmd.Execute( Connection );
+        public static void Add<T>(IEnumerable<T> documents) {
+            var docs = documents.Select(d => new KeyValuePair<T, double?>(d, null));
+            var cmd = new AddCommand<T>(docs, ServiceLocator.Current.GetInstance<ISolrDocumentSerializer<T>>(), null);
+            cmd.Execute(Connection);
         }
 
         /// <summary>
@@ -82,18 +86,18 @@ namespace SolrNet.DSL {
         /// <typeparam name="T"></typeparam>
         /// <param name="documents">The documents.</param>
         /// <param name="boostValue">The boost value to apply to all documents.</param>
-        public static void Add<T>( IEnumerable<T> documents, double? boostValue ) {
-            var docs = documents.Select( d => new KeyValuePair<T, double?>( d, boostValue ) );
-            var cmd = new AddCommand<T>( docs, ServiceLocator.Current.GetInstance<ISolrDocumentSerializer<T>>(), null );
-            cmd.Execute( Connection );
+        public static void Add<T>(IEnumerable<T> documents, double? boostValue) {
+            var docs = documents.Select(d => new KeyValuePair<T, double?>(d, boostValue));
+            var cmd = new AddCommand<T>(docs, ServiceLocator.Current.GetInstance<ISolrDocumentSerializer<T>>(), null);
+            cmd.Execute(Connection);
         }
 
         /// <summary>
         /// Connects to the specified Solr server URL.
         /// </summary>
         /// <param name="serverURL">The server URL.</param>
-        public static void Connect( string serverURL ) {
-            Connection = new SolrConnection( serverURL );
+        public static void Connect(string serverURL) {
+            Connection = new SolrConnection(serverURL);
         }
 
         /// <summary>
@@ -101,11 +105,10 @@ namespace SolrNet.DSL {
         /// </summary>
         /// <param name="serverURL">The server URL.</param>
         /// <param name="timeout">The HTTP connection timeout.</param>
-        public static void Connect( string serverURL, int timeout ) {
-            Connection = new SolrConnection( serverURL ) {
+        public static void Connect(string serverURL, int timeout) {
+            Connection = new SolrConnection(serverURL) {
                 Timeout = timeout
             };
-
         }
 
         private static ISolrQueryExecuter<T> NewQueryExecuter<T>() {
@@ -137,7 +140,7 @@ namespace SolrNet.DSL {
         /// <param name="s">Query</param>
         /// <returns>Query results</returns>
         public static SolrQueryResults<T> Query<T>(string s) {
-            var q = NewQueryExecuter<T>(); 
+            var q = NewQueryExecuter<T>();
             return q.Execute(new SolrQuery(s), null);
         }
 
@@ -160,7 +163,7 @@ namespace SolrNet.DSL {
         /// <param name="order">Sort orders</param>
         /// <returns>Query results</returns>
         public static SolrQueryResults<T> Query<T>(string s, ICollection<SortOrder> order) {
-            var q = NewQueryExecuter<T>(); 
+            var q = NewQueryExecuter<T>();
             return q.Execute(new SolrQuery(s), new QueryOptions {OrderBy = order});
         }
 
@@ -215,7 +218,7 @@ namespace SolrNet.DSL {
         /// <param name="rows">Pagination item count</param>
         /// <returns>Query results</returns>
         public static SolrQueryResults<T> Query<T>(ISolrQuery q, int start, int rows) {
-            var queryExecuter = NewQueryExecuter<T>(); 
+            var queryExecuter = NewQueryExecuter<T>();
             return queryExecuter.Execute(q, new QueryOptions {Start = start, Rows = rows});
         }
 
@@ -237,9 +240,9 @@ namespace SolrNet.DSL {
         /// <param name="query">Query</param>
         /// <param name="orders">Sort orders</param>
         /// <returns>Query results</returns>
-        public static SolrQueryResults<T> Query<T>( SolrQuery query, ICollection<SortOrder> orders ) {
+        public static SolrQueryResults<T> Query<T>(SolrQuery query, ICollection<SortOrder> orders) {
             var queryExecuter = NewQueryExecuter<T>();
-            return queryExecuter.Execute( query, new QueryOptions { OrderBy = orders } );
+            return queryExecuter.Execute(query, new QueryOptions {OrderBy = orders});
         }
 
         /// <summary>
@@ -249,9 +252,9 @@ namespace SolrNet.DSL {
         /// <param name="query">Query</param>
         /// <param name="options">The QueryOptions to use.</param>
         /// <returns>Query results</returns>
-        public static SolrQueryResults<T> Query<T>( SolrQuery query, QueryOptions options ) {
+        public static SolrQueryResults<T> Query<T>(SolrQuery query, QueryOptions options) {
             var queryExecuter = NewQueryExecuter<T>();
-            return queryExecuter.Execute( query, options );
+            return queryExecuter.Execute(query, options);
         }
 
         public static IDSLQuery<T> Query<T>() {
@@ -282,9 +285,8 @@ namespace SolrNet.DSL {
         /// <param name="waitFlush">wait for flush</param>
         /// <param name="waitSearcher">wait for new searcher</param>
         /// <param name="expungeDeletes">Merge segments with deletes away</param>
-        public static void Commit(bool waitFlush, bool waitSearcher, bool expungeDeletes)
-        {
-            var cmd = new CommitCommand { WaitFlush = waitFlush, WaitSearcher = waitSearcher, ExpungeDeletes = expungeDeletes };
+        public static void Commit(bool waitFlush, bool waitSearcher, bool expungeDeletes) {
+            var cmd = new CommitCommand {WaitFlush = waitFlush, WaitSearcher = waitSearcher, ExpungeDeletes = expungeDeletes};
             cmd.Execute(Connection);
         }
 
@@ -295,9 +297,8 @@ namespace SolrNet.DSL {
         /// <param name="waitSearcher">wait for new searcher</param>
         /// <param name="expungeDeletes">Merge segments with deletes away</param>
         /// <param name="maxSegments">Optimizes down to, at most, this number of segments</param>
-        public static void Commit(bool waitFlush, bool waitSearcher, bool expungeDeletes, int maxSegments)
-        {
-            var cmd = new CommitCommand { WaitFlush = waitFlush, WaitSearcher = waitSearcher, ExpungeDeletes = expungeDeletes, MaxSegments = maxSegments };
+        public static void Commit(bool waitFlush, bool waitSearcher, bool expungeDeletes, int maxSegments) {
+            var cmd = new CommitCommand {WaitFlush = waitFlush, WaitSearcher = waitSearcher, ExpungeDeletes = expungeDeletes, MaxSegments = maxSegments};
             cmd.Execute(Connection);
         }
 
@@ -325,9 +326,8 @@ namespace SolrNet.DSL {
         /// <param name="waitFlush">Wait for flush</param>
         /// <param name="waitSearcher">Wait for new searcher</param>
         /// <param name="expungeDeletes">Merge segments with deletes away</param>
-        public static void Optimize(bool waitFlush, bool waitSearcher, bool expungeDeletes)
-        {
-            var cmd = new OptimizeCommand { WaitFlush = waitFlush, WaitSearcher = waitSearcher, ExpungeDeletes = expungeDeletes };
+        public static void Optimize(bool waitFlush, bool waitSearcher, bool expungeDeletes) {
+            var cmd = new OptimizeCommand {WaitFlush = waitFlush, WaitSearcher = waitSearcher, ExpungeDeletes = expungeDeletes};
             cmd.Execute(Connection);
         }
 
@@ -338,9 +338,8 @@ namespace SolrNet.DSL {
         /// <param name="waitSearcher">Wait for new searcher</param>
         /// <param name="expungeDeletes">Merge segments with deletes away</param>
         /// <param name="maxSegments">Optimizes down to, at most, this number of segments</param>
-        public static void Optimize(bool waitFlush, bool waitSearcher, bool expungeDeletes, int maxSegments)
-        {
-            var cmd = new OptimizeCommand { WaitFlush = waitFlush, WaitSearcher = waitSearcher, ExpungeDeletes = expungeDeletes, MaxSegments = maxSegments };
+        public static void Optimize(bool waitFlush, bool waitSearcher, bool expungeDeletes, int maxSegments) {
+            var cmd = new OptimizeCommand {WaitFlush = waitFlush, WaitSearcher = waitSearcher, ExpungeDeletes = expungeDeletes, MaxSegments = maxSegments};
             cmd.Execute(Connection);
         }
     }

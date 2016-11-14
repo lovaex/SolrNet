@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +13,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#endregion
 
-using System.Collections.Generic;
+#endregion
 
 namespace SolrNet {
     /// <summary>
     /// Arbitrary facet query
     /// </summary>
-	public class SolrFacetQuery : ISolrFacetQuery {
+    public class SolrFacetQuery : ISolrFacetQuery {
         private readonly ISolrQuery query;
 
-		public SolrFacetQuery(ISolrQuery q) {
-			query = q;
-		}
+        public SolrFacetQuery(ISolrQuery q) {
+            query = q;
+        }
 
-        public ISolrQuery Query {
+        public ISolrQuery Query
+        {
             get { return query; }
         }
-	}
+    }
 }

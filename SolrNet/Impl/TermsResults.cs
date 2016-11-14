@@ -9,7 +9,6 @@ namespace SolrNet.Impl {
         /// <summary>
         /// Terms results
         /// </summary>
-
         private readonly ICollection<TermsResult> Terms = new List<TermsResult>();
 
         public IEnumerator<TermsResult> GetEnumerator() {
@@ -36,11 +35,13 @@ namespace SolrNet.Impl {
             return Terms.Remove(item);
         }
 
-        public int Count {
+        public int Count
+        {
             get { return Terms.Count; }
         }
 
-        public bool IsReadOnly {
+        public bool IsReadOnly
+        {
             get { return Terms.IsReadOnly; }
         }
 

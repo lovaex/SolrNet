@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using SolrNet.Impl.FieldParsers;
@@ -8,12 +7,16 @@ using SolrNet.Utils;
 namespace SolrNet.Impl.ResponseParsers {
     public class InterestingTermsResponseParser<T> : ISolrMoreLikeThisHandlerResponseParser<T> {
         public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
-            results.Switch(query: F.DoNothing,
-                           moreLikeThis: r => Parse(xml, r));
+            results.Switch(query : F.DoNothing,
+                moreLikeThis : r => Parse(xml, r));
         }
 
-        public static IEnumerable<KeyValuePair<string,float>> ParseList(XDocument xml) {
-            var root = 
+        public void Parse(XDocument xml, SolrMoreLikeThisHandlerResults<T> results) {
+            results.InterestingTerms = ParseListOrDetails(xml);
+        }
+
+        public static IEnumerable<KeyValuePair<string, float>> ParseList(XDocument xml) {
+            var root =
                 xml.Element("response")
                     .Elements("arr")
                     .FirstOrDefault(e => e.Attribute("name").Value == "interestingTerms");
@@ -26,8 +29,8 @@ namespace SolrNet.Impl.ResponseParsers {
         public static IEnumerable<KeyValuePair<string, float>> ParseDetails(XDocument xml) {
             var root =
                 xml.Element("response")
-                .Elements("lst")
-                .FirstOrDefault(e => e.Attribute("name").Value == "interestingTerms");
+                    .Elements("lst")
+                    .FirstOrDefault(e => e.Attribute("name").Value == "interestingTerms");
             if (root == null)
                 return Enumerable.Empty<KeyValuePair<string, float>>();
             return root.Elements()
@@ -39,10 +42,6 @@ namespace SolrNet.Impl.ResponseParsers {
             if (list.Count > 0)
                 return list;
             return ParseDetails(xml).ToList();
-        }
-
-        public void Parse(XDocument xml, SolrMoreLikeThisHandlerResults<T> results) {
-            results.InterestingTerms = ParseListOrDetails(xml);
         }
     }
 }

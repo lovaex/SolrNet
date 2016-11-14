@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -23,10 +25,8 @@ using SolrNet.Impl.FieldParsers;
 using SolrNet.Impl.FieldSerializers;
 using SolrNet.Utils;
 
-namespace SolrNet.Tests
-{
-    public class DateTimeFieldParserTests
-    {
+namespace SolrNet.Tests {
+    public class DateTimeFieldParserTests {
         private static IEnumerable<TestCaseData> ParsedDates
         {
             get
@@ -50,10 +50,9 @@ namespace SolrNet.Tests
                 yield return new TestCaseData(new DateTime(2008, 5, 6, 14, 21, 23, 0, DateTimeKind.Utc));
             }
         }
-        
+
         [TestCaseSource(nameof(ParsedDates))]
-        public void ParseYears(KeyValuePair<string, DateTime> parser)
-        {
+        public void ParseYears(KeyValuePair<string, DateTime> parser) {
             //var name = "ParseYears " + parser.Key;
             var value = DateTimeFieldParser.ParseDate(parser.Key);
             Assert.AreEqual(parser.Value, value);
@@ -61,27 +60,23 @@ namespace SolrNet.Tests
         }
 
 
-
         [TestCaseSource(nameof(DateTimes))]
-        public void RoundTrip(DateTime date)
-        {
+        public void RoundTrip(DateTime date) {
             var value = DateTimeFieldParser.ParseDate(DateTimeFieldSerializer.SerializeDate(date));
             Assert.AreEqual(date, value);
             Assert.AreEqual(date.Kind, value.Kind);
         }
 
         [TestCaseSource(nameof(DateTimes))]
-        public void NullableRoundTrips(DateTime date)
-        {
+        public void NullableRoundTrips(DateTime date) {
             var parser = new NullableFieldParser(new DateTimeFieldParser());
             var serializer = new NullableFieldSerializer(new DateTimeFieldSerializer());
             var s = serializer.Serialize(date).First().FieldValue;
             var xml = new XDocument();
             xml.Add(new XElement("date", s));
-            var value = (DateTime?)parser.Parse(xml.Root, typeof(DateTime?));
+            var value = (DateTime?) parser.Parse(xml.Root, typeof(DateTime?));
             Assert.AreEqual(date, value);
             Assert.AreEqual(date.Kind, value.Value.Kind);
         }
-
     }
 }

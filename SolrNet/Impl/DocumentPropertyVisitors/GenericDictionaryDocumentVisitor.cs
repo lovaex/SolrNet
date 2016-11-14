@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -27,9 +29,9 @@ namespace SolrNet.Impl.DocumentPropertyVisitors {
     /// </summary>
     public class GenericDictionaryDocumentVisitor : ISolrDocumentPropertyVisitor {
         private readonly IReadOnlyMappingManager mapper;
-        private readonly ISolrFieldParser parser;
         private readonly Converter<Type, bool> memoCanHandleType;
         private readonly Func<Type, string, SolrFieldModel> memoGetThisField;
+        private readonly ISolrFieldParser parser;
 
         /// <summary>
         /// Document visitor that handles generic dictionary properties
@@ -43,13 +45,30 @@ namespace SolrNet.Impl.DocumentPropertyVisitors {
             memoGetThisField = Memoizer.Memoize2<Type, string, SolrFieldModel>(GetThisField);
         }
 
+        public void Visit(object doc, string fieldName, XElement field) {
+            var thisField = memoGetThisField(doc.GetType(), fieldName);
+            if (thisField == null)
+                return;
+            var thisFieldName = thisField.FieldName;
+            //if (!field.Attributes["name"].InnerText.StartsWith(thisFieldName))
+            //    return;
+            var typeArgs = thisField.Property.PropertyType.GetGenericArguments();
+            var keyType = typeArgs[0];
+            var valueType = typeArgs[1];
+            var dict = thisField.Property.GetValue(doc, null) ?? NewDictionary(typeArgs);
+            var key = GetKeyToUse(field.Attribute("name").Value, thisFieldName);
+            var value = parser.Parse(field, valueType);
+            SetKV(dict, ConvertTo(key, keyType), value);
+            thisField.Property.SetValue(doc, dict, null);
+        }
+
         /// <summary>
         /// True if this visitor can handle this Type
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
         public bool CanHandleType(Type t) {
-            return TypeHelper.IsGenericAssignableFrom(typeof (IDictionary<,>), t);
+            return TypeHelper.IsGenericAssignableFrom(typeof(IDictionary<,>), t);
         }
 
         /// <summary>
@@ -58,7 +77,7 @@ namespace SolrNet.Impl.DocumentPropertyVisitors {
         /// <param name="typeArgs">Key and Value type parameters</param>
         /// <returns></returns>
         private static object NewDictionary(Type[] typeArgs) {
-            var genericType = typeof (Dictionary<,>).MakeGenericType(typeArgs);
+            var genericType = typeof(Dictionary<,>).MakeGenericType(typeArgs);
             return Activator.CreateInstance(genericType);
         }
 
@@ -88,23 +107,6 @@ namespace SolrNet.Impl.DocumentPropertyVisitors {
             if (fieldName == "*")
                 return k;
             return k.Substring(fieldName.Length);
-        }
-
-        public void Visit(object doc, string fieldName, XElement field) {
-            var thisField = memoGetThisField(doc.GetType(), fieldName);
-            if (thisField == null)
-                return;
-            var thisFieldName = thisField.FieldName;
-            //if (!field.Attributes["name"].InnerText.StartsWith(thisFieldName))
-            //    return;
-            var typeArgs = thisField.Property.PropertyType.GetGenericArguments();
-            var keyType = typeArgs[0];
-            var valueType = typeArgs[1];
-            var dict = thisField.Property.GetValue(doc, null) ?? NewDictionary(typeArgs);
-            var key = GetKeyToUse(field.Attribute("name").Value, thisFieldName);
-            var value = parser.Parse(field, valueType);
-            SetKV(dict, ConvertTo(key, keyType), value);
-            thisField.Property.SetValue(doc, dict, null);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using SolrNet.Impl;
+﻿using SolrNet.Impl;
 using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {

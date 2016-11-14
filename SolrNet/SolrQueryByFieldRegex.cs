@@ -1,20 +1,19 @@
 ﻿// 
+
 namespace SolrNet {
     /// <summary>
     /// Queries a field for a value
     /// </summary>
-    public class SolrQueryByFieldRegex : AbstractSolrQuery
-    {
-        private readonly string fieldName;
+    public class SolrQueryByFieldRegex : AbstractSolrQuery {
         private readonly string expression;
+        private readonly string fieldName;
 
         /// <summary>
         /// Queries a field based on a regular expression
         /// </summary>
         /// <param name="fieldName">Field name</param>
         /// <param name="regularExpression">The regular expression.</param>
-        public SolrQueryByFieldRegex(string fieldName, string regularExpression)
-        {
+        public SolrQueryByFieldRegex(string fieldName, string regularExpression) {
             this.fieldName = fieldName;
             this.expression = regularExpression;
         }

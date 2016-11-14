@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -22,6 +24,13 @@ namespace SolrNet {
     /// <see href="http://wiki.apache.org/solr/StatsComponent"/>
     /// </summary>
     public class StatsResult {
+        /// <summary>
+        /// Stats results
+        /// </summary>
+        public StatsResult() {
+            FacetResults = new Dictionary<string, Dictionary<string, StatsResult>>();
+        }
+
         /// <summary>
         /// Minimum value
         /// </summary>
@@ -75,12 +84,5 @@ namespace SolrNet {
         /// </list>
         /// </summary>
         public IDictionary<string, Dictionary<string, StatsResult>> FacetResults { get; set; }
-
-        /// <summary>
-        /// Stats results
-        /// </summary>
-        public StatsResult() {
-            FacetResults = new Dictionary<string, Dictionary<string, StatsResult>>();
-        }
     }
 }

@@ -28,11 +28,11 @@ namespace SolrNet.Mapping.Validation.Rules {
         /// </summary>
         public IntSolrFieldTypeChecker()
             : base(new[] {"solr.TrieIntField", "solr.IntField", "solr.SortableIntField"},
-                   new[] {"solr.TextField", "solr.StrField"}) {}
+                new[] {"solr.TextField", "solr.StrField"}) {}
 
         public override bool CanHandleType(Type propertyType) {
-            return propertyType == typeof (int) ||
-                propertyType == typeof(int?);
+            return propertyType == typeof(int) ||
+                   propertyType == typeof(int?);
         }
     }
 }

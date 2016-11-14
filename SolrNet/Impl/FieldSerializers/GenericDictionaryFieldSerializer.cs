@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -31,7 +33,24 @@ namespace SolrNet.Impl.FieldSerializers {
         }
 
         public bool CanHandleType(Type t) {
-            return TypeHelper.IsGenericAssignableFrom(typeof (IDictionary<,>), t);
+            return TypeHelper.IsGenericAssignableFrom(typeof(IDictionary<,>), t);
+        }
+
+        public IEnumerable<PropertyNode> Serialize(object obj) {
+            if (obj == null)
+                yield break;
+            foreach (var de in (IEnumerable) obj) {
+                var name = KVKey(de);
+                var value = serializer.Serialize(KVValue(de));
+                if (value == null)
+                    yield return new PropertyNode {FieldNameSuffix = name};
+                else
+                    foreach (var v in value)
+                        yield return new PropertyNode {
+                            FieldValue = v.FieldValue,
+                            FieldNameSuffix = name,
+                        };
+            }
         }
 
         /// <summary>
@@ -50,23 +69,6 @@ namespace SolrNet.Impl.FieldSerializers {
         /// <returns></returns>
         public object KVValue(object kv) {
             return kv.GetType().GetProperty("Value").GetValue(kv, null);
-        }
-
-        public IEnumerable<PropertyNode> Serialize(object obj) {
-            if (obj == null)
-                yield break;
-            foreach (var de in (IEnumerable)obj) {
-                var name = KVKey(de); 
-                var value = serializer.Serialize(KVValue(de));
-                if (value == null)
-                    yield return new PropertyNode {FieldNameSuffix = name};
-                else
-                    foreach (var v in value)
-                        yield return new PropertyNode {
-                            FieldValue = v.FieldValue,
-                            FieldNameSuffix = name,
-                        };
-            }
         }
     }
 }

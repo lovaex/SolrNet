@@ -17,6 +17,5 @@ namespace SolrNet.Tests.Integration.Sample {
 
         [SolrField("*")]
         public IDictionary<string, object> OtherFields { get; set; }
-        
     }
 }

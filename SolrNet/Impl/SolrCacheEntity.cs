@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -22,6 +24,18 @@ namespace SolrNet.Impl {
     /// </summary>
     [Serializable]
     public class SolrCacheEntity {
+        /// <summary>
+        /// HTTP-level Solr cache entry
+        /// </summary>
+        /// <param name="url">Full Solr query URL</param>
+        /// <param name="eTag">Response ETag</param>
+        /// <param name="data">Response data</param>
+        public SolrCacheEntity(string url, string eTag, string data) {
+            Url = url;
+            ETag = eTag;
+            Data = data;
+        }
+
         /// <summary>
         /// Full Solr query URL
         /// </summary>
@@ -36,17 +50,5 @@ namespace SolrNet.Impl {
         /// Response data
         /// </summary>
         public string Data { get; private set; }
-
-        /// <summary>
-        /// HTTP-level Solr cache entry
-        /// </summary>
-        /// <param name="url">Full Solr query URL</param>
-        /// <param name="eTag">Response ETag</param>
-        /// <param name="data">Response data</param>
-        public SolrCacheEntity(string url, string eTag, string data) {
-            Url = url;
-            ETag = eTag;
-            Data = data;
-        }
     }
 }

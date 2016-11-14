@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,56 +13,63 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Exceptions;
 
 namespace SolrNet.Tests {
-	[TestFixture]
-	public class SortOrderTests {
-		[Test]
-		public void Constructor_ShouldAcceptSpaces() {
+    [TestFixture]
+    public class SortOrderTests {
+        [Test]
+        public void Constructor_ShouldAcceptSpaces() {
             var o = new SortOrder("dist(2, point1, point2)", Order.DESC);
             Assert.AreEqual("dist(2, point1, point2) desc", o.ToString());
-		}
-
-		[Test]
-		public void DefaultOrder() {
-			var o = new SortOrder("uno");
-			Assert.AreEqual("uno asc", o.ToString());
-		}
-
-		[Test]
-		public void ParseNull_ShouldReturnNull() {
-			var o = SortOrder.Parse(null);
-            Assert.IsNull(o);
-		}
-
-        [Test]
-        public void ParseEmpty_ShouldReturnNull() {
-            var o = SortOrder.Parse("");
-            Assert.IsNull(o);
         }
 
-		[Test]
-		public void Parse() {
-			var o = SortOrder.Parse("pepe");
-			Assert.AreEqual("pepe asc", o.ToString());
-		}
+        [Test]
+        public void DefaultOrder() {
+            var o = new SortOrder("uno");
+            Assert.AreEqual("uno asc", o.ToString());
+        }
 
-		[Test]
-		public void ParseAsc() {
-			var o = SortOrder.Parse("pepe asc");
+        [Test]
+        public void FieldName_accessor() {
+            var o = SortOrder.Parse("pepe asc");
+            Assert.AreEqual("pepe", o.FieldName);
+        }
+
+        [Test]
+        public void InvalidParse_ShouldThrow() {
+            Assert.Throws<InvalidSortOrderException>(() => {
+                var o = SortOrder.Parse("pepe bla");
+            });
+        }
+
+        [Test]
+        public void Order_accessor() {
+            var o = SortOrder.Parse("pepe asc");
+            Assert.AreEqual(Order.ASC, o.Order);
+        }
+
+        [Test]
+        public void Parse() {
+            var o = SortOrder.Parse("pepe");
+            Assert.AreEqual("pepe asc", o.ToString());
+        }
+
+        [Test]
+        public void ParseAsc() {
+            var o = SortOrder.Parse("pepe asc");
             Assert.AreEqual(o.ToString(), "pepe asc");
-		}
+        }
 
-		[Test]
-		public void ParseDesc() {
-			var o = SortOrder.Parse("pepe desc");
+        [Test]
+        public void ParseDesc() {
+            var o = SortOrder.Parse("pepe desc");
             Assert.AreEqual(o.ToString(), "pepe desc");
-		}
+        }
 
         [Test]
         public void ParseDescWithSpaces() {
@@ -69,32 +77,24 @@ namespace SolrNet.Tests {
             Assert.AreEqual(o.ToString(), "pepe desc");
         }
 
-		[Test]
-		public void InvalidParse_ShouldThrow() {
-            Assert.Throws<InvalidSortOrderException>(() => {
-                var o = SortOrder.Parse("pepe bla");
-            });
+        [Test]
+        public void ParseEmpty_ShouldReturnNull() {
+            var o = SortOrder.Parse("");
+            Assert.IsNull(o);
         }
-
-	    [Test]
-	    public void FieldName_accessor() {
-            var o = SortOrder.Parse("pepe asc");
-            Assert.AreEqual("pepe", o.FieldName);
-	    }
 
         [Test]
-        public void Order_accessor()
-        {
-            var o = SortOrder.Parse("pepe asc");
-            Assert.AreEqual(Order.ASC, o.Order);
+        public void ParseNull_ShouldReturnNull() {
+            var o = SortOrder.Parse(null);
+            Assert.IsNull(o);
         }
 
-	    [Test]
-	    public void SortOrders_are_equal_if_field_name_and_order_are_equal() {
-	        var sortOrder1 = new SortOrder("fieldName", Order.ASC);
-	        var sortOrder2 = new SortOrder("fieldName", Order.ASC);
+        [Test]
+        public void SortOrders_are_equal_if_field_name_and_order_are_equal() {
+            var sortOrder1 = new SortOrder("fieldName", Order.ASC);
+            var sortOrder2 = new SortOrder("fieldName", Order.ASC);
             Assert.AreEqual(sortOrder1, sortOrder2);
-	    }
+        }
 
         [Test]
         public void SortOrders_are_not_equal_if_field_name_is_different() {

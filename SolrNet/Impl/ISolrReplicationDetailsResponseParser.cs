@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
-namespace SolrNet.Impl
-{
+namespace SolrNet.Impl {
     /// <summary>
     /// Parses a Solr Replication result from a Replication Details command.
     /// </summary>
-    public interface ISolrReplicationDetailsResponseParser
-    {
+    public interface ISolrReplicationDetailsResponseParser {
         /// <summary>
         /// Parses the Details properyes from the response returned.
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -22,10 +24,6 @@ namespace Castle.Facilities.SolrNetIntegration {
     /// Represents a Solr core for configuration
     /// </summary>
     internal class SolrCore {
-        public string Id { get; private set; }
-        public Type DocumentType { get; private set; }
-        public string Url { get; private set; }
-
         /// <summary>
         /// Creates a new Solr core for configuration
         /// </summary>
@@ -43,6 +41,10 @@ namespace Castle.Facilities.SolrNetIntegration {
         /// </summary>
         /// <param name="documentType">Document type</param>
         /// <param name="url">Core url</param>
-        public SolrCore(Type documentType, string url) : this(Guid.NewGuid().ToString(), documentType, url) { }
+        public SolrCore(Type documentType, string url) : this(Guid.NewGuid().ToString(), documentType, url) {}
+
+        public string Id { get; private set; }
+        public Type DocumentType { get; private set; }
+        public string Url { get; private set; }
     }
 }

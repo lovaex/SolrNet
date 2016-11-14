@@ -18,13 +18,11 @@
 
 using System.Xml.Linq;
 
-namespace SolrNet.Schema
-{
+namespace SolrNet.Schema {
     /// <summary>
     /// Provides an interface to parsing a solr schema xml document into a <see cref="SolrSchema"/> object.
     /// </summary>
-    public interface ISolrSchemaParser
-    {
+    public interface ISolrSchemaParser {
         /// <summary>
         /// Parses the specified solr schema XML.
         /// </summary>

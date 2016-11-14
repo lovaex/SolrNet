@@ -8,11 +8,11 @@ namespace SolrNet.Impl {
         /// <summary>
         /// terms field
         /// </summary>
-        public string Field { get; set;}
+        public string Field { get; set; }
 
         /// <summary>
         /// Spelling suggestions
         /// </summary>
-        public ICollection<KeyValuePair<string,int>> Terms { get; set; }
+        public ICollection<KeyValuePair<string, int>> Terms { get; set; }
     }
 }

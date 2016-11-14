@@ -27,12 +27,12 @@ namespace SolrNet.Mapping.Validation.Rules {
         /// Checks schema type of properties with <see cref="float"/> type
         /// </summary>
         public FloatSolrFieldTypeChecker()
-            : base(new[] { "solr.TrieFloatField", "solr.FloatField", "solr.SortableFloatField", "solr.TrieDoubleField", "solr.SortableDoubleField", "solr.DoubleField" },
-                   new[] {"solr.TextField", "solr.StrField"}) {}
+            : base(new[] {"solr.TrieFloatField", "solr.FloatField", "solr.SortableFloatField", "solr.TrieDoubleField", "solr.SortableDoubleField", "solr.DoubleField"},
+                new[] {"solr.TextField", "solr.StrField"}) {}
 
         public override bool CanHandleType(Type propertyType) {
-            return propertyType == typeof (float) ||
-                propertyType == typeof(float?);
+            return propertyType == typeof(float) ||
+                   propertyType == typeof(float?);
         }
     }
 }

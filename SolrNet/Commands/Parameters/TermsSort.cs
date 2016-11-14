@@ -5,8 +5,6 @@ namespace SolrNet.Commands.Parameters {
     /// TermsComponent sort options
     /// </summary>
     public abstract class TermsSort : IEquatable<TermsSort> {
-        internal TermsSort() {}
-
         /// <summary>
         /// Sorts the terms by the term frequency (highest count first)
         /// </summary>
@@ -17,17 +15,7 @@ namespace SolrNet.Commands.Parameters {
         /// </summary>
         public static readonly TermsSort Index = new TermsSort_Index();
 
-        private class TermsSort_Count : TermsSort {
-            public override string ToString() {
-                return "count";
-            }
-        }
-
-        private class TermsSort_Index : TermsSort {
-            public override string ToString() {
-                return "index";
-            }
-        }
+        internal TermsSort() {}
 
         public bool Equals(TermsSort other) {
             if (other == null)
@@ -41,6 +29,18 @@ namespace SolrNet.Commands.Parameters {
 
         public override int GetHashCode() {
             return ToString().GetHashCode();
+        }
+
+        private class TermsSort_Count : TermsSort {
+            public override string ToString() {
+                return "count";
+            }
+        }
+
+        private class TermsSort_Index : TermsSort {
+            public override string ToString() {
+                return "index";
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +13,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
-
-namespace SolrNet.Commands.Replication
-{
+namespace SolrNet.Commands.Replication {
     /// <summary>
     /// Get all the details of the configuration and current status
     /// http://wiki.apache.org/solr/SolrReplication
     /// https://cwiki.apache.org/confluence/display/solr/Index+Replication
     /// </summary>
-	public class DetailsCommand : ReplicationCommand 
-    {
+    public class DetailsCommand : ReplicationCommand {
         /// <summary>
         /// Retrieves configuration details and current status. 
         /// </summary>
-        public DetailsCommand()
-        {
+        public DetailsCommand() {
             AddParameter("command", "details");
         }
-	}
+    }
 }

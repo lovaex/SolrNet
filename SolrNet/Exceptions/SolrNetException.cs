@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -22,7 +24,7 @@ namespace SolrNet.Exceptions {
     /// Base exception for all exceptions thrown by SolrNet
     /// </summary>
     [Serializable]
-	public class SolrNetException : ApplicationException {
+    public class SolrNetException : ApplicationException {
         /// <summary>
         /// Base exception for all exceptions thrown by SolrNet
         /// </summary>
@@ -33,19 +35,20 @@ namespace SolrNet.Exceptions {
         /// Base exception for all exceptions thrown by SolrNet
         /// </summary>
         /// <param name="message"></param>
-		public SolrNetException(string message) : base(message) {}
+        public SolrNetException(string message) : base(message) {}
 
         /// <summary>
         /// Base exception for all exceptions thrown by SolrNet
         /// </summary>
-		public SolrNetException() {}
+        public SolrNetException() {}
 
         /// <summary>
         /// Base exception for all exceptions thrown by SolrNet
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-		public SolrNetException(string message, Exception innerException) : base(message, innerException) {}
-        protected SolrNetException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        public SolrNetException(string message, Exception innerException) : base(message, innerException) {}
+
+        protected SolrNetException(SerializationInfo info, StreamingContext context) : base(info, context) {}
     }
 }

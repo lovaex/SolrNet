@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -46,7 +48,7 @@ namespace SolrNet {
             return new SolrQueryBoost(this, factor);
         }
 
-        public static AbstractSolrQuery operator & (AbstractSolrQuery a, AbstractSolrQuery b) {
+        public static AbstractSolrQuery operator &(AbstractSolrQuery a, AbstractSolrQuery b) {
             if (a == null)
                 throw new ArgumentNullException("a");
             if (b == null)
@@ -54,35 +56,35 @@ namespace SolrNet {
             return new SolrMultipleCriteriaQuery(new[] {a, b}, "AND");
         }
 
-        public static AbstractSolrQuery operator | (AbstractSolrQuery a, AbstractSolrQuery b) {
+        public static AbstractSolrQuery operator |(AbstractSolrQuery a, AbstractSolrQuery b) {
             if (a == null)
                 throw new ArgumentNullException("a");
             if (b == null)
                 throw new ArgumentNullException("b");
-            return new SolrMultipleCriteriaQuery(new[] { a, b }, "OR");
+            return new SolrMultipleCriteriaQuery(new[] {a, b}, "OR");
         }
 
-        public static AbstractSolrQuery operator + (AbstractSolrQuery a, AbstractSolrQuery b) {
+        public static AbstractSolrQuery operator +(AbstractSolrQuery a, AbstractSolrQuery b) {
             if (a == null)
                 throw new ArgumentNullException("a");
             if (b == null)
                 throw new ArgumentNullException("b");
-            return new SolrMultipleCriteriaQuery(new[] { a, b });
+            return new SolrMultipleCriteriaQuery(new[] {a, b});
         }
 
-        public static AbstractSolrQuery operator - (AbstractSolrQuery a, AbstractSolrQuery b) {
+        public static AbstractSolrQuery operator -(AbstractSolrQuery a, AbstractSolrQuery b) {
             if (a == null)
                 throw new ArgumentNullException("a");
             if (b == null)
                 throw new ArgumentNullException("b");
-            return new SolrMultipleCriteriaQuery(new[] { a, b.Not() });
+            return new SolrMultipleCriteriaQuery(new[] {a, b.Not()});
         }
 
-        public static bool operator false (AbstractSolrQuery a) {
+        public static bool operator false(AbstractSolrQuery a) {
             return false;
         }
 
-        public static bool operator true (AbstractSolrQuery a) {
+        public static bool operator true(AbstractSolrQuery a) {
             return false;
         }
 

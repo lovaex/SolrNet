@@ -26,6 +26,8 @@
   <field name="price">185</field>
   <field name="popularity">5</field>
   <field name="inStock">true</field>
+  <field name="timestamp">2000-01-01T00:00:00.000Z</field>
+  <field name="price_c">123.44</field>
 </doc>
 
 <doc>
@@ -37,6 +39,8 @@
   <field name="price">74.99</field>
   <field name="popularity">7</field>
   <field name="inStock">true</field>
+  <field name="timestamp">2000-01-01T00:00:00.000Z</field>
+  <field name="price_c">2999.99</field>
 </doc>
 
 <doc>
@@ -49,7 +53,8 @@
   <!-- note: price is missing on this one -->
   <field name="popularity">5</field>
   <field name="inStock">true</field>
-
+ <field name="timestamp">2000-01-01T00:00:00.000Z</field>
+ <field name="price_c">3001</field>
 </doc>
 
 

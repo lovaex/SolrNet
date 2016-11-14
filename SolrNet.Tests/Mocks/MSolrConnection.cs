@@ -5,9 +5,9 @@ using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MSolrConnection : ISolrConnection {
-        public MFunc<string, string, string> post;
-        public MFunc<string, string, Stream, IEnumerable<KeyValuePair<string,string>>, string> postStream;
         public MFunc<string, IEnumerable<KeyValuePair<string, string>>, string> get;
+        public MFunc<string, string, string> post;
+        public MFunc<string, string, Stream, IEnumerable<KeyValuePair<string, string>>, string> postStream;
 
         public string Post(string relativeUrl, string s) {
             if (post == null)

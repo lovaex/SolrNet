@@ -5,8 +5,7 @@ namespace SolrNet {
     ///<summary>
     /// Manages Solr core replication.
     ///</summary>
-    public interface ISolrCoreReplication 
-    {
+    public interface ISolrCoreReplication {
         /// <summary>
         /// Enables replication on the master for all its slaves. 
         /// </summary>

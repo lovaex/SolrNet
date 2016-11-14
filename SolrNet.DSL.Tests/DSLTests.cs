@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -30,9 +32,9 @@ namespace SolrNet.DSL.Tests {
     /// </summary>
     [TestFixture]
     public class DSLTests {
-        public class TestDocument  {}
+        public class TestDocument {}
 
-        public class TestDocumentWithId  {
+        public class TestDocumentWithId {
             [SolrField]
             public int Id { get; set; }
         }
@@ -52,6 +54,10 @@ namespace SolrNet.DSL.Tests {
             Startup.InitContainer();
             Startup.Init<TestDocument>("http://localhost");
             Startup.Init<TestDocumentWithId>("http://localhost");
+        }
+
+        public string DefaultRows() {
+            return SolrQueryExecuter<TestDocumentWithId>.ConstDefaultRows.ToString();
         }
 
         [Test]
@@ -96,9 +102,9 @@ namespace SolrNet.DSL.Tests {
         public void DeleteByIds() {
             var ids = new[] {"123", "456"};
             var conn = new MSolrConnection();
-            conn.post &= x => 
+            conn.post &= x =>
                 x.Args("/update", string.Format("<delete><id>{0}</id><id>{1}</id></delete>", ids[0], ids[1]))
-                .Expect(1);
+                    .Expect(1);
             Solr.Connection = conn;
             Solr.Delete.ByIds(ids);
             conn.post.Verify();
@@ -109,7 +115,7 @@ namespace SolrNet.DSL.Tests {
             const string q = "id:123456";
             var conn = new MSolrConnection();
             conn.post &= x => x.Args("/update", string.Format("<delete><query>{0}</query></delete>", q))
-                                  .Expect(1);
+                .Expect(1);
             Solr.Connection = conn;
             Solr.Delete.ByQuery(new SolrQuery(q));
             conn.post.Verify();
@@ -120,10 +126,92 @@ namespace SolrNet.DSL.Tests {
             const string q = "id:123456";
             var conn = new MSolrConnection();
             conn.post &= x => x.Args("/update", string.Format("<delete><query>{0}</query></delete>", q))
-                                  .Expect(1);
+                .Expect(1);
             Solr.Connection = conn;
             Solr.Delete.ByQuery(q);
             conn.post.Verify();
+        }
+
+        [Test]
+        public void FacetField() {
+            var conn = new MSolrConnection();
+            conn.get &= x => x.Return(response);
+            Solr.Connection = conn;
+            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetField("modeldesc").Run();
+        }
+
+        [Test]
+        public void FacetField_options() {
+            var conn = new MSolrConnection();
+            conn.get &= x => x.Return(response);
+            Solr.Connection = conn;
+            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw")
+                .WithFacetField("modeldesc")
+                .LimitTo(100)
+                .DontSortByCount()
+                .WithPrefix("xx")
+                .WithMinCount(10)
+                .StartingAt(20)
+                .IncludeMissing()
+                .Run();
+        }
+
+        [Test]
+        [Ignore("Not implemented")]
+        public void FacetQuery_Fluent() {
+            throw new NotImplementedException();
+            //var mocks = new MockRepository();
+            //var conn = mocks.StrictMock<ISolrConnection>();
+            //With.Mocks(mocks).Expecting(delegate {
+            //  Expect.Call(conn.Get(null, null)).IgnoreArguments().Repeat.Once().Return(response);
+            //}).Verify(delegate {
+            //  Solr.Connection = conn;
+            //  var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw")
+            // .WithFacetQuery().By("cat").Is("something")
+            // .Run();
+            //});
+        }
+
+        [Test]
+        public void FacetQuery_ISolrQuery() {
+            var conn = new MSolrConnection();
+            conn.get &= x => x.Return(response);
+            Solr.Connection = conn;
+            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetQuery(new SolrQuery("")).Run();
+        }
+
+        [Test]
+        public void FacetQuery_string() {
+            var conn = new MSolrConnection();
+            conn.get &= x => x.Return(response);
+            Solr.Connection = conn;
+            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetQuery("").Run();
+        }
+
+        [Test]
+        public void Highlighting() {
+            var conn = new MockConnection(new Dictionary<string, string> {
+                {"q", "(makedesc:(bmw))"},
+                {"hl", "true"},
+                {"hl.fl", "make"},
+                {"rows", DefaultRows()},
+            });
+            Solr.Connection = conn;
+            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithHighlighting(new HighlightingParameters {
+                Fields = new[] {"make"},
+            }).Run();
+        }
+
+        [Test]
+        public void HighlightingFields() {
+            var conn = new MockConnection(new Dictionary<string, string> {
+                {"q", "(makedesc:(bmw))"},
+                {"hl", "true"},
+                {"hl.fl", "make,category"},
+                {"rows", DefaultRows()},
+            });
+            Solr.Connection = conn;
+            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithHighlightingFields("make", "category").Run();
         }
 
         [Test]
@@ -142,10 +230,6 @@ namespace SolrNet.DSL.Tests {
             Solr.Connection = conn;
             Solr.Optimize(true, true);
             Assert.AreEqual(1, conn.post.Calls);
-        }
-
-        public string DefaultRows() {
-            return SolrQueryExecuter<TestDocumentWithId>.ConstDefaultRows.ToString();
         }
 
         [Test]
@@ -342,88 +426,6 @@ namespace SolrNet.DSL.Tests {
             Solr.Connection = conn;
             var r = Solr.Query<TestDocument>("", 10, 20);
             Assert.AreEqual(1, r.NumFound);
-        }
-
-        [Test]
-        public void FacetField() {
-            var conn = new MSolrConnection();
-            conn.get &= x => x.Return(response);
-            Solr.Connection = conn;
-            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetField("modeldesc").Run();
-        }
-
-        [Test]
-        public void FacetField_options() {
-            var conn = new MSolrConnection();
-            conn.get &= x => x.Return(response);
-            Solr.Connection = conn;
-            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw")
-                .WithFacetField("modeldesc")
-                .LimitTo(100)
-                .DontSortByCount()
-                .WithPrefix("xx")
-                .WithMinCount(10)
-                .StartingAt(20)
-                .IncludeMissing()
-                .Run();
-        }
-
-        [Test]
-        public void FacetQuery_string() {
-            var conn = new MSolrConnection();
-            conn.get &= x => x.Return(response);
-            Solr.Connection = conn;
-            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetQuery("").Run();
-        }
-
-        [Test]
-        public void FacetQuery_ISolrQuery() {
-            var conn = new MSolrConnection();
-            conn.get &= x => x.Return(response);
-            Solr.Connection = conn;
-            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetQuery(new SolrQuery("")).Run();
-        }
-
-        [Test]
-        [Ignore("Not implemented")]
-        public void FacetQuery_Fluent() {
-            throw new NotImplementedException();
-            //var mocks = new MockRepository();
-            //var conn = mocks.StrictMock<ISolrConnection>();
-            //With.Mocks(mocks).Expecting(delegate {
-            //  Expect.Call(conn.Get(null, null)).IgnoreArguments().Repeat.Once().Return(response);
-            //}).Verify(delegate {
-            //  Solr.Connection = conn;
-            //  var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw")
-            // .WithFacetQuery().By("cat").Is("something")
-            // .Run();
-            //});
-        }
-
-        [Test]
-        public void Highlighting() {
-            var conn = new MockConnection(new Dictionary<string, string> {
-                {"q", "(makedesc:(bmw))"},
-                {"hl", "true"},
-                {"hl.fl", "make"},
-                {"rows", DefaultRows()},
-            });
-            Solr.Connection = conn;
-            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithHighlighting(new HighlightingParameters {
-                Fields = new[] {"make"},
-            }).Run();
-        }
-
-        [Test]
-        public void HighlightingFields() {
-            var conn = new MockConnection(new Dictionary<string, string> {
-                {"q", "(makedesc:(bmw))"},
-                {"hl", "true"},
-                {"hl.fl", "make,category"},
-                {"rows", DefaultRows()},
-            });
-            Solr.Connection = conn;
-            var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithHighlightingFields("make", "category").Run();
         }
     }
 }

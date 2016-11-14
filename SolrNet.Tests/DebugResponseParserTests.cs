@@ -3,14 +3,11 @@ using SolrNet.Impl;
 using SolrNet.Impl.ResponseParsers;
 using SolrNet.Tests.Utils;
 
-namespace SolrNet.Tests
-{
+namespace SolrNet.Tests {
     [TestFixture]
-    public class DebugResponseParserTests
-    {
+    public class DebugResponseParserTests {
         [Test]
-        public void ParseDebugResponse()
-        {
+        public void ParseDebugResponse() {
             var parser = new DebugResponseParser<object>();
             var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.responseWithSimpleDebugDetails.xml");
             var results = new SolrQueryResults<object>();
@@ -25,8 +22,7 @@ namespace SolrNet.Tests
         }
 
         [Test]
-        public void ParseResponseWithSimpleDebugExplanation()
-        {
+        public void ParseResponseWithSimpleDebugExplanation() {
             var parser = new DebugResponseParser<object>();
             var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.responseWithSimpleDebugDetails.xml");
             var results = new SolrQueryResults<object>();
@@ -39,8 +35,7 @@ namespace SolrNet.Tests
         }
 
         [Test]
-        public void ParseResponseWithStructuredDebugExplanation()
-        {
+        public void ParseResponseWithStructuredDebugExplanation() {
             var parser = new DebugResponseParser<object>();
             var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.responseWithStructuredDebugDetails.xml");
             var results = new SolrQueryResults<object>();

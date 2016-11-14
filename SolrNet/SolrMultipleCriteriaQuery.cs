@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -22,37 +24,31 @@ namespace SolrNet {
     /// Represents several queries as one
     /// </summary>
     public class SolrMultipleCriteriaQuery : AbstractSolrQuery {
-        private readonly IEnumerable<ISolrQuery> queries;
         private readonly string oper;
+        private readonly IEnumerable<ISolrQuery> queries;
+
+        public SolrMultipleCriteriaQuery(IEnumerable<ISolrQuery> queries) : this(queries, "") {}
+
+        public SolrMultipleCriteriaQuery(IEnumerable<ISolrQuery> queries, string oper) {
+            this.queries = queries;
+            this.oper = oper;
+        }
 
         /// <summary>
         /// Queries contained in this multiple criteria
         /// </summary>
-        public IEnumerable<ISolrQuery> Queries {
+        public IEnumerable<ISolrQuery> Queries
+        {
             get { return queries; }
         }
 
         /// <summary>
         /// Operator used for joining these queries
         /// </summary>
-        public string Oper {
+        public string Oper
+        {
             get { return oper; }
         }
-
-        /// <summary>
-        /// Operator to apply to the included queries
-        /// </summary>
-		public class Operator {
-			public const string OR = "OR";
-			public const string AND = "AND";
-		}
-
-		public SolrMultipleCriteriaQuery(IEnumerable<ISolrQuery> queries): this(queries, "") {}
-
-		public SolrMultipleCriteriaQuery(IEnumerable<ISolrQuery> queries, string oper) {
-		    this.queries = queries;
-		    this.oper = oper;
-		}
 
         /// <summary>
         /// Static create helper
@@ -69,8 +65,16 @@ namespace SolrNet {
         /// <typeparam name="T"></typeparam>
         /// <param name="queries"></param>
         /// <returns></returns>
-        public static SolrMultipleCriteriaQuery Create<T>(IEnumerable<T> queries) where T: ISolrQuery {
+        public static SolrMultipleCriteriaQuery Create<T>(IEnumerable<T> queries) where T : ISolrQuery {
             return new SolrMultipleCriteriaQuery(queries.Cast<ISolrQuery>());
         }
-	}
+
+        /// <summary>
+        /// Operator to apply to the included queries
+        /// </summary>
+        public class Operator {
+            public const string OR = "OR";
+            public const string AND = "AND";
+        }
+    }
 }

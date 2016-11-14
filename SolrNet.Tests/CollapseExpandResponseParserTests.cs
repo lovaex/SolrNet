@@ -7,14 +7,13 @@ using SolrNet.Impl.ResponseParsers;
 using SolrNet.Mapping;
 using SolrNet.Tests.Utils;
 
-namespace SolrNet.Tests
-{
+namespace SolrNet.Tests {
     [TestFixture]
-    public class CollapseExpandResponseParserTests
-    {
+    public class CollapseExpandResponseParserTests {
+        class Doc {}
+
         [Test]
-        public void Parse()
-        {
+        public void Parse() {
             var mapper = new AttributesMappingManager();
             var parser = new CollapseExpandResponseParser<Doc>(new SolrDocumentResponseParser<Doc>(mapper, new DefaultDocumentVisitor(mapper, new DefaultFieldParser()), new SolrDocumentActivator<Doc>()));
             var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.collapseWithoutExpandResponse.xml");
@@ -24,8 +23,7 @@ namespace SolrNet.Tests
         }
 
         [Test]
-        public void Parse2()
-        {
+        public void Parse2() {
             var mapper = new AttributesMappingManager();
             var parser = new CollapseExpandResponseParser<Doc>(new SolrDocumentResponseParser<Doc>(mapper, new DefaultDocumentVisitor(mapper, new DefaultFieldParser()), new SolrDocumentActivator<Doc>()));
             var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.collapseWithExpandResponse.xml");
@@ -39,7 +37,5 @@ namespace SolrNet.Tests
             Assert.AreEqual(group.GroupValue, "First");
             Assert.AreEqual(group.NumFound, 2);
         }
-
-        class Doc {}
     }
 }

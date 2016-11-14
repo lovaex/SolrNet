@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -20,11 +22,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Castle.Core;
+using Castle.DynamicProxy;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
 using SolrNet.Utils;
-using IInterceptor = Castle.DynamicProxy.IInterceptor;
-using IInvocation = Castle.DynamicProxy.IInvocation;
 
 namespace SolrNet.Tests.Utils {
     public class ProfilerFacility : AbstractFacility {
@@ -44,27 +45,11 @@ namespace SolrNet.Tests.Utils {
             Kernel.Resolve<ProfilingInterceptor>().Clear();
         }
 
-        private class ProfilingInterceptor: IInterceptor {
+        private class ProfilingInterceptor : IInterceptor {
             private Node<KeyValuePair<MethodInfo, Stopwatch>> currentElement;
-
-            public Node<KeyValuePair<MethodInfo, TimeSpan>> GetProfile() {
-                var node = new Node<KeyValuePair<MethodInfo, TimeSpan>>(null, new KeyValuePair<MethodInfo, TimeSpan>(null, new TimeSpan()));
-                node.Children.AddRange(currentElement.Children.Select(c => GetProfile(c, node)));
-                return node;
-            }
-
-            private Node<KeyValuePair<MethodInfo, TimeSpan>> GetProfile(Node<KeyValuePair<MethodInfo, Stopwatch>> n, Node<KeyValuePair<MethodInfo, TimeSpan>> parent) {
-                var node = new Node<KeyValuePair<MethodInfo, TimeSpan>>(parent, KV.Create(n.Value.Key, n.Value.Value.Elapsed));
-                node.Children.AddRange(n.Children.Select(c => GetProfile(c, node)));
-                return node;
-            }
 
             public ProfilingInterceptor() {
                 Clear();
-            }
-
-            public void Clear() {
-                currentElement = new Node<KeyValuePair<MethodInfo, Stopwatch>>(null, new KeyValuePair<MethodInfo, Stopwatch>(null, null));                
             }
 
             public void Intercept(IInvocation invocation) {
@@ -82,6 +67,22 @@ namespace SolrNet.Tests.Utils {
                     if (currentElement.Value.Value != null)
                         currentElement.Value.Value.Start();
                 }
+            }
+
+            public Node<KeyValuePair<MethodInfo, TimeSpan>> GetProfile() {
+                var node = new Node<KeyValuePair<MethodInfo, TimeSpan>>(null, new KeyValuePair<MethodInfo, TimeSpan>(null, new TimeSpan()));
+                node.Children.AddRange(currentElement.Children.Select(c => GetProfile(c, node)));
+                return node;
+            }
+
+            private Node<KeyValuePair<MethodInfo, TimeSpan>> GetProfile(Node<KeyValuePair<MethodInfo, Stopwatch>> n, Node<KeyValuePair<MethodInfo, TimeSpan>> parent) {
+                var node = new Node<KeyValuePair<MethodInfo, TimeSpan>>(parent, KV.Create(n.Value.Key, n.Value.Value.Elapsed));
+                node.Children.AddRange(n.Children.Select(c => GetProfile(c, node)));
+                return node;
+            }
+
+            public void Clear() {
+                currentElement = new Node<KeyValuePair<MethodInfo, Stopwatch>>(null, new KeyValuePair<MethodInfo, Stopwatch>(null, null));
             }
         }
     }

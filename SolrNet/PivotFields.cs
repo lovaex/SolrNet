@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace SolrNet {
-    public class PivotFields: IEnumerable<string> {
+    public class PivotFields : IEnumerable<string> {
         public readonly string First;
-        public readonly string Second;
         public readonly IEnumerable<string> Rest;
+        public readonly string Second;
 
         public PivotFields(string first, string second, params string[] rest) {
             First = first;

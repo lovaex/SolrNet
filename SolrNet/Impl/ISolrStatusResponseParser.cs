@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace SolrNet.Impl
-{
+namespace SolrNet.Impl {
     /// <summary>
     /// Parses a Solr Core Result from a Core Status command.
     /// </summary>
@@ -17,6 +13,6 @@ namespace SolrNet.Impl
         /// <returns>
         /// The list of results.
         /// </returns>
-        List<CoreResult> Parse( XDocument xml );
+        List<CoreResult> Parse(XDocument xml);
     }
 }

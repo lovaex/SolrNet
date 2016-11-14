@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using SolrNet.Utils;
 
-namespace SolrNet.Impl.ResponseParsers
-{
-    public class ExtractResponseParser: ISolrExtractResponseParser {
+namespace SolrNet.Impl.ResponseParsers {
+    public class ExtractResponseParser : ISolrExtractResponseParser {
         private readonly ISolrHeaderResponseParser headerResponseParser;
 
         public ExtractResponseParser(ISolrHeaderResponseParser headerResponseParser) {
@@ -26,7 +24,7 @@ namespace SolrNet.Impl.ResponseParsers
 
             return extractResponse;
         }
-    
+
         /// Metadata looks like this:
         /// <response>
         ///     <lst name="null_metadata">
@@ -41,38 +39,29 @@ namespace SolrNet.Impl.ResponseParsers
         ///         </arr>
         ///     </lst>
         /// </response>
-        private List<ExtractField> ParseMetadata(XDocument response)
-        {
-
+        private List<ExtractField> ParseMetadata(XDocument response) {
             var metadataElements = response.Element("response")
                 .Elements("lst")
                 .Where(X.AttrEq("name", "null_metadata"))
                 .SelectMany(x => x.Elements("att"));
 
             var metadata = new List<ExtractField>(metadataElements.Count());
-            foreach (var node in metadataElements)
-            {
+            foreach (var node in metadataElements) {
                 var nameAttrib = node.Attribute("name");
-                if (nameAttrib == null)
-                {
+                if (nameAttrib == null) {
                     throw new NotSupportedException("Metadata node has no name attribute: " + node);
                 }
 
                 // contents of the <arr> element might be a <str/> or a <null/>
                 string fieldValue;
                 var stringValue = node.Element("str");
-                if (stringValue != null)
-                {
+                if (stringValue != null) {
                     // is a <str/> node
                     fieldValue = stringValue.Value;
-                }
-                else if (node.Element("null") != null)
-                {
+                } else if (node.Element("null") != null) {
                     // is a <null/> node
                     fieldValue = null;
-                }
-                else
-                {
+                } else {
                     throw new NotSupportedException("No support for metadata element type: " + node);
                 }
 

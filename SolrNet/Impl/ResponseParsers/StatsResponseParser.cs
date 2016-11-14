@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -28,8 +30,8 @@ namespace SolrNet.Impl.ResponseParsers {
     /// <typeparam name="T">Document type</typeparam>
     public class StatsResponseParser<T> : ISolrResponseParser<T> {
         public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
-            results.Switch(query: r => Parse(xml, r),
-                           moreLikeThis: F.DoNothing);
+            results.Switch(query : r => Parse(xml, r),
+                moreLikeThis : F.DoNothing);
         }
 
         public void Parse(XDocument xml, SolrQueryResults<T> results) {
@@ -88,10 +90,10 @@ namespace SolrNet.Impl.ResponseParsers {
                         r.StdDev = GetDoubleValue(statNode);
                         break;
                     case "count":
-						r.Count = Convert.ToInt64( statNode.Value, CultureInfo.InvariantCulture );
+                        r.Count = Convert.ToInt64(statNode.Value, CultureInfo.InvariantCulture);
                         break;
                     case "missing":
-						r.Missing = Convert.ToInt64( statNode.Value, CultureInfo.InvariantCulture );
+                        r.Missing = Convert.ToInt64(statNode.Value, CultureInfo.InvariantCulture);
                         break;
                     default:
                         r.FacetResults = ParseFacetNode(statNode);

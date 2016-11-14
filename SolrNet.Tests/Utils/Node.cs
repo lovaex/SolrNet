@@ -1,4 +1,5 @@
 #region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +13,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
 
 namespace SolrNet.Tests.Utils {
     public class Node<T> {
+        public Node(Node<T> parent, T value) {
+            Children = new List<Node<T>>();
+            Parent = parent;
+            Value = value;
+        }
+
         public List<Node<T>> Children { get; private set; }
 
         public Node<T> Parent { get; private set; }
@@ -28,12 +36,6 @@ namespace SolrNet.Tests.Utils {
             var node = new Node<T>(this, value);
             Children.Add(node);
             return node;
-        }
-
-        public Node(Node<T> parent, T value) {
-            Children = new List<Node<T>>();
-            Parent = parent;
-            Value = value;
         }
     }
 }

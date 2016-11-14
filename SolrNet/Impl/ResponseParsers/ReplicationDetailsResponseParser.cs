@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +13,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-namespace SolrNet.Impl.ResponseParsers 
-{
+namespace SolrNet.Impl.ResponseParsers {
     /// <summary>
     /// Parses header (status, QTime, etc) and details from a response
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
-    public class ReplicationDetailsResponseParser<T> : ISolrAbstractResponseParser<T>, ISolrReplicationDetailsResponseParser
-    {
+    public class ReplicationDetailsResponseParser<T> : ISolrAbstractResponseParser<T>, ISolrReplicationDetailsResponseParser {
         /// <summary>
         /// Header parser
         /// </summary>
         /// <param name="xml">XML</param>
         /// <param name="results">results</param>
-        public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) 
-        {
+        public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
             var header = Parse(xml);
             if (header != null)
                 results.Header = header.responseHeader;
@@ -45,13 +43,12 @@ namespace SolrNet.Impl.ResponseParsers
         /// </summary>
         /// <param name="response">XML</param>
         /// <returns>ReplicationDetailsResponse class</returns>
-        public ReplicationDetailsResponse Parse(XDocument response)
-        {
-            ResponseHeader responseHeader = new ResponseHeader();
-            string indexSize = string.Empty;
-            string indexPath = string.Empty;
-            string isMaster = string.Empty;
-            string isSlave = string.Empty;
+        public ReplicationDetailsResponse Parse(XDocument response) {
+            var responseHeader = new ResponseHeader();
+            var indexSize = string.Empty;
+            var indexPath = string.Empty;
+            var isMaster = string.Empty;
+            var isSlave = string.Empty;
             long indexVersion = -1;
             long generation = -1;
             string isReplicating = null;
@@ -98,13 +95,11 @@ namespace SolrNet.Impl.ResponseParsers
 
             //slave node
             var responseSlaveNode = response.XPathSelectElement("response/lst[@name='details']/lst[@name='slave']");
-            if (responseSlaveNode != null)
-            {
+            if (responseSlaveNode != null) {
                 var isReplicatingTemp = responseSlaveNode.XPathSelectElement("str[@name='isReplicating']");
                 isReplicating = isReplicatingTemp == null ? null : isReplicatingTemp.Value;
 
-                if (isReplicating != null && isReplicating.ToLower() == "true")
-                {
+                if (isReplicating != null && isReplicating.ToLower() == "true") {
                     var totalPercentTemp = responseSlaveNode.XPathSelectElement("str[@name='totalPercent']");
                     totalPercent = totalPercentTemp == null ? null : totalPercentTemp.Value;
 
@@ -121,16 +116,14 @@ namespace SolrNet.Impl.ResponseParsers
         /// </summary>
         /// <param name="node">XML</param>
         /// <returns>ResponseHeader</returns>
-        public ResponseHeader ParseHeader(XElement node)
-        {
+        public ResponseHeader ParseHeader(XElement node) {
             var r = new ResponseHeader();
             r.Status = int.Parse(node.XPathSelectElement("int[@name='status']").Value, CultureInfo.InvariantCulture.NumberFormat);
             r.QTime = int.Parse(node.XPathSelectElement("int[@name='QTime']").Value, CultureInfo.InvariantCulture.NumberFormat);
             r.Params = new Dictionary<string, string>();
 
             var paramNodes = node.XPathSelectElements("lst[@name='params']/str");
-            foreach (var n in paramNodes)
-            {
+            foreach (var n in paramNodes) {
                 r.Params[n.Attribute("name").Value] = n.Value;
             }
 

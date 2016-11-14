@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Collections.Generic;
-using SolrNet.Impl.FieldSerializers;
 
 namespace SolrNet {
     /// <summary>
@@ -24,10 +25,10 @@ namespace SolrNet {
     /// <see href="http://wiki.apache.org/solr/SimpleFacetParameters#Date_Faceting_Parameters"/>
     /// </summary>
     public class SolrFacetDateQuery : ISolrFacetQuery {
-        private readonly string field;
-        private readonly DateTime start;
         private readonly DateTime end;
+        private readonly string field;
         private readonly string gap;
+        private readonly DateTime start;
 
         /// <summary>
         /// Creates a date facet query
@@ -60,27 +61,31 @@ namespace SolrNet {
         /// Indicates that in addition to the counts for each date range constraint between start and end, counts should also be computed for other
         /// </summary>
         public ICollection<FacetDateOther> Other { get; set; }
-        
-           /// <summary>
+
+        /// <summary>
         /// By default, the ranges used to compute date faceting between facet.date.start and facet.date.end are all inclusive of both endpoints, while the the "before" and "after" ranges are not inclusive. This behavior can be modified by 
         /// the facet.date.include param, which can be any combination of the following options...
         /// </summary>
         public ICollection<FacetDateInclude> Include { get; set; }
-     
 
-        public string Field {
+
+        public string Field
+        {
             get { return field; }
         }
 
-        public DateTime Start {
+        public DateTime Start
+        {
             get { return start; }
         }
 
-        public DateTime End {
+        public DateTime End
+        {
             get { return end; }
         }
 
-        public string Gap {
+        public string Gap
+        {
             get { return gap; }
         }
     }

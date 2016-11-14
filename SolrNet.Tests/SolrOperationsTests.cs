@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Collections.Generic;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Attributes;
 using SolrNet.Commands.Parameters;
@@ -33,11 +34,12 @@ using SolrNet.Utils;
 namespace SolrNet.Tests {
     [TestFixture]
     public class SolrOperationsTests {
-        public class TestDocumentWithoutUniqueKey  {}
+        public class TestDocumentWithoutUniqueKey {}
 
-        public class TestDocumentWithUniqueKey  {
+        public class TestDocumentWithUniqueKey {
             [SolrUniqueKey]
-            public int id {
+            public int id
+            {
                 get { return 0; }
             }
         }
@@ -68,6 +70,23 @@ namespace SolrNet.Tests {
         }
 
         [Test]
+        public void AddWithBoost() {
+            var connection = new MSolrConnection();
+            connection.post += (url, content) => {
+                Assert.AreEqual("/update", url);
+                Assert.AreEqual("<add><doc boost=\"2.1\" /></add>", content);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
+            };
+            var docSerializer = new SolrDocumentSerializer<TestDocumentWithoutUniqueKey>(new AttributesMappingManager(), new DefaultFieldSerializer());
+            var headerParser = new MSolrHeaderResponseParser();
+            headerParser.parse = headerParser.parse.Return(null);
+            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, docSerializer, null, headerParser, null, null, null);
+            ops.AddWithBoost(new[] {new KeyValuePair<TestDocumentWithoutUniqueKey, double?>(new TestDocumentWithoutUniqueKey(), 2.1),}, null);
+
+            Assert.AreEqual(1, connection.post.Calls);
+        }
+
+        [Test]
         public void AddWithParameters() {
             var xml = EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
             var connection = new MSolrConnection();
@@ -80,26 +99,153 @@ namespace SolrNet.Tests {
             var headerParser = new MSolrHeaderResponseParser();
             headerParser.parse = headerParser.parse.Return(null);
             var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, docSerializer, null, headerParser, null, null, null);
-            var parameters = new AddParameters { CommitWithin = 4343, Overwrite = false };
-            ops.AddWithBoost(new[] { new KeyValuePair<TestDocumentWithoutUniqueKey, double?>(new TestDocumentWithoutUniqueKey(), null), }, parameters);
+            var parameters = new AddParameters {CommitWithin = 4343, Overwrite = false};
+            ops.AddWithBoost(new[] {new KeyValuePair<TestDocumentWithoutUniqueKey, double?>(new TestDocumentWithoutUniqueKey(), null),}, parameters);
             Assert.AreEqual(1, connection.post.Calls);
         }
 
         [Test]
-        public void AddWithBoost() {
+        public void Commit() {
+            var connection = new MSolrConnection();
+            connection.post &= x => x.Args("/update", "<commit />")
+                .Return(EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml"))
+                .Expect(1);
+
+            var headerParser = new MSolrHeaderResponseParser();
+            headerParser.parse = headerParser.parse.Return(null);
+
+            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
+            ops.Commit(null);
+            connection.post.Verify();
+        }
+
+        [Test]
+        public void CommitWithOptions() {
             var connection = new MSolrConnection();
             connection.post += (url, content) => {
                 Assert.AreEqual("/update", url);
-                Assert.AreEqual("<add><doc boost=\"2.1\" /></add>", content);
+                Assert.AreEqual("<commit />", content);
                 return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
             };
-            var docSerializer = new SolrDocumentSerializer<TestDocumentWithoutUniqueKey>(new AttributesMappingManager(), new DefaultFieldSerializer());
-            var headerParser = new MSolrHeaderResponseParser();
-            headerParser.parse = headerParser.parse.Return(null);
-            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, docSerializer, null, headerParser, null, null, null);
-            ops.AddWithBoost(new[] { new KeyValuePair<TestDocumentWithoutUniqueKey, double?>(new TestDocumentWithoutUniqueKey(), 2.1), }, null);
+            connection.post &= x => x.Expect(1);
 
+            var headerParser = new MSolrHeaderResponseParser();
+            headerParser.parse += _ => null;
+
+            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
+            ops.Commit(new CommitOptions());
+            connection.post.Verify();
+        }
+
+        [Test]
+        public void CommitWithOptions2_WaitFlush() {
+            var connection = new MSolrConnection();
+            connection.post += (url, content) => {
+                Assert.AreEqual("/update", url);
+                Assert.AreEqual("<commit waitFlush=\"true\" />", content);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
+            };
+            var headerParser = new MSolrHeaderResponseParser();
+            headerParser.parse &= x => x.Stub();
+            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
+            ops.Commit(new CommitOptions {WaitFlush = true});
             Assert.AreEqual(1, connection.post.Calls);
+        }
+
+        [Test]
+        public void CommitWithOptions2_WaitSearcher() {
+            var connection = new MSolrConnection();
+            connection.post += (url, content) => {
+                Assert.AreEqual("/update", url);
+                Assert.AreEqual("<commit waitSearcher=\"false\" />", content);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
+            };
+            var headerParser = new MSolrHeaderResponseParser();
+            headerParser.parse &= x => x.Stub();
+            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
+            ops.Commit(new CommitOptions {WaitSearcher = false});
+            Assert.AreEqual(1, connection.post.Calls);
+        }
+
+        [Test]
+        public void CommitWithOptions2_WaitSearcher_WaitFlush() {
+            var connection = new MSolrConnection();
+            connection.post += (url, content) => {
+                Assert.AreEqual("/update", url);
+                Assert.AreEqual("<commit waitSearcher=\"true\" waitFlush=\"true\" />", content);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
+            };
+            var headerParser = new MSolrHeaderResponseParser();
+            headerParser.parse &= x => x.Stub();
+            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
+            ops.Commit(new CommitOptions {WaitSearcher = true, WaitFlush = true});
+            Assert.AreEqual(1, connection.post.Calls);
+        }
+
+        [Test]
+        public void DeleteByMultipleId() {
+            var connection = new MSolrConnection();
+            connection.post += (url, content) => {
+                Assert.AreEqual("/update", url);
+                Assert.AreEqual("<delete><id>0</id><id>0</id></delete>", content);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
+            };
+            var headerParser = new MSolrHeaderResponseParser();
+            headerParser.parse += _ => null;
+            var basic = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, null, null, null, headerParser, null, null, null);
+            var ops = new SolrServer<TestDocumentWithUniqueKey>(basic, new AttributesMappingManager(), null);
+            ops.Delete(new[] {
+                new TestDocumentWithUniqueKey(),
+                new TestDocumentWithUniqueKey(),
+            });
+            Assert.AreEqual(1, connection.post.Calls);
+        }
+
+        [Test]
+        public void DeleteByQuery() {
+            var connection = new MSolrConnection();
+            connection.post += (url, content) => {
+                Assert.AreEqual("/update", url);
+                Assert.AreEqual("<delete><query>id:123</query></delete>", content);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
+            };
+            var headerParser = new MSolrHeaderResponseParser();
+            headerParser.parse += _ => null;
+            var querySerializer = new MSolrQuerySerializer();
+            querySerializer.serialize += _ => "id:123";
+            var ops = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, null, null, null, headerParser, querySerializer, null, null);
+            ops.Delete(null, new SolrQuery("id:123"));
+            Assert.AreEqual(1, connection.post.Calls);
+        }
+
+        [Test]
+        public void DeleteDocumentWithoutUniqueKey_ShouldThrow() {
+            Assert.Throws<SolrNetException>(() => {
+                var mapper = new MReadOnlyMappingManager();
+                mapper.getUniqueKey += t => {
+                    Assert.AreEqual(typeof(TestDocumentWithoutUniqueKey), t);
+                    return null;
+                };
+                var ops = new SolrServer<TestDocumentWithoutUniqueKey>(null, mapper, null);
+                ops.Delete(new TestDocumentWithoutUniqueKey());
+                Assert.AreEqual(1, mapper.getUniqueKey.Calls);
+            });
+        }
+
+        [Test]
+        public void DeleteDocumentWithUniqueKey() {
+            var mapper = new MReadOnlyMappingManager();
+            mapper.getUniqueKey += t => {
+                Assert.AreEqual(typeof(TestDocumentWithUniqueKey), t);
+                return new SolrFieldModel(
+                    property : typeof(TestDocumentWithUniqueKey).GetProperty("id"),
+                    fieldName : "id");
+            };
+            var basicServer = new MSolrBasicOperations<TestDocumentWithUniqueKey>();
+            basicServer.delete &= x => x.Stub();
+            var ops = new SolrServer<TestDocumentWithUniqueKey>(basicServer, mapper, null);
+            ops.Delete(new TestDocumentWithUniqueKey());
+            Assert.AreEqual(1, mapper.getUniqueKey.Calls);
         }
 
         [Test]
@@ -126,149 +272,100 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void Commit() {
-
+        public void FacetField() {
             var connection = new MSolrConnection();
-            connection.post &= x => x.Args("/update", "<commit />")
-                                     .Return(EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml"))
-                                     .Expect(1);
-
-            var headerParser = new MSolrHeaderResponseParser();
-            headerParser.parse = headerParser.parse.Return(null);
-
-            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
-            ops.Commit(null);
-            connection.post.Verify();
-        }
-
-        [Test]
-        public void CommitWithOptions() {
-            var connection = new MSolrConnection();
-            connection.post += (url, content) => {
-                Assert.AreEqual("/update", url);
-                Assert.AreEqual("<commit />", content);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
-            };
-            connection.post &= x => x.Expect(1);
-
-            var headerParser = new MSolrHeaderResponseParser();
-            headerParser.parse += _ => null;
-
-            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
-            ops.Commit(new CommitOptions());
-            connection.post.Verify();
-            
-        }
-
-        [Test]
-        public void CommitWithOptions2_WaitSearcher_WaitFlush() {
-            var connection = new MSolrConnection();
-            connection.post += (url, content) => {
-                Assert.AreEqual("/update", url);
-                Assert.AreEqual("<commit waitSearcher=\"true\" waitFlush=\"true\" />", content);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
-            };
-            var headerParser = new MSolrHeaderResponseParser();
-            headerParser.parse &= x => x.Stub();
-            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
-            ops.Commit(new CommitOptions { WaitSearcher = true, WaitFlush = true });
-            Assert.AreEqual(1, connection.post.Calls);
-        }
-
-        [Test]
-        public void CommitWithOptions2_WaitSearcher() {
-            var connection = new MSolrConnection();
-            connection.post += (url, content) => {
-                Assert.AreEqual("/update", url);
-                Assert.AreEqual("<commit waitSearcher=\"false\" />", content);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
-            };
-            var headerParser = new MSolrHeaderResponseParser();
-            headerParser.parse &= x => x.Stub();
-            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
-            ops.Commit(new CommitOptions { WaitSearcher = false });
-            Assert.AreEqual(1, connection.post.Calls);
-        }
-
-        [Test]
-        public void CommitWithOptions2_WaitFlush() {
-            var connection = new MSolrConnection();
-            connection.post += (url, content) => {
-                Assert.AreEqual("/update", url);
-                Assert.AreEqual("<commit waitFlush=\"true\" />", content);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
-            };
-            var headerParser = new MSolrHeaderResponseParser();
-            headerParser.parse &= x => x.Stub();
-            var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
-            ops.Commit(new CommitOptions { WaitFlush = true });
-            Assert.AreEqual(1, connection.post.Calls);
-        }
-
-        [Test]
-        public void DeleteByQuery() {
-            var connection = new MSolrConnection();
-            connection.post += (url, content) => {
-                Assert.AreEqual("/update", url);
-                Assert.AreEqual("<delete><query>id:123</query></delete>", content);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
-            };
-            var headerParser = new MSolrHeaderResponseParser();
-            headerParser.parse += _ => null;
-            var querySerializer = new MSolrQuerySerializer();
-            querySerializer.serialize += _ => "id:123";
-            var ops = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, null, null, null, headerParser, querySerializer, null, null);
-            ops.Delete(null, new SolrQuery("id:123"));
-            Assert.AreEqual(1, connection.post.Calls);
-        }
-
-        [Test]
-        public void DeleteByMultipleId() {
-            var connection = new MSolrConnection();
-            connection.post += (url, content) => {
-                Assert.AreEqual("/update", url);
-                Assert.AreEqual("<delete><id>0</id><id>0</id></delete>", content);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
-            };
-            var headerParser = new MSolrHeaderResponseParser();
-            headerParser.parse += _ => null;
-            var basic = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, null, null, null, headerParser, null, null, null);
-            var ops = new SolrServer<TestDocumentWithUniqueKey>(basic, new AttributesMappingManager(), null);
-            ops.Delete(new[] {
-                new TestDocumentWithUniqueKey(),
-                new TestDocumentWithUniqueKey(),
-            });
-            Assert.AreEqual(1, connection.post.Calls);
-        }
-
-        [Test]
-        public void DeleteDocumentWithoutUniqueKey_ShouldThrow() {
-            Assert.Throws<SolrNetException>(() => {
-                var mapper = new MReadOnlyMappingManager();
-                mapper.getUniqueKey += t => {
-                    Assert.AreEqual(typeof(TestDocumentWithoutUniqueKey), t);
-                    return null;
+            connection.get += (url, param) => {
+                Assert.AreEqual("/select", url);
+                var expectedParams = new Dictionary<string, string> {
+                    {"q", ""},
+                    {"rows", SolrQueryExecuter<TestDocumentWithUniqueKey>.ConstDefaultRows.ToString()},
+                    {"facet", "true"},
+                    {"facet.field", "id"},
+                    {"f.id.facet.limit", "3"},
                 };
-                var ops = new SolrServer<TestDocumentWithoutUniqueKey>(null, mapper, null);
-                ops.Delete(new TestDocumentWithoutUniqueKey());
-                Assert.AreEqual(1, mapper.getUniqueKey.Calls);
+                CollectionAssert.AreEquivalent(expectedParams, param);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
+            };
+
+            var parser = new MSolrAbstractResponseParser<TestDocumentWithUniqueKey>();
+            parser.parse &= x => x.Stub();
+            var querySerializer = new MSolrQuerySerializer();
+            querySerializer.serialize += _ => "";
+            var facetQuerySerializer = new DefaultFacetQuerySerializer(querySerializer, new DefaultFieldSerializer());
+
+            var executer = new SolrQueryExecuter<TestDocumentWithUniqueKey>(parser, connection, querySerializer, facetQuerySerializer, null);
+            var solr = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, executer, null, null, null, null, null, null);
+            var r = solr.Query(new SolrQuery(""), new QueryOptions {
+                Facet = new FacetParameters {
+                    Queries = new ISolrFacetQuery[] {
+                        new SolrFacetFieldQuery("id") {Limit = 3},
+                    },
+                }
             });
+
+            Assert.AreEqual(1, connection.get.Calls);
         }
 
         [Test]
-        public void DeleteDocumentWithUniqueKey() {
-            var mapper = new MReadOnlyMappingManager();
-            mapper.getUniqueKey += t => {
-                Assert.AreEqual(typeof(TestDocumentWithUniqueKey), t);
-                return new SolrFieldModel (
-                    property : typeof (TestDocumentWithUniqueKey).GetProperty("id"),
-                    fieldName : "id");
+        public void FacetQuery() {
+            var connection = new MSolrConnection();
+            connection.get += (url, param) => {
+                Assert.AreEqual("/select", url);
+                var expectedParams = new Dictionary<string, string> {
+                    {"q", ""},
+                    {"rows", SolrQueryExecuter<TestDocumentWithUniqueKey>.ConstDefaultRows.ToString()},
+                    {"facet", "true"},
+                    {"facet.query", "id:1"},
+                };
+                CollectionAssert.AreEquivalent(expectedParams, param);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
             };
-            var basicServer = new MSolrBasicOperations<TestDocumentWithUniqueKey>();
-            basicServer.delete &= x => x.Stub();
-            var ops = new SolrServer<TestDocumentWithUniqueKey>(basicServer, mapper, null);
-            ops.Delete(new TestDocumentWithUniqueKey());
-            Assert.AreEqual(1, mapper.getUniqueKey.Calls);
+
+            var querySerializer = new DefaultQuerySerializer(new DefaultFieldSerializer());
+            var facetQuerySerializer = new DefaultFacetQuerySerializer(querySerializer, new DefaultFieldSerializer());
+            var parser = new MSolrAbstractResponseParser<TestDocumentWithUniqueKey>();
+            parser.parse &= x => x.Stub();
+            var executer = new SolrQueryExecuter<TestDocumentWithUniqueKey>(parser, connection, querySerializer, facetQuerySerializer, null);
+            var solr = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, executer, null, null, null, null, null, null);
+            var r = solr.Query(new SolrQuery(""), new QueryOptions {
+                Facet = new FacetParameters {
+                    Queries = new ISolrFacetQuery[] {
+                        new SolrFacetQuery(new SolrQuery("id:1")),
+                    },
+                }
+            });
+
+            Assert.AreEqual(1, connection.get.Calls);
+        }
+
+        [Test]
+        public void MoreLikeThisHandlerQuery() {
+            const string qstring = "id:123";
+
+            var connection = new MSolrConnection();
+            connection.get += (url, param) => {
+                Assert.AreEqual("/mlt", url);
+                var expectedParams = new Dictionary<string, string> {
+                    {"q", qstring},
+                    {"rows", SolrQueryExecuter<TestDocumentWithUniqueKey>.ConstDefaultRows.ToString()},
+                    {"mlt", "true"},
+                    {"mlt.fl", "id"},
+                    {"mlt.match.include", "true"},
+                };
+                CollectionAssert.AreEquivalent(expectedParams, param);
+                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.responseWithInterestingTermsDetails.xml");
+            };
+
+            var querySerializer = new MSolrQuerySerializer();
+            querySerializer.serialize &= x => x.Return(qstring);
+
+            var mlthParser = new MSolrMoreLikeThisHandlerQueryResultsParser<TestDocumentWithUniqueKey>();
+            mlthParser.parse += _ => new SolrMoreLikeThisHandlerResults<TestDocumentWithUniqueKey>();
+
+            var executer = new SolrQueryExecuter<TestDocumentWithUniqueKey>(null, connection, querySerializer, null, mlthParser);
+            var solr = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, executer, null, null, null, null, null, null);
+            var r = solr.MoreLikeThis(new SolrMoreLikeThisHandlerQuery(new SolrQuery(qstring)), new MoreLikeThisHandlerQueryOptions(new MoreLikeThisHandlerParameters(new[] {"id"}) {MatchInclude = true}));
+            Assert.AreEqual(1, connection.get.Calls);
         }
 
         [Test]
@@ -301,7 +398,7 @@ namespace SolrNet.Tests {
             headerParser.parse += _ => null;
 
             var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
-            ops.Optimize(new CommitOptions { WaitFlush = true, WaitSearcher = true });
+            ops.Optimize(new CommitOptions {WaitFlush = true, WaitSearcher = true});
             Assert.AreEqual(1, connection.post.Calls);
         }
 
@@ -318,37 +415,7 @@ namespace SolrNet.Tests {
             headerParser.parse += _ => null;
 
             var ops = new SolrBasicServer<TestDocumentWithoutUniqueKey>(connection, null, null, null, headerParser, null, null, null);
-            ops.Optimize(new CommitOptions { WaitFlush = true, WaitSearcher = true });
-        }
-
-        [Test]
-        public void MoreLikeThisHandlerQuery() {
-            const string qstring = "id:123";
-
-            var connection = new MSolrConnection();
-            connection.get += (url, param) => {
-                Assert.AreEqual("/mlt", url);
-                var expectedParams = new Dictionary<string, string> {
-                    {"q", qstring},
-                    {"rows", SolrQueryExecuter<TestDocumentWithUniqueKey>.ConstDefaultRows.ToString() },
-                    {"mlt", "true"},
-                    {"mlt.fl", "id"},
-                    {"mlt.match.include", "true"},
-                };
-                CollectionAssert.AreEquivalent(expectedParams, param);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.responseWithInterestingTermsDetails.xml");
-            };
-
-            var querySerializer = new MSolrQuerySerializer();
-            querySerializer.serialize &= x => x.Return(qstring);
-
-            var mlthParser = new MSolrMoreLikeThisHandlerQueryResultsParser<TestDocumentWithUniqueKey>();
-            mlthParser.parse += _ => new SolrMoreLikeThisHandlerResults<TestDocumentWithUniqueKey>();
-
-            var executer = new SolrQueryExecuter<TestDocumentWithUniqueKey>(null, connection, querySerializer, null, mlthParser);
-            var solr = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, executer, null, null, null, null, null, null);
-            var r = solr.MoreLikeThis(new SolrMoreLikeThisHandlerQuery(new SolrQuery(qstring)), new MoreLikeThisHandlerQueryOptions(new MoreLikeThisHandlerParameters(new[] { "id" }) { MatchInclude = true }));
-            Assert.AreEqual(1, connection.get.Calls);
+            ops.Optimize(new CommitOptions {WaitFlush = true, WaitSearcher = true});
         }
 
         [Test]
@@ -376,7 +443,7 @@ namespace SolrNet.Tests {
 
             var executer = new SolrQueryExecuter<TestDocumentWithUniqueKey>(resultParser, connection, querySerializer, null, null);
             var solr = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, executer, null, null, null, null, null, null);
-            var r = solr.Query(new SolrQuery(qstring), new QueryOptions { Start = start, Rows = rows });
+            var r = solr.Query(new SolrQuery(qstring), new QueryOptions {Start = start, Rows = rows});
 
             Assert.AreEqual(1, connection.get.Calls);
         }
@@ -406,12 +473,12 @@ namespace SolrNet.Tests {
             var executer = new SolrQueryExecuter<TestDocumentWithUniqueKey>(resultParser, connection, querySerializer, null, null);
             var solr = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, executer, null, null, null, null, null, null);
             var r = solr.Query(new SolrQuery(qstring),
-                               new QueryOptions {
-                                   OrderBy = new[] {
-                                        new SortOrder("id", Order.ASC),
-                                        new SortOrder("name", Order.DESC)
-                                    }
-                               });
+                new QueryOptions {
+                    OrderBy = new[] {
+                        new SortOrder("id", Order.ASC),
+                        new SortOrder("name", Order.DESC)
+                    }
+                });
 
             Assert.AreEqual(1, connection.get.Calls);
         }
@@ -447,76 +514,8 @@ namespace SolrNet.Tests {
                 Start = start,
                 Rows = rows,
                 OrderBy = new[] {
-                    new SortOrder("id", Order.ASC), 
+                    new SortOrder("id", Order.ASC),
                     new SortOrder("name", Order.DESC)
-                }
-            });
-
-            Assert.AreEqual(1, connection.get.Calls);
-        }
-
-        [Test]
-        public void FacetQuery() {
-
-            var connection = new MSolrConnection();
-            connection.get += (url, param) => {
-                Assert.AreEqual("/select", url);
-                var expectedParams = new Dictionary<string, string> {
-                    {"q", ""},
-                    {"rows", SolrQueryExecuter<TestDocumentWithUniqueKey>.ConstDefaultRows.ToString()},
-                    {"facet", "true"},
-                    {"facet.query", "id:1"},
-                };
-                CollectionAssert.AreEquivalent(expectedParams, param);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
-            };
-
-            var querySerializer = new DefaultQuerySerializer(new DefaultFieldSerializer());
-            var facetQuerySerializer = new DefaultFacetQuerySerializer(querySerializer, new DefaultFieldSerializer());
-            var parser = new MSolrAbstractResponseParser<TestDocumentWithUniqueKey>();
-            parser.parse &= x => x.Stub();
-            var executer = new SolrQueryExecuter<TestDocumentWithUniqueKey>(parser, connection, querySerializer, facetQuerySerializer, null);
-            var solr = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, executer, null, null, null, null, null, null);
-            var r = solr.Query(new SolrQuery(""), new QueryOptions {
-                Facet = new FacetParameters {
-                    Queries = new ISolrFacetQuery[] {
-                        new SolrFacetQuery(new SolrQuery("id:1")),
-                    },
-                }
-            });
-
-            Assert.AreEqual(1, connection.get.Calls);
-        }
-
-        [Test]
-        public void FacetField() {
-            var connection = new MSolrConnection();
-            connection.get += (url, param) => {
-                Assert.AreEqual("/select", url);
-                var expectedParams = new Dictionary<string, string> {
-                    {"q", ""},
-                    {"rows", SolrQueryExecuter<TestDocumentWithUniqueKey>.ConstDefaultRows.ToString()},
-                    {"facet", "true"},
-                    {"facet.field", "id"},
-                    {"f.id.facet.limit", "3"},
-                };
-                CollectionAssert.AreEquivalent(expectedParams, param);
-                return EmbeddedResource.GetEmbeddedString(GetType(), "Resources.response.xml");
-            };
-
-            var parser = new MSolrAbstractResponseParser<TestDocumentWithUniqueKey>();
-            parser.parse &= x => x.Stub();
-            var querySerializer = new MSolrQuerySerializer();
-            querySerializer.serialize += _ => "";
-            var facetQuerySerializer = new DefaultFacetQuerySerializer(querySerializer, new DefaultFieldSerializer());
-
-            var executer = new SolrQueryExecuter<TestDocumentWithUniqueKey>(parser, connection, querySerializer, facetQuerySerializer, null);
-            var solr = new SolrBasicServer<TestDocumentWithUniqueKey>(connection, executer, null, null, null, null, null, null);
-            var r = solr.Query(new SolrQuery(""), new QueryOptions {
-                Facet = new FacetParameters {
-                    Queries = new ISolrFacetQuery[] {
-                            new SolrFacetFieldQuery("id") {Limit = 3},
-                        },
                 }
             });
 

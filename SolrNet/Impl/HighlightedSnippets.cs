@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections;
@@ -22,14 +24,15 @@ namespace SolrNet.Impl {
     /// Highlighted snippets by field
     /// </summary>
     public class HighlightedSnippets : IDictionary<string, ICollection<string>> {
+        private readonly IDictionary<string, ICollection<string>> fields = new Dictionary<string, ICollection<string>>();
+
         /// <summary>
         /// Highlighted snippets by field
         /// </summary>
-        public IDictionary<string, ICollection<string>> Snippets {
+        public IDictionary<string, ICollection<string>> Snippets
+        {
             get { return fields; }
         }
-
-        private readonly IDictionary<string, ICollection<string>> fields = new Dictionary<string, ICollection<string>>();
 
         public IEnumerator<KeyValuePair<string, ICollection<string>>> GetEnumerator() {
             return fields.GetEnumerator();
@@ -59,11 +62,13 @@ namespace SolrNet.Impl {
             return fields.Remove(item);
         }
 
-        public int Count {
+        public int Count
+        {
             get { return fields.Count; }
         }
 
-        public bool IsReadOnly {
+        public bool IsReadOnly
+        {
             get { return fields.IsReadOnly; }
         }
 
@@ -83,16 +88,19 @@ namespace SolrNet.Impl {
             return fields.TryGetValue(key, out value);
         }
 
-        public ICollection<string> this[string key] {
+        public ICollection<string> this[string key]
+        {
             get { return fields[key]; }
             set { fields[key] = value; }
         }
 
-        public ICollection<string> Keys {
+        public ICollection<string> Keys
+        {
             get { return fields.Keys; }
         }
 
-        public ICollection<ICollection<string>> Values {
+        public ICollection<ICollection<string>> Values
+        {
             get { return fields.Values; }
         }
     }

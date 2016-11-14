@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
@@ -22,7 +23,7 @@ namespace SolrNet.Impl {
     /// <summary>
     /// Parses a solr result into a dictionary of (string, object)
     /// </summary>
-    public class SolrDictionaryDocumentResponseParser: ISolrDocumentResponseParser<Dictionary<string, object>> {
+    public class SolrDictionaryDocumentResponseParser : ISolrDocumentResponseParser<Dictionary<string, object>> {
         private readonly ISolrFieldParser fieldParser;
 
         public SolrDictionaryDocumentResponseParser(ISolrFieldParser fieldParser) {
@@ -43,7 +44,7 @@ namespace SolrNet.Impl {
         public Dictionary<string, object> ParseDocument(XElement node) {
             var doc = new Dictionary<string, object>();
             foreach (var field in node.Elements()) {
-                string fieldName = field.Attribute("name").Value;
+                var fieldName = field.Attribute("name").Value;
                 doc[fieldName] = fieldParser.Parse(field, typeof(object));
             }
             return doc;

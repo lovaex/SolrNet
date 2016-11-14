@@ -28,14 +28,14 @@ namespace SolrNet.Mapping.Validation.Rules {
     /// as either a SolrField or a DynamicField
     /// </summary>
     public class MappedPropertiesIsInSolrSchemaRule : IValidationRule {
+        public MappedPropertiesIsInSolrSchemaRule() {
+            IgnoredFieldNames = new[] {"score", "geo_distance"};
+        }
+
         /// <summary>
         /// Field names to be ignored. These fields are never checked.
         /// </summary>
         public ICollection<string> IgnoredFieldNames { get; set; }
-
-        public MappedPropertiesIsInSolrSchemaRule() {
-            IgnoredFieldNames = new[] {"score", "geo_distance"};
-        }
 
         /// <summary>
         /// Validates that all properties in the mapping are present in the Solr schema
@@ -74,7 +74,7 @@ namespace SolrNet.Mapping.Validation.Rules {
                 if (!fieldFoundInSolrSchema)
                     // If field couldn't be matched to any of the solrfield, dynamicfields throw an exception.
                     yield return new ValidationError(String.Format("No matching SolrField or DynamicField '{0}' found in the Solr schema for document property '{1}' in type '{2}'.",
-                                                                          field.FieldName, field.Property.Name, documentType.FullName));
+                        field.FieldName, field.Property.Name, documentType.FullName));
             }
         }
 

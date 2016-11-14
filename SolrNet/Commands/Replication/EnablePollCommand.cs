@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +13,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
-
-namespace SolrNet.Commands.Replication
-{
+namespace SolrNet.Commands.Replication {
     /// <summary>
     /// Enable polling for changes from slave command
     /// http://wiki.apache.org/solr/SolrReplication
     /// https://cwiki.apache.org/confluence/display/solr/Index+Replication
     /// </summary>
-	public class EnablePollCommand : ReplicationCommand 
-    {
+    public class EnablePollCommand : ReplicationCommand {
         /// <summary>
         /// Enables the specified slave to poll for changes on the master. 
         /// </summary>
-        public EnablePollCommand()
-        {
+        public EnablePollCommand() {
             AddParameter("command", "enablepoll");
         }
-	}
+    }
 }

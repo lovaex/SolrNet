@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -22,46 +24,48 @@ namespace SolrNet {
     /// <summary>
     /// Sorting order
     /// </summary>
-	public class SortOrder {
-		private readonly string fieldName;
-		private readonly Order order = Order.ASC;
+    public class SortOrder {
         private static readonly Regex parseRx = new Regex("\\s+", RegexOptions.Compiled);
+        private readonly string fieldName;
+        private readonly Order order = Order.ASC;
 
-		///<summary>
-		/// Ctor. Default sort order is ascending.
-		///</summary>
-		///<param name="fieldName">The name of the field to sort by.</param>
-		///<exception cref="InvalidSortOrderException">Thrown if field name contains spaces.</exception>
-		public SortOrder(string fieldName) {
-			this.fieldName = fieldName;
-		}
+        ///<summary>
+        /// Ctor. Default sort order is ascending.
+        ///</summary>
+        ///<param name="fieldName">The name of the field to sort by.</param>
+        ///<exception cref="InvalidSortOrderException">Thrown if field name contains spaces.</exception>
+        public SortOrder(string fieldName) {
+            this.fieldName = fieldName;
+        }
 
-		///<summary>
-		/// Ctor.
-		///</summary>
+        ///<summary>
+        /// Ctor.
+        ///</summary>
         ///<param name="fieldName">The name of the field to sort by.</param>
         ///<param name="order">The <see cref="Order">order</see> to sort in (asc/desc).</param>
-		public SortOrder(string fieldName, Order order) : this(fieldName) {
-			this.order = order;
-		}
+        public SortOrder(string fieldName, Order order) : this(fieldName) {
+            this.order = order;
+        }
 
         /// <summary>
         /// Sort field
         /// </summary>
-        public string FieldName {
+        public string FieldName
+        {
             get { return fieldName; }
         }
 
         /// <summary>
         /// Sort order
         /// </summary>
-        public Order Order {
+        public Order Order
+        {
             get { return order; }
         }
 
         public override string ToString() {
-			return string.Format("{0} {1}", FieldName, Order.ToString().ToLower());
-		}
+            return string.Format("{0} {1}", FieldName, Order.ToString().ToLower());
+        }
 
         /// <summary>
         /// Parses a sort order in format "field (ASC | DESC)".
@@ -69,21 +73,21 @@ namespace SolrNet {
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-		public static SortOrder Parse(string s) {
+        public static SortOrder Parse(string s) {
             if (string.IsNullOrEmpty(s))
                 return null;
-			try {
-			    var tokens = parseRx.Split(s.Trim());
-				string field = tokens[0];
-				if (tokens.Length > 1) {
-					var o = (Order) Enum.Parse(typeof (Order), tokens[1].ToUpper());
-					return new SortOrder(field, o);
-				}
-				return new SortOrder(field);
-			} catch (Exception e) {
-				throw new InvalidSortOrderException(e);
-			}
-		}
+            try {
+                var tokens = parseRx.Split(s.Trim());
+                var field = tokens[0];
+                if (tokens.Length > 1) {
+                    var o = (Order) Enum.Parse(typeof(Order), tokens[1].ToUpper());
+                    return new SortOrder(field, o);
+                }
+                return new SortOrder(field);
+            } catch (Exception e) {
+                throw new InvalidSortOrderException(e);
+            }
+        }
 
         public bool Equals(SortOrder other) {
             if (ReferenceEquals(null, other)) {
@@ -102,7 +106,7 @@ namespace SolrNet {
             if (ReferenceEquals(this, obj)) {
                 return true;
             }
-            if (obj.GetType() != typeof (SortOrder)) {
+            if (obj.GetType() != typeof(SortOrder)) {
                 return false;
             }
             return Equals((SortOrder) obj);
@@ -113,5 +117,5 @@ namespace SolrNet {
                 return ((fieldName != null ? fieldName.GetHashCode() : 0)*397) ^ order.GetHashCode();
             }
         }
-	}
+    }
 }

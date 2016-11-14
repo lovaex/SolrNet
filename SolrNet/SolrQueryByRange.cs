@@ -16,7 +16,6 @@
 
 #endregion
 
-using System;
 using SolrNet.Impl;
 
 namespace SolrNet {
@@ -27,9 +26,9 @@ namespace SolrNet {
     public class SolrQueryByRange<RT> : AbstractSolrQuery, ISolrQueryByRange {
         private readonly string fieldName;
         private readonly RT from;
-        private readonly RT to;
         private readonly bool inclusiveFrom;
         private readonly bool inclusiveTo;
+        private readonly RT to;
 
         /// <summary>
         /// Creates an range query with inclusive bounds
@@ -65,46 +64,53 @@ namespace SolrNet {
             this.inclusiveTo = inclusiveTo;
         }
 
-        public string FieldName {
-            get { return fieldName; }
-        }
-
-        public RT From {
+        public RT From
+        {
             get { return from; }
         }
 
-        object ISolrQueryByRange.From {
-            get { return from; }
-        }
-
-        public RT To {
+        public RT To
+        {
             get { return to; }
         }
 
-        object ISolrQueryByRange.To {
+        public string FieldName
+        {
+            get { return fieldName; }
+        }
+
+        object ISolrQueryByRange.From
+        {
+            get { return from; }
+        }
+
+        object ISolrQueryByRange.To
+        {
             get { return to; }
         }
 
         /// <summary>
         /// Is lower and upper bound inclusive
         /// </summary>
-        public bool Inclusive {
+        public bool Inclusive
+        {
             get { return inclusiveFrom && inclusiveTo; }
         }
 
         /// <summary>
         /// Is lower bound <see cref="From"/> inclusive
         /// </summary>
-        public bool InclusiveFrom {
+        public bool InclusiveFrom
+        {
             get { return inclusiveFrom; }
         }
 
         /// <summary>
         /// Is upper bound <see cref="To"/> inclusive
         /// </summary>
-        public bool InclusiveTo {
+        public bool InclusiveTo
+        {
             get { return inclusiveTo; }
         }
-
     }
 }

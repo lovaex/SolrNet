@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Mapping;
 using SolrNet.Mapping.Validation;

@@ -25,7 +25,7 @@ lib/TDNet
 SampleSolrApp/log*
 _NCrunch*/*
 *~
-packages/*
+packages/
 .nuget/*.exe
 *.sln.ide
 .vs/*

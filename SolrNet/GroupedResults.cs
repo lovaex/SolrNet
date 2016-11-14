@@ -8,6 +8,13 @@ namespace SolrNet {
     /// <typeparam name="T"></typeparam>
     public class GroupedResults<T> {
         /// <summary>
+        /// Constructor for GroupedResults
+        /// </summary>
+        public GroupedResults() {
+            Groups = new List<Group<T>>();
+        }
+
+        /// <summary>
         /// Returns the number of unique matching documents that are grouped. 
         /// </summary>
         public int Matches { get; set; }
@@ -22,12 +29,5 @@ namespace SolrNet {
         /// Only available if <see cref="GroupingParameters.Ngroups"/> is true
         /// </summary>
         public int? Ngroups { get; set; }
-
-        /// <summary>
-        /// Constructor for GroupedResults
-        /// </summary>
-        public GroupedResults() {
-            Groups = new List<Group<T>>();
-        }
     }
 }

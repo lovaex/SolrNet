@@ -18,7 +18,6 @@
 
 using System;
 using System.Linq;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Mapping;
 using SolrNet.Mapping.Validation;
@@ -30,9 +29,9 @@ namespace SolrNet.Tests {
     [TestFixture]
     public class MultivaluedMappedToCollectionRuleTests {
         [Test]
-        public void MutivaluedSolrFieldNotMappedToCollectionShouldReturnError() {
+        public void CollectionMappedToNonMultiValuedFolrFieldShouldReturnError() {
             var mgr = new MappingManager();
-            mgr.Add(typeof (SchemaMappingTestDocument).GetProperty("Name"), "name");
+            mgr.Add(typeof(SchemaMappingTestDocument).GetProperty("NameCollection"), "author");
 
             var schemaManager = new MappingValidator(mgr, new[] {new MultivaluedMappedToCollectionRule()});
 
@@ -40,7 +39,7 @@ namespace SolrNet.Tests {
             var solrSchemaParser = new SolrSchemaParser();
             var schema = solrSchemaParser.Parse(schemaXmlDocument);
 
-            var validationResults = schemaManager.EnumerateValidationResults(typeof (SchemaMappingTestDocument), schema).ToList();
+            var validationResults = schemaManager.EnumerateValidationResults(typeof(SchemaMappingTestDocument), schema).ToList();
             Assert.AreEqual(1, validationResults.Count);
             Console.WriteLine(validationResults[0].Message);
         }
@@ -48,7 +47,7 @@ namespace SolrNet.Tests {
         [Test]
         public void MultivaluedSolrFieldMappedToCollectionShouldNotReturnError() {
             var mgr = new MappingManager();
-            mgr.Add(typeof (SchemaMappingTestDocument).GetProperty("NameCollection"), "name");
+            mgr.Add(typeof(SchemaMappingTestDocument).GetProperty("NameCollection"), "name");
 
             var schemaManager = new MappingValidator(mgr, new[] {new MultivaluedMappedToCollectionRule()});
 
@@ -56,14 +55,14 @@ namespace SolrNet.Tests {
             var solrSchemaParser = new SolrSchemaParser();
             var schema = solrSchemaParser.Parse(schemaXmlDocument);
 
-            var validationResults = schemaManager.EnumerateValidationResults(typeof (SchemaMappingTestDocument), schema).ToList();
+            var validationResults = schemaManager.EnumerateValidationResults(typeof(SchemaMappingTestDocument), schema).ToList();
             Assert.AreEqual(0, validationResults.Count);
         }
 
         [Test]
-        public void CollectionMappedToNonMultiValuedFolrFieldShouldReturnError() {
+        public void MutivaluedSolrFieldNotMappedToCollectionShouldReturnError() {
             var mgr = new MappingManager();
-            mgr.Add(typeof (SchemaMappingTestDocument).GetProperty("NameCollection"), "author");
+            mgr.Add(typeof(SchemaMappingTestDocument).GetProperty("Name"), "name");
 
             var schemaManager = new MappingValidator(mgr, new[] {new MultivaluedMappedToCollectionRule()});
 
@@ -71,7 +70,7 @@ namespace SolrNet.Tests {
             var solrSchemaParser = new SolrSchemaParser();
             var schema = solrSchemaParser.Parse(schemaXmlDocument);
 
-            var validationResults = schemaManager.EnumerateValidationResults(typeof (SchemaMappingTestDocument), schema).ToList();
+            var validationResults = schemaManager.EnumerateValidationResults(typeof(SchemaMappingTestDocument), schema).ToList();
             Assert.AreEqual(1, validationResults.Count);
             Console.WriteLine(validationResults[0].Message);
         }

@@ -11,8 +11,10 @@ namespace SolrNet.Tests.Utils {
     public abstract class Unit {}
 
     public abstract class Counter {
-        public readonly long? Min;
         public readonly long? Max;
+        public readonly long? Min;
+
+        private long count;
 
         protected Counter(long expected) {
             Min = Max = expected;
@@ -23,9 +25,8 @@ namespace SolrNet.Tests.Utils {
             Max = max;
         }
 
-        private long count;
-
-        public long Calls {
+        public long Calls
+        {
             get { return count; }
         }
 
@@ -46,13 +47,13 @@ namespace SolrNet.Tests.Utils {
         }
     }
 
-    public class MFunc<R>: Counter {
+    public class MFunc<R> : Counter {
         private static readonly Func<R> def = () => default(R);
         private readonly Func<R> fun = def;
 
-        public MFunc(long expected): base(expected) {}
+        public MFunc(long expected) : base(expected) {}
 
-        public MFunc(long? min = null, long? max = null): base(min, max) {}
+        public MFunc(long? min = null, long? max = null) : base(min, max) {}
 
         public MFunc(Func<R> f, long expected) : this(expected) {
             fun = f ?? def;
@@ -85,13 +86,13 @@ namespace SolrNet.Tests.Utils {
         }
     }
 
-    public class MFunc<A, R>: Counter {
+    public class MFunc<A, R> : Counter {
         private static readonly Func<A, R> def = a => default(R);
         private readonly Func<A, R> fun = def;
 
-        public MFunc(long expected): base(expected) {}
+        public MFunc(long expected) : base(expected) {}
 
-        public MFunc(long? min = null, long? max = null): base(min, max) {}
+        public MFunc(long? min = null, long? max = null) : base(min, max) {}
 
         public MFunc(Func<A, R> f, long expected) : this(expected) {
             fun = f ?? def;
@@ -122,16 +123,15 @@ namespace SolrNet.Tests.Utils {
         public static MFunc<A, R> operator &(MFunc<A, R> a, Func<MFunc<A, R>, MFunc<A, R>> map) {
             return map(a);
         }
-
     }
 
-    public class MFunc<A, B, R>: Counter {
+    public class MFunc<A, B, R> : Counter {
         private static readonly Func<A, B, R> def = (a, b) => default(R);
         private readonly Func<A, B, R> fun = def;
 
-        public MFunc(long expected): base(expected) {}
+        public MFunc(long expected) : base(expected) {}
 
-        public MFunc(long? min = null, long? max = null): base(min, max) {}
+        public MFunc(long? min = null, long? max = null) : base(min, max) {}
 
         public MFunc(Func<A, B, R> f, long expected) : this(expected) {
             fun = f ?? def;
@@ -159,24 +159,24 @@ namespace SolrNet.Tests.Utils {
             return new MFunc<A, B, R>(a.fun + b, a.Min, a.Max);
         }
 
-        public static MFunc<A,B,R> operator &(MFunc<A,B,R> a, Func<MFunc<A,B,R>, MFunc<A,B,R>> map) {
+        public static MFunc<A, B, R> operator &(MFunc<A, B, R> a, Func<MFunc<A, B, R>, MFunc<A, B, R>> map) {
             return map(a);
         }
     }
 
-    public class MFunc<A, B, C, R>: Counter {
+    public class MFunc<A, B, C, R> : Counter {
         private static readonly Func<A, B, C, R> def = (a, b, c) => default(R);
         private readonly Func<A, B, C, R> fun = def;
 
-        public MFunc(long expected): base(expected) {}
+        public MFunc(long expected) : base(expected) {}
 
-        public MFunc(long? min = null, long? max = null): base(min, max) {}
+        public MFunc(long? min = null, long? max = null) : base(min, max) {}
 
-        public MFunc(Func<A, B, C, R> f, long expected): this(expected) {
+        public MFunc(Func<A, B, C, R> f, long expected) : this(expected) {
             fun = f ?? def;
         }
 
-        public MFunc(Func<A, B, C, R> f, long? min = null, long? max = null): this(min, max) {
+        public MFunc(Func<A, B, C, R> f, long? min = null, long? max = null) : this(min, max) {
             fun = f ?? def;
         }
 
@@ -203,19 +203,19 @@ namespace SolrNet.Tests.Utils {
         }
     }
 
-    public class MFunc<A, B, C, D, R>: Counter {
+    public class MFunc<A, B, C, D, R> : Counter {
         private static readonly Func<A, B, C, D, R> def = (a, b, c, d) => default(R);
         private readonly Func<A, B, C, D, R> fun = def;
 
-        public MFunc(long expected): base(expected) {}
+        public MFunc(long expected) : base(expected) {}
 
-        public MFunc(long? min = null, long? max = null): base(min, max) {}
+        public MFunc(long? min = null, long? max = null) : base(min, max) {}
 
-        public MFunc(Func<A, B, C, D, R> f, long expected): this(expected) {
+        public MFunc(Func<A, B, C, D, R> f, long expected) : this(expected) {
             fun = f ?? def;
         }
 
-        public MFunc(Func<A, B, C, D, R> f, long? min = null, long? max = null): this(min, max) {
+        public MFunc(Func<A, B, C, D, R> f, long? min = null, long? max = null) : this(min, max) {
             fun = f ?? def;
         }
 
@@ -271,14 +271,14 @@ namespace SolrNet.Tests.Utils {
             var counters =
                 o.GetType().GetFields()
                     .Where(x => typeof(Counter).IsAssignableFrom(x.FieldType))
-                    .Select(x => new { x.Name, Counter = (Counter)x.GetValue(o) })
+                    .Select(x => new {x.Name, Counter = (Counter) x.GetValue(o)})
                     .Where(x => x.Counter != null);
             foreach (var c in counters)
                 try {
                     c.Counter.Verify();
                 } catch (MorocoException e) {
                     throw new MorocoException(c.Name + " failed", e);
-                }            
+                }
         }
 
         public static Ok Ok() {
@@ -317,10 +317,10 @@ namespace SolrNet.Tests.Utils {
         private static MFunc<A, B, C> Arg1<A, B, C>(this MFunc<A, B, C> f, Func<A, Validation> validate) {
             f = f ?? new MFunc<A, B, C>();
             return new MFunc<A, B, C>((a, b) => validate(a)
-                                                          .Match<C>(ok : () => f.Invoke(a, b),
-                                                                 fail : msg => {
-                                                                     throw new MorocoException(msg);
-                                                                 }), f.Min, f.Max);
+                .Match<C>(ok : () => f.Invoke(a, b),
+                    fail : msg => {
+                        throw new MorocoException(msg);
+                    }), f.Min, f.Max);
         }
 
         private static MFunc<A, B, C> Arg1<A, B, C>(this MFunc<A, B, C> f, A value) {
@@ -334,10 +334,10 @@ namespace SolrNet.Tests.Utils {
         private static MFunc<A, B, C> Arg2<A, B, C>(this MFunc<A, B, C> f, Func<B, Validation> validate) {
             f = f ?? new MFunc<A, B, C>();
             return new MFunc<A, B, C>((a, b) => validate(b)
-                                                          .Match<C>(ok : () => f.Invoke(a, b),
-                                                                 fail : msg => {
-                                                                     throw new MorocoException(msg);
-                                                                 }), f.Min, f.Max);
+                .Match<C>(ok : () => f.Invoke(a, b),
+                    fail : msg => {
+                        throw new MorocoException(msg);
+                    }), f.Min, f.Max);
         }
 
         private static MFunc<A, B, C> Arg2<A, B, C>(this MFunc<A, B, C> f, B value) {
@@ -379,12 +379,11 @@ namespace SolrNet.Tests.Utils {
             return new MFunc<A, B>();
         }
 
-        public static MFunc<A,B,C> Stub<A,B,C>(this MFunc<A,B,C> f) {
+        public static MFunc<A, B, C> Stub<A, B, C>(this MFunc<A, B, C> f) {
             return new MFunc<A, B, C>();
         }
 
-        public static MFunc<A, B, C, D> Stub<A, B, C, D>(this MFunc<A, B, C, D> f)
-        {
+        public static MFunc<A, B, C, D> Stub<A, B, C, D>(this MFunc<A, B, C, D> f) {
             return new MFunc<A, B, C, D>();
         }
     }

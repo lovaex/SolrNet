@@ -28,6 +28,7 @@
   <field name="price">19.95</field>
   <field name="popularity">1</field>
   <field name="inStock">false</field>
+  <field name="timestamp">2000-01-01T00:00:00.000Z</field>
 </doc>
 
 <doc>
@@ -41,6 +42,7 @@
   <field name="price">11.50</field>
   <field name="popularity">1</field>
   <field name="inStock">false</field>
+  <field name="timestamp">2000-01-01T00:00:00.000Z</field>
 </doc>
 
 

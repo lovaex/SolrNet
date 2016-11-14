@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +13,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-namespace SolrNet
-{
+namespace SolrNet {
     /// <summary>
     /// Contains parameters that can be specified when adding a document to the index.
     /// </summary>
@@ -36,9 +37,7 @@ namespace SolrNet
     /// <remarks>
     /// CommitWithin works in SOLR 3.6+ - see https://issues.apache.org/jira/browse/SOLR-2280
     /// </remarks>
-    public class DeleteParameters : UpdateParameters{
-
-    }
+    public class DeleteParameters : UpdateParameters {}
 
     /// <summary>
     /// Contains parameters that can be specified when making any update to the index.
@@ -50,5 +49,4 @@ namespace SolrNet
         /// <value>The time period (in milliseconds) within which the document will be committed to the index.</value>
         public int? CommitWithin { get; set; }
     }
-
 }

@@ -31,7 +31,6 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Threading;
 
@@ -45,81 +44,74 @@ namespace SolrNet.Tests.Utils {
     [Serializable]
     [ComVisible(false)]
     [HostProtection(SecurityAction.LinkDemand, Synchronization = true, ExternalThreading = true)]
-    [DebuggerDisplay ("ThreadSafetyMode={Mode}, IsValueCreated={IsValueCreated}, IsValueFaulted={IsValueFaulted}, Value={ValueForDebugDisplay}")]
-    public class Lazy<T> 
-    {
-        T value;
-        Func<T> factory;
-        object monitor;
+    [DebuggerDisplay("ThreadSafetyMode={Mode}, IsValueCreated={IsValueCreated}, IsValueFaulted={IsValueFaulted}, Value={ValueForDebugDisplay}")]
+    public class Lazy<T> {
         Exception exception;
-        LazyThreadSafetyMode mode;
+        Func<T> factory;
         bool inited;
+        LazyThreadSafetyMode mode;
+        object monitor;
+        T value;
 
-        public Lazy ()
-            : this (LazyThreadSafetyMode.ExecutionAndPublication)
-        {
-        }
+        public Lazy()
+            : this(LazyThreadSafetyMode.ExecutionAndPublication) {}
 
-        public Lazy (Func<T> valueFactory)
-            : this (valueFactory, LazyThreadSafetyMode.ExecutionAndPublication)
-        {
-        }
+        public Lazy(Func<T> valueFactory)
+            : this(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication) {}
 
-        public Lazy (bool isThreadSafe)
-            : this (() => Activator.CreateInstance<T> (), isThreadSafe ? LazyThreadSafetyMode.ExecutionAndPublication : LazyThreadSafetyMode.None)
-        {
-        }
-		
-        public Lazy (Func<T> valueFactory, bool isThreadSafe)
-            : this (valueFactory, isThreadSafe ? LazyThreadSafetyMode.ExecutionAndPublication : LazyThreadSafetyMode.None)
-        {
-        }
+        public Lazy(bool isThreadSafe)
+            : this(() => Activator.CreateInstance<T>(), isThreadSafe ? LazyThreadSafetyMode.ExecutionAndPublication : LazyThreadSafetyMode.None) {}
 
-        public Lazy (LazyThreadSafetyMode mode)
-            : this (() => Activator.CreateInstance<T> (), mode)
-        {
-        }
+        public Lazy(Func<T> valueFactory, bool isThreadSafe)
+            : this(valueFactory, isThreadSafe ? LazyThreadSafetyMode.ExecutionAndPublication : LazyThreadSafetyMode.None) {}
 
-		
+        public Lazy(LazyThreadSafetyMode mode)
+            : this(() => Activator.CreateInstance<T>(), mode) {}
 
-        public Lazy (Func<T> valueFactory, LazyThreadSafetyMode mode)
-        {
+
+        public Lazy(Func<T> valueFactory, LazyThreadSafetyMode mode) {
             if (valueFactory == null)
-                throw new ArgumentNullException ("valueFactory");
+                throw new ArgumentNullException("valueFactory");
             this.factory = valueFactory;
             if (mode != LazyThreadSafetyMode.None)
-                monitor = new object ();
+                monitor = new object();
             this.mode = mode;
         }
 
         // Don't trigger expensive initialization
-        [DebuggerBrowsable (DebuggerBrowsableState.Never)]
-        public T Value {
-            get {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public T Value
+        {
+            get
+            {
                 if (inited)
                     return value;
                 if (exception != null)
                     throw exception;
 
-                return InitValue ();
+                return InitValue();
             }
         }
 
-        T InitValue ()
+        public bool IsValueCreated
         {
+            get { return inited; }
+        }
+
+        T InitValue() {
             Func<T> init_factory;
             T v;
-			
+
             switch (mode) {
                 case LazyThreadSafetyMode.None:
                     init_factory = factory;
-                    if (init_factory == null) 
-                        throw exception = new InvalidOperationException ("The initialization function tries to access Value on this instance");
+                    if (init_factory == null)
+                        throw exception = new InvalidOperationException("The initialization function tries to access Value on this instance");
                     try {
                         factory = null;
-                        v = init_factory ();
+                        v = init_factory();
                         value = v;
-                        Thread.MemoryBarrier ();
+                        Thread.MemoryBarrier();
                         inited = true;
                     } catch (Exception ex) {
                         exception = ex;
@@ -132,15 +124,15 @@ namespace SolrNet.Tests.Utils {
 
                     //exceptions are ignored
                     if (init_factory != null)
-                        v = init_factory ();
+                        v = init_factory();
                     else
-                        v = default (T);
+                        v = default(T);
 
                     lock (monitor) {
                         if (inited)
                             return value;
                         value = v;
-                        Thread.MemoryBarrier ();
+                        Thread.MemoryBarrier();
                         inited = true;
                         factory = null;
                     }
@@ -152,14 +144,14 @@ namespace SolrNet.Tests.Utils {
                             return value;
 
                         if (factory == null)
-                            throw exception = new InvalidOperationException ("The initialization function tries to access Value on this instance");
+                            throw exception = new InvalidOperationException("The initialization function tries to access Value on this instance");
 
                         init_factory = factory;
                         try {
                             factory = null;
-                            v = init_factory ();
+                            v = init_factory();
                             value = v;
-                            Thread.MemoryBarrier ();
+                            Thread.MemoryBarrier();
                             inited = true;
                         } catch (Exception ex) {
                             exception = ex;
@@ -169,22 +161,15 @@ namespace SolrNet.Tests.Utils {
                     break;
 
                 default:
-                    throw new InvalidOperationException ("Invalid LazyThreadSafetyMode " + mode);
+                    throw new InvalidOperationException("Invalid LazyThreadSafetyMode " + mode);
             }
 
             return value;
         }
 
-        public bool IsValueCreated {
-            get {
-                return inited;
-            }
-        }
-
-        public override string ToString ()
-        {
+        public override string ToString() {
             if (inited)
-                return value.ToString ();
+                return value.ToString();
             else
                 return "Value is not created";
         }

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 
 namespace SolrNet.Utils {
@@ -39,26 +40,13 @@ namespace SolrNet.Utils {
                 componentsByType[t.Key] = new List<Converter<IContainer, object>>(t.Value);
         }
 
-        protected override object DoGetInstance(Type serviceType, string key) {
-            if (key == null)
-                return componentsByType[serviceType][0](this);
-            return componentsByName[key](this);
-        }
-
-        protected override IEnumerable<object> DoGetAllInstances(Type serviceType) {
-            if (!componentsByType.ContainsKey(serviceType))
-                yield break;
-            foreach (var c in componentsByType[serviceType])
-                yield return c(this);
-        }
-
         /// <summary>
         /// Adds a component implementing <typeparamref name="T"/>
         /// Component key is <typeparamref name="T"/>'s <see cref="Type.FullName"/>
         /// </summary>
         /// <typeparam name="T">Service type</typeparam>
         /// <param name="factory">Component factory method</param>
-        public void Register<T>(Converter<IContainer,T> factory) {
+        public void Register<T>(Converter<IContainer, T> factory) {
             Register(typeof(T).FullName, typeof(T), c => factory(c));
         }
 
@@ -68,7 +56,7 @@ namespace SolrNet.Utils {
         /// <typeparam name="T">Service type</typeparam>
         /// <param name="factory">Component factory method</param>
         /// <param name="key">Component key</param>
-        public void Register<T>(string key, Converter<IContainer,T> factory) {
+        public void Register<T>(string key, Converter<IContainer, T> factory) {
             Register(key, typeof(T), c => factory(c));
         }
 
@@ -132,6 +120,19 @@ namespace SolrNet.Utils {
             var factory = componentsByName[key];
             componentsByName.Remove(key);
             componentsByType[serviceType].Remove(factory);
+        }
+
+        protected override object DoGetInstance(Type serviceType, string key) {
+            if (key == null)
+                return componentsByType[serviceType][0](this);
+            return componentsByName[key](this);
+        }
+
+        protected override IEnumerable<object> DoGetAllInstances(Type serviceType) {
+            if (!componentsByType.ContainsKey(serviceType))
+                yield break;
+            foreach (var c in componentsByType[serviceType])
+                yield return c(this);
         }
 
         /// <summary>

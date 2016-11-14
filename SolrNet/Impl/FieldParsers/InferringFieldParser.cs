@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -24,7 +26,21 @@ namespace SolrNet.Impl.FieldParsers {
     /// Parser that infers .net type based on solr type
     /// </summary>
     public class InferringFieldParser : ISolrFieldParser {
+        private static readonly IDictionary<string, Type> solrTypes;
         private readonly ISolrFieldParser parser;
+
+        static InferringFieldParser() {
+            solrTypes = new Dictionary<string, Type> {
+                {"bool", typeof(bool)},
+                {"str", typeof(string)},
+                {"int", typeof(int)},
+                {"float", typeof(float)},
+                {"double", typeof(double)},
+                {"long", typeof(long)},
+                {"arr", typeof(ICollection)},
+                {"date", typeof(DateTime)},
+            };
+        }
 
         public InferringFieldParser(ISolrFieldParser parser) {
             this.parser = parser;
@@ -36,21 +52,6 @@ namespace SolrNet.Impl.FieldParsers {
 
         public bool CanHandleType(Type t) {
             return true;
-        }
-
-        private static readonly IDictionary<string, Type> solrTypes;
-
-        static InferringFieldParser() {
-            solrTypes = new Dictionary<string, Type> {
-                {"bool", typeof (bool)},
-                {"str", typeof (string)},
-                {"int", typeof (int)},
-                {"float", typeof (float)},
-                {"double", typeof(double)},
-                {"long", typeof (long)},
-                {"arr", typeof (ICollection)},
-                {"date", typeof (DateTime)},
-            };
         }
 
         public object Parse(XElement field, Type t) {

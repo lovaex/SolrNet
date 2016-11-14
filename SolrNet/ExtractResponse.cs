@@ -1,10 +1,13 @@
-﻿namespace SolrNet {
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace SolrNet {
     /// <summary>
     /// Response of the Extraction
     /// </summary>
     public class ExtractResponse {
+        public ExtractResponse(ResponseHeader responseHeader) {
+            ResponseHeader = responseHeader;
+        }
 
         /// <summary>
         /// Operation response header
@@ -21,9 +24,5 @@
         /// Metadata fields populated by ExtractingRequestHandler with extract only set to true
         /// </summary>
         public List<ExtractField> Metadata { get; set; }
-
-        public ExtractResponse(ResponseHeader responseHeader) {
-            ResponseHeader = responseHeader;
-        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -22,24 +24,20 @@ namespace SolrNet.Exceptions {
     /// Error connecting to Solr. See inner exception for more information.
     /// </summary>
     [Serializable]
-	public class SolrConnectionException : SolrNetException {
+    public class SolrConnectionException : SolrNetException {
         private readonly string url;
-
-        public string Url {
-            get { return url; }
-        }
 
         /// <summary>
         /// Error connecting to Solr.
         /// </summary>
         /// <param name="message"></param>
-		public SolrConnectionException(string message) : base(message) {}
+        public SolrConnectionException(string message) : base(message) {}
 
         /// <summary>
         /// Error connecting to Solr.
         /// </summary>
         /// <param name="innerException"></param>
-		public SolrConnectionException(Exception innerException) : base(innerException) {}
+        public SolrConnectionException(Exception innerException) : base(innerException) {}
 
         /// <summary>
         /// Error connecting to Solr.
@@ -54,7 +52,7 @@ namespace SolrNet.Exceptions {
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-		public SolrConnectionException(string message, Exception innerException) : base(message, innerException) {}
+        public SolrConnectionException(string message, Exception innerException) : base(message, innerException) {}
 
         /// <summary>
         /// Error connecting to Solr.
@@ -68,7 +66,13 @@ namespace SolrNet.Exceptions {
         /// <summary>
         /// Error connecting to Solr.
         /// </summary>
-		public SolrConnectionException() {}
+        public SolrConnectionException() {}
+
         protected SolrConnectionException(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+
+        public string Url
+        {
+            get { return url; }
+        }
+    }
 }

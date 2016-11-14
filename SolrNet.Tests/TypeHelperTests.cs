@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections;
 using System.Collections.Generic;
-using MbUnit.Framework;
 using NUnit.Framework;
 using SolrNet.Utils;
 
@@ -25,7 +26,7 @@ namespace SolrNet.Tests {
     public class TypeHelperTests {
         [Test]
         public void IsGenericAssignableFrom() {
-            Assert.IsTrue(TypeHelper.IsGenericAssignableFrom(typeof (IDictionary<,>), typeof (Dictionary<string, string>)));
+            Assert.IsTrue(TypeHelper.IsGenericAssignableFrom(typeof(IDictionary<,>), typeof(Dictionary<string, string>)));
         }
 
         [Test]
@@ -39,14 +40,13 @@ namespace SolrNet.Tests {
         }
 
         [Test]
-        public void IsNullableType() {
-            Assert.IsTrue(TypeHelper.IsNullableType(typeof (int?)));
-        }
-
-        [Test]
         public void IsNotNullableType() {
             Assert.IsFalse(TypeHelper.IsNullableType(typeof(int)));
         }
 
+        [Test]
+        public void IsNullableType() {
+            Assert.IsTrue(TypeHelper.IsNullableType(typeof(int?)));
+        }
     }
 }

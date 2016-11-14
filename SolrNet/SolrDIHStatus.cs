@@ -25,7 +25,8 @@ namespace SolrNet {
         /// Busy or idle
         /// </summary>
         public DIHStatus Status { get; set; }
-        public string ImportResponse { get; set;}
+
+        public string ImportResponse { get; set; }
         public TimeSpan TimeElapsed { get; set; }
         public int TotalRequestToDataSource { get; set; }
         public int TotalRowsFetched { get; set; }

@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml.Linq;
@@ -25,12 +26,18 @@ namespace SolrNet.Impl.ResponseParsers {
     /// Parses header (status, QTime, etc) from a query response
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
-    public class HeaderResponseParser<T> : ISolrAbstractResponseParser<T>, ISolrHeaderResponseParser
-    {
+    public class HeaderResponseParser<T> : ISolrAbstractResponseParser<T>, ISolrHeaderResponseParser {
         public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
             var header = Parse(xml);
             if (header != null)
                 results.Header = header;
+        }
+
+        public ResponseHeader Parse(XDocument response) {
+            var responseHeaderNode = response.XPathSelectElement("response/lst[@name='responseHeader']");
+            if (responseHeaderNode != null)
+                return ParseHeader(responseHeaderNode);
+            return null;
         }
 
         /// <summary>
@@ -48,13 +55,6 @@ namespace SolrNet.Impl.ResponseParsers {
                 r.Params[n.Attribute("name").Value] = n.Value;
             }
             return r;
-        }
-
-        public ResponseHeader Parse(XDocument response) {
-            var responseHeaderNode = response.XPathSelectElement("response/lst[@name='responseHeader']");
-            if (responseHeaderNode != null)
-                return ParseHeader(responseHeaderNode);
-            return null;
         }
     }
 }

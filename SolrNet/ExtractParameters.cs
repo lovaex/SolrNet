@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace SolrNet {
@@ -10,6 +9,29 @@ namespace SolrNet {
     /// See http://wiki.apache.org/solr/ExtractingRequestHandler#Input_Parameters
     /// </remarks>
     public class ExtractParameters {
+        /// <summary>
+        /// Constructs a new ExtractParameters with required values
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="id"></param>
+        /// <param name="resourceName"></param>
+        public ExtractParameters(Stream content, string id, string resourceName) {
+            Id = id;
+            ResourceName = resourceName;
+            Content = content;
+        }
+
+        /// <summary>
+        /// Constructs a new ExtractParameters with required values
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="id"></param>
+        public ExtractParameters(FileStream content, string id) {
+            Id = id;
+            ResourceName = content.Name;
+            Content = content;
+        }
+
         ///<summary>
         /// Provides the necessary unique id for the document being indexed 
         ///</summary>
@@ -96,28 +118,5 @@ namespace SolrNet {
         /// The rich document to index
         /// </summary>
         public Stream Content { get; private set; }
-
-        /// <summary>
-        /// Constructs a new ExtractParameters with required values
-        /// </summary>
-        /// <param name="content"></param>
-        /// <param name="id"></param>
-        /// <param name="resourceName"></param>
-        public ExtractParameters(Stream content, string id, string resourceName) {
-            Id = id;
-            ResourceName = resourceName;
-            Content = content;
-        }
-
-        /// <summary>
-        /// Constructs a new ExtractParameters with required values
-        /// </summary>
-        /// <param name="content"></param>
-        /// <param name="id"></param>
-        public ExtractParameters(FileStream content, string id) {
-            Id = id;
-            ResourceName = content.Name;
-            Content = content;
-        }
     }
 }

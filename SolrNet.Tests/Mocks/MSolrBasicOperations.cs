@@ -7,6 +7,18 @@ using SolrNet.Tests.Utils;
 
 namespace SolrNet.Tests.Mocks {
     public class MSolrBasicOperations<T> : ISolrBasicOperations<T> {
+        public MFunc<IEnumerable<KeyValuePair<T, double?>>, AddParameters, ResponseHeader> addWithBoost;
+
+        public Func<CommitOptions, ResponseHeader> commit;
+
+        public MFunc<IEnumerable<string>, ISolrQuery, DeleteParameters, ResponseHeader> delete;
+
+        public MFunc<SolrSchema> getSchema;
+
+        public Func<ResponseHeader> ping;
+
+        public MFunc<ResponseHeader> rollback;
+
         public SolrQueryResults<T> Query(ISolrQuery query, QueryOptions options) {
             throw new NotImplementedException();
         }
@@ -15,23 +27,17 @@ namespace SolrNet.Tests.Mocks {
             throw new NotImplementedException();
         }
 
-        public Func<ResponseHeader> ping;
-
         public ResponseHeader Ping() {
             return ping();
         }
-
-        public MFunc<SolrSchema> getSchema;
 
         public SolrSchema GetSchema(string schemaFileName) {
             return getSchema.Invoke();
         }
 
-        public SolrDIHStatus GetDIHStatus(KeyValuePair<string,string> options) {
+        public SolrDIHStatus GetDIHStatus(KeyValuePair<string, string> options) {
             throw new NotImplementedException();
         }
-
-        public Func<CommitOptions, ResponseHeader> commit;
 
         public ResponseHeader Commit(CommitOptions options) {
             return commit(options);
@@ -41,13 +47,9 @@ namespace SolrNet.Tests.Mocks {
             throw new NotImplementedException();
         }
 
-        public MFunc<ResponseHeader> rollback;
-
         public ResponseHeader Rollback() {
             return rollback.Invoke();
         }
-
-        public MFunc<IEnumerable<KeyValuePair<T, double?>>, AddParameters, ResponseHeader> addWithBoost;
 
         public ResponseHeader AddWithBoost(IEnumerable<KeyValuePair<T, double?>> docs, AddParameters parameters) {
             return addWithBoost.Invoke(docs, parameters);
@@ -69,16 +71,12 @@ namespace SolrNet.Tests.Mocks {
             throw new NotImplementedException();
         }
 
-        public MFunc<IEnumerable<string>, ISolrQuery, DeleteParameters, ResponseHeader> delete;
-
-		public ResponseHeader Delete(IEnumerable<string> ids, ISolrQuery q)
-		{
-			return delete.Invoke(ids, q, null);
-		}
-
         public ResponseHeader Delete(IEnumerable<string> ids, ISolrQuery q, DeleteParameters parameters) {
             return delete.Invoke(ids, q, parameters);
         }
 
+        public ResponseHeader Delete(IEnumerable<string> ids, ISolrQuery q) {
+            return delete.Invoke(ids, q, null);
+        }
     }
 }

@@ -11,7 +11,8 @@ namespace SolrNet {
             this.query = query;
         }
 
-        public ISolrQuery Query {
+        public ISolrQuery Query
+        {
             get { return query; }
         }
 

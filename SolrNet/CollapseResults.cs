@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
@@ -24,6 +26,12 @@ namespace SolrNet {
     /// </summary>
     [Obsolete("Use result grouping instead")]
     public class CollapseResults {
+        ///<summary>
+        /// Initializer
+        ///</summary>
+        public CollapseResults() {
+            CollapsedDocuments = new List<CollapsedDocument>();
+        }
 
         /// <summary>
         /// &amp;collapse.field=
@@ -34,12 +42,5 @@ namespace SolrNet {
         /// Collapsed document.ids and their counts
         /// </summary>
         public ICollection<CollapsedDocument> CollapsedDocuments { get; set; }
-
-        ///<summary>
-        /// Initializer
-        ///</summary>
-        public CollapseResults() {
-            CollapsedDocuments = new List<CollapsedDocument>();
-        }
     }
 }

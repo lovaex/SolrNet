@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2007-2010 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System.Collections.Generic;
@@ -27,13 +29,13 @@ namespace SolrNet.Impl.ResponseParsers {
     public class MoreLikeThisResponseParser<T> : ISolrResponseParser<T> {
         private readonly ISolrDocumentResponseParser<T> docParser;
 
-        public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
-            results.Switch(query: r => Parse(xml, r), 
-                           moreLikeThis: F.DoNothing);
-        }
-
         public MoreLikeThisResponseParser(ISolrDocumentResponseParser<T> docParser) {
             this.docParser = docParser;
+        }
+
+        public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
+            results.Switch(query : r => Parse(xml, r),
+                moreLikeThis : F.DoNothing);
         }
 
         public void Parse(XDocument xml, SolrQueryResults<T> results) {

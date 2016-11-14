@@ -25,21 +25,21 @@ namespace SolrNet.Tests {
     [TestFixture]
     public class GenericDictionaryFieldSerializerTests {
         [Test]
+        public void Serialize_dict_with_null_elements() {
+            var s = new GenericDictionaryFieldSerializer(new DefaultFieldSerializer());
+            var dict = new Dictionary<string, string> {
+                {"one", "1"},
+                {"two", null},
+            };
+            var l = s.Serialize(dict).ToList();
+            Assert.AreEqual(2, l.Count);
+        }
+
+        [Test]
         public void Serialize_null_returns_empty() {
             var s = new GenericDictionaryFieldSerializer(new DefaultFieldSerializer());
             var l = s.Serialize(null).ToList();
             Assert.AreEqual(0, l.Count);
-        }
-
-        [Test]
-        public void Serialize_dict_with_null_elements() {
-            var s = new GenericDictionaryFieldSerializer(new DefaultFieldSerializer());
-            var dict = new Dictionary<string, string> {
-                {"one","1"},
-                {"two",null},
-            };
-            var l = s.Serialize(dict).ToList();
-            Assert.AreEqual(2, l.Count);
         }
     }
 }

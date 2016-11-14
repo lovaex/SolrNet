@@ -4,6 +4,13 @@ using SolrNet.Utils;
 
 namespace SolrNet.Impl {
     public abstract class AbstractSolrQueryResults<T> : List<T> {
+        protected AbstractSolrQueryResults() {
+            FacetQueries = new Dictionary<string, int>();
+            FacetFields = new Dictionary<string, ICollection<KeyValuePair<string, int>>>();
+            FacetDates = new Dictionary<string, DateFacetingResult>();
+            FacetPivots = new Dictionary<string, IList<Pivot>>();
+        }
+
         /// <summary>
         /// CursorMark token returned for deep pagination.
         /// Only present if explicitly requested through <see cref="SolrNet.Commands.Parameters.CommonQueryOptions.StartOrCursor"/>
@@ -49,13 +56,6 @@ namespace SolrNet.Impl {
         /// Facet pivot results
         /// </summary>
         public IDictionary<string, IList<Pivot>> FacetPivots { get; set; }
-
-        protected AbstractSolrQueryResults() {
-            FacetQueries = new Dictionary<string, int>();
-            FacetFields = new Dictionary<string, ICollection<KeyValuePair<string, int>>>();
-            FacetDates = new Dictionary<string, DateFacetingResult>();
-            FacetPivots = new Dictionary<string, IList<Pivot>>();
-        }
 
         /// <summary>
         /// Visitor / pattern match

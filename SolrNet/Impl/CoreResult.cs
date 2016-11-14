@@ -3,6 +3,19 @@
 namespace SolrNet.Impl {
     public class CoreResult {
         /// <summary>
+        /// Initializes a new instance of the <see cref="CoreResult"/> class.
+        /// </summary>
+        public CoreResult() {}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CoreResult"/> class.
+        /// </summary>
+        /// <param name="coreName">Name of the core.</param>
+        public CoreResult(string coreName) {
+            Name = coreName;
+        }
+
+        /// <summary>
         /// The name of the Core.
         /// </summary>
         public string Name { get; set; }
@@ -38,19 +51,5 @@ namespace SolrNet.Impl {
         /// Gets or sets the Core's Index Result.
         /// </summary>
         public CoreIndexResult Index { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CoreResult"/> class.
-        /// </summary>
-        public CoreResult() {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CoreResult"/> class.
-        /// </summary>
-        /// <param name="coreName">Name of the core.</param>
-        public CoreResult(string coreName) {
-            Name = coreName;
-        }
     }
 }
