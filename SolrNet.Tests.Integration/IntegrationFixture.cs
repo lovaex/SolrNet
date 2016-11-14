@@ -49,6 +49,13 @@ namespace SolrNet.Tests.Integration {
             solr = ServiceLocator.Current.GetInstance<ISolrOperations<Product>>();
             solr.Delete(SolrQuery.All);
             solr.Commit();
+
+            var connection = ServiceLocator.Current.GetInstance<ISolrConnection>();
+            var files = Directory.GetFiles(DirectoryUtility.GetDirectoryXmlFile(), "*.xml");
+            foreach (var file in files)
+                connection.Post("/update", File.ReadAllText(file, Encoding.UTF8));
+
+            solr.Commit();
         }
 
         [Test]
@@ -105,7 +112,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void DateFacet() {
-            AddSampleDocs();
             var results = solr.Query(SolrQuery.All, new QueryOptions {
                 Rows = 0,
                 Facet = new FacetParameters {
@@ -123,17 +129,14 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void DeleteByIdAndOrQuery() {
-            InsertdocumentForTest();
-            solr.Delete(new[] {"DEL12345", "DEL12346"}, new SolrQueryByField("features", "feature 3"));
+            var productsBeforeDelete = solr.Query(SolrQuery.All);
+            solr.Delete(new[] { "VS1GB400C3", "VDBDB1A16" });
             solr.Commit();
-            var productsAfterDelete = solr.Query(SolrQuery.All);
-
-            Assert.AreEqual(0, productsAfterDelete.Count);
+            Assert.AreEqual(solr.Query(SolrQuery.All).Count, productsBeforeDelete.Count - 2);
         }
 
         [Test]
         public void Dismax() {
-            AddSampleDocs();
             var products = solr.Query(new SolrQuery("samsung"), new QueryOptions {
                 ExtraParams = new Dictionary<string, string> {
                     {"qt", "dismax"},
@@ -145,7 +148,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void ExtractRequestHandler() {
-
             var pathForFile = DirectoryUtility.GetDirectoryTestFile();
             using (var file = File.OpenRead(pathForFile)) {
                 var response = solr.Extract(new ExtractParameters(file, "abcd") {
@@ -171,7 +173,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void FieldGrouping() {
-            InsertdocumentForTest();
             var results = solr.Query(SolrQuery.All, new QueryOptions {
                 Grouping = new GroupingParameters() {
                     Fields = new[] {"manu_exact"},
@@ -196,7 +197,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void Highlighting() {
-            AddSampleDocs();
             var results = solr.Query(new SolrQueryByField("features", "fluid"), new QueryOptions {
                 Highlight = new HighlightingParameters {
                     Fields = new[] {"features"},
@@ -209,7 +209,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void HighlightingWrappedWithClass() {
-            AddSampleDocs();
             var results = solr.Query(new SolrQueryByField("features", "fluid"), new QueryOptions {
                 Highlight = new HighlightingParameters {
                     Fields = new[] {"features"},
@@ -222,27 +221,23 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void LocalParams() {
-            AddSampleDocs();
             var results = solr.Query(new LocalParams {{"q.op", "AND"}} + "solr ipod");
             Assert.AreEqual(0, results.Count);
         }
 
         [Test]
         public void LocalParams2() {
-            AddSampleDocs();
             solr.Query(new LocalParams {{"tag", "pp"}} + new SolrQueryByField("cat", "bla"));
             //TODO assert
         }
 
         [Test]
         public void LocalParams3() {
-            AddSampleDocs(); 
             solr.Query(new LocalParams {{"tag", "pp"}} + new SolrQuery("cat:bla"));
         }
 
         [Test]
         public void LooseMapping() {
-            AddSampleDocs();
             var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
             var results = solr.Query(SolrQuery.All);
             Assert.IsInstanceOf<ArrayList>(results[0]["cat"]);
@@ -275,7 +270,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void MoreLikeThis() {
-            AddSampleDocs(); 
             solr.Add(new Product {
                 Id = "apache-cocoon",
                 Categories = new[] {"framework", "java"},
@@ -307,7 +301,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void MoreLikeThisHandler() {
-            AddSampleDocs();
             var mltParams = new MoreLikeThisHandlerParameters(new[] {"cat", "name"}) {
                 MatchInclude = true,
                 MinTermFreq = 1,
@@ -329,7 +322,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void QuerybyFieldGrouping() {
-            InsertdocumentForTest();
             var results = solr.Query(SolrQuery.All, new QueryOptions {
                 Grouping = new GroupingParameters() {
                     Fields = new List<string>() {
@@ -350,14 +342,12 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void QueryByRangeMoney() {
-            InsertdocumentForTest();
             var results = solr.Query(new SolrQueryByRange<Money>("price_c", new Money(123, null), new Money(3000, "USD")));
             Assert.AreEqual(2, results.Count);
         }
 
         [Test]
         public void QueryGrouping() {
-            InsertdocumentForTest();
             var results = solr.Query(SolrQuery.All, new QueryOptions {
                 Grouping = new GroupingParameters() {
                     Query = new[] {new SolrQuery("manu_exact") {}, new SolrQuery("name")},
@@ -385,10 +375,9 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void SemiLooseMapping() {
-            AddSampleDocs();
             var solr = ServiceLocator.Current.GetInstance<ISolrOperations<ProductLoose>>();
             var products = solr.Query(SolrQuery.All, new QueryOptions {Fields = new[] {"*", "score"}});
-            Assert.AreEqual(1, products.Count);
+            Assert.AreEqual(16, products.Count);
             var product = products[0];
             Assert.AreEqual("SP2514N", product.Id);
             Assert.IsTrue(product.Score.HasValue);
@@ -400,18 +389,12 @@ namespace SolrNet.Tests.Integration {
             foreach (var field in product.OtherFields)
                 Console.WriteLine("{0}: {1} ({2})", field.Key, field.Value, TypeOrNull(field.Value));
             Assert.IsInstanceOf<DateTime>(product.OtherFields["timestamp"]);
-            Assert.AreEqual(new DateTime(1, 1, 1), product.OtherFields["timestamp"]);
+            Assert.AreEqual(new DateTime(2000, 1, 1), product.OtherFields["timestamp"]);
             Assert.IsInstanceOf<ICollection>(product.OtherFields["features"]);
-            product.OtherFields["timestamp"] = new DateTime(2010, 1, 1);
-            product.OtherFields["features"] = new[] {"a", "b", "c"};
-            product.OtherFields.Remove("_version_"); // avoid optimistic locking for now https://issues.apache.org/jira/browse/SOLR-3178
-            product.Score = null;
-            solr.Add(product);
         }
 
         [Test]
         public void SpellChecking() {
-            AddSampleDocs();
             var r = solr.Query(new SolrQueryByField("name", "hell untrasharp"), new QueryOptions {
                 SpellCheck = new SpellCheckingParameters(),
             });
@@ -432,7 +415,6 @@ namespace SolrNet.Tests.Integration {
 
         [Test]
         public void Stats() {
-            Add_then_query();
             var results = solr.Query(SolrQuery.All, new QueryOptions {
                 Rows = 0,
                 Stats = new StatsParameters {
@@ -446,99 +428,11 @@ namespace SolrNet.Tests.Integration {
             Assert.IsNotNull(results.Stats);
         }
 
-        private static readonly IEnumerable<Product> products = new[] {
-            new Product {
-                Id = "DEL12345",
-                Name = "Delete test product 1",
-                Manufacturer = "Acme ltd",
-                Categories = new[] {
-                    "electronics",
-                    "test products",
-                },
-                Features = new[] {
-                    "feature 1",
-                    "feature 2",
-                },
-                Prices = new Dictionary<string, decimal> {
-                    {"regular", 150m},
-                    {"afterrebate", 100m},
-                },
-                Price = 92,
-                PriceMoney = new Money(123.44m, "EUR"),
-                Popularity = 6,
-                InStock = false
-            },
-            new Product {
-                Id = "DEL12346",
-                Name = "Delete test product 2",
-                Manufacturer = "Acme ltd",
-                Categories = new[] {
-                    "electronics",
-                    "test products",
-                },
-                Features = new[] {
-                    "feature 1",
-                    "feature 3",
-                },
-                Prices = new Dictionary<string, decimal> {
-                    {"regular", 150m},
-                    {"afterrebate", 100m},
-                },
-                Price = 92,
-                PriceMoney = new Money(123.44m, "ARS"),
-                Popularity = 6,
-                InStock = false,
-            },
-            new Product {
-                Id = "DEL12347",
-                Name = "Delete test product 3",
-                Manufacturer = "Acme ltd",
-                Categories = new[] {
-                    "electronics",
-                    "test products",
-                },
-                Features = new[] {
-                    "feature 1",
-                    "feature 3",
-                },
-                Prices = new Dictionary<string, decimal> {
-                    {"regular", 150m},
-                    {"afterrebate", 100m},
-                },
-                Price = 92,
-                PriceMoney = new Money(123.44m, "GBP"),
-                Popularity = 6,
-                InStock = false,
-            }
-        };
-
         public Type TypeOrNull(object o)
         {
             if (o == null)
                 return null;
             return o.GetType();
-        }
-
-        private void InsertdocumentForTest()
-        {
-            solr.Delete(SolrQuery.All);
-            solr.Commit();
-
-            foreach (var product in products)
-            {
-                solr.Add(product);
-            }
-            solr.Commit();
-        }
-
-        private void AddSampleDocs()
-        {
-            var connection = ServiceLocator.Current.GetInstance<ISolrConnection>();
-            var files = Directory.GetFiles(DirectoryUtility.GetDirectoryXmlFile(), "*.xml");
-            foreach (var file in files)                
-                connection.Post("/update", File.ReadAllText(file, Encoding.UTF8));
-            
-            solr.Commit();
         }
     }
 }

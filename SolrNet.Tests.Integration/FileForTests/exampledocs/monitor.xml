@@ -27,5 +27,6 @@
   <field name="price">2199</field>
   <field name="popularity">6</field>
   <field name="inStock">true</field>
+  <field name="timestamp">2000-01-01T00:00:00.000Z</field>
 </doc></add>
 
