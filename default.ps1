@@ -6,13 +6,16 @@ $framework = "4.0"
 	       $slnFile = "$basedir\SolrNet.sln"
 	       $projectFile = "$baseDir\SolrNet\SolrNet.csproj"
 	       $assemblyInfoFile = "$baseDir\SolrNet\Properties\AssemblyInfo.cs"
+		   $version = "1.0.0.0"
+		   $vcsRevisionHash = Get-VcsRevisionHash
+		   $branchName = $(Get-VcsBranch)
 	}
 
 	task Build {
     	Invoke-NuGetRestore -nuGetExePath "$baseDir\.nuget\NuGet.exe" -slnFile $slnFile
 		Invoke-MsBuild -msBuildPath msbuild -slnFile $slnFile -config $build_cfg -skipVcsRevision
 	}
-	
+
 	task CreateNugetPackage {
 	    Remove-Artifacts -publishDir $publishDir
 	    
