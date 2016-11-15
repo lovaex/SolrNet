@@ -9,18 +9,17 @@ $framework = "4.0"
 	}
 
 	task Build {
-		Invoke-NuGetRestore -nuGetExePath "$baseDir\.nuget\NuGet.exe" -slnFile $slnFile
-		Invoke-MsBuild -msBuildPath msbuild -slnFile $slnFile -config $build_cfg -skipVcsRevision
-	}
-
+    Invoke-NuGetRestore -nuGetExePath "$YDeployDir/$($systemParams.Nuget.Path)" -slnFile $slnFile
+	Invoke-MsBuild -msBuildPath msbuild -slnFile $slnFile -config $build_cfg -skipVcsRevision
+}
 	task CreateNugetPackage {
-	    Remove-Artifacts -publishDir $publishDir
+	       Remove-Artifacts -publishDir $publishDir
 	    
 	    $version = "$($projectParams.Product.Version.major).$($projectParams.Product.Version.minor).$($projectParams.Product.Version.release).$(Get-VcsRevision)"
 	    $vcsRevisionHash = Get-VcsRevisionHash
-	    $branchName = $(Get-VcsBranch)
+	       $branchName = $(Get-VcsBranch)
 	
-	    Invoke-NuGetRestore -nuGetExePath "$baseDir\.nuget\NuGet.exe" -slnFile $slnFile
+	       Invoke-NuGetRestore -nuGetExePath "$YDeployDir/$($systemParams.Nuget.Path)" -slnFile $slnFile
 	
 	    Set-AssemblyInfo -config "Release" -assemblyInfoFile $assemblyInfoFile -productName $projectParams.Product.Name -version $version -branch $branchName -revision $vcsRevisionHash
 	
