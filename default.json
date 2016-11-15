@@ -1,0 +1,28 @@
+{
+	"Product": {
+	    "Name": "Solr.NET",
+	    "Version": {
+	        "major": 0,
+	        "minor": 6,
+	        "release": 0
+	    }
+	},
+	"NugetPackage": {
+	    "Id": "Solr.NET",
+	    "Title": "Solr.NET",
+	    "Description": "Solr.NET: .NET client library for Solr 5.5.3",
+	         "Folders": [
+	        {
+	            "Path": "**\\*.*",
+	            "Folder": "lib\\net45"
+	        },
+	        {
+	            "Path": "*.*",
+	            "Folder": "lib\\net45"
+	        }
+	    ],
+	       "NugetGalleries": [
+	        "DEV"
+	    ]
+	}
+}
