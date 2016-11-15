@@ -28,6 +28,6 @@ _NCrunch*/*
 packages/
 *.sln.ide
 .vs/*
-**/data/*
-**/logs/*
-solr/
+data
+logs
+solr
