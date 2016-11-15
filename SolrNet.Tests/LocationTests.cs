@@ -3,83 +3,61 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using SolrNet.Impl.FieldParsers;
 
-namespace SolrNet.Tests {
+namespace SolrNet.Tests
+{
     [TestFixture]
-    public class LocationTests {
-        private static IEnumerable<TestCaseData> Locations
+    public class LocationTests
+    {
+        [TestCase(12, 23, "12,23")]
+        [TestCase(-4.3, 0.20, "-4.3,0.2")]
+        public void ParseLocationTests(double latitude, double longitude, string toString)
         {
-            get
-            {
-                yield return new TestCaseData(new {location = new Location(12, 23), toString = "12,23"});
-                yield return new TestCaseData(new {location = new Location(-4.3, 0.20), toString = "-4.3,0.2"});
-            }
+            var location = new Location(latitude, longitude);
+            var parsedLocation = LocationFieldParser.Parse(toString);
+            Assert.AreEqual(toString, parsedLocation.ToString());
+            Assert.AreEqual(location, parsedLocation);
+            Assert.AreEqual(location.Latitude, parsedLocation.Latitude);
+            Assert.AreEqual(location.Longitude, parsedLocation.Longitude);
         }
 
-        private static IEnumerable<TestCaseData> InvalidLatitudes
+
+        [TestCase(-100)]
+        [TestCase(120)]
+        public void InvalidLatitudeTests(double latitude)
         {
-            get
+            Assert.IsFalse(Location.IsValidLatitude(latitude));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                yield return new TestCaseData(new {latitude = -100});
-                yield return new TestCaseData(new {latitude = 120});
-            }
-        }
-
-        private static IEnumerable<TestCaseData> InvalidLongitudes
-        {
-            get
-            {
-                yield return new TestCaseData(new {longitude = -200});
-                yield return new TestCaseData(new {longitude = 999});
-            }
-        }
-
-        private static IEnumerable<dynamic> LatitudeLongitude
-        {
-            get
-            {
-                yield return new TestCaseData(new {latitude = -100, longitude = -200});
-                yield return new TestCaseData(new {latitude = -100, longitude = 999});
-                yield return new TestCaseData(new {latitude = 120, longitude = -200});
-                yield return new TestCaseData(new {latitude = 120, longitude = 999});
-            }
-        }
-
-        [TestCaseSource(nameof(Locations))]
-        public void ParseLocationTests(dynamic location) {
-            var parsedLocation = LocationFieldParser.Parse(location.toString);
-            Assert.AreEqual(location.toString, location.location.ToString());
-            Assert.AreEqual(location.location, parsedLocation);
-            Assert.AreEqual(location.location.Latitude, parsedLocation.Latitude);
-            Assert.AreEqual(location.location.Longitude, parsedLocation.Longitude);
-        }
-
-        [TestCaseSource(nameof(InvalidLatitudes))]
-        public void InvalidLatitudeTests(dynamic latitude) {
-            Assert.IsFalse(Location.IsValidLatitude(latitude.latitude));
-            Assert.Throws<ArgumentOutOfRangeException>(() => {
-                new Location(latitude.latitude, 0);
+                new Location(latitude, 0);
             });
         }
 
-        [TestCaseSource(nameof(InvalidLongitudes))]
-        public void InvalidLongitudeTests(dynamic longitude) {
-            Assert.IsFalse(Location.IsValidLongitude(longitude.longitude));
-            Assert.Throws<ArgumentOutOfRangeException>(() => {
-                new Location(0, longitude.longitude);
+
+        [TestCase(-200)]
+        [TestCase(999)]
+        public void InvalidLongitudeTests(double longitude)
+        {
+            Assert.IsFalse(Location.IsValidLongitude(longitude));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                new Location(0, longitude);
             });
         }
 
-        [TestCaseSource(nameof(LatitudeLongitude))]
-        public void TryCreateReturnsNullWithInvalidLatLong(dynamic latitudeLongitude) {
-            var lat = latitudeLongitude.latitude;
-            var lng = latitudeLongitude.longitude;
-            var loc = Location.TryCreate(lat, lng);
-            Assert.IsNull(loc);
+        [TestCase(-100, -200)]
+        [TestCase(-100, 999)]
+        [TestCase(120, -200)]
+        [TestCase(120, 999)]
+        public void TryCreateReturnsNullWithInvalidLatLong(double latitude, double longitude)
+        {
+            Assert.IsNull(Location.TryCreate(latitude, longitude));
         }
 
-        [TestCaseSource(nameof(Locations))]
-        public void TryCreateReturnsNotNullWithValidLatLong(dynamic location) {
-            var loc = location.location;
+        [TestCase(12, 23)]
+        [TestCase(-4.3, 0.20)]
+        public void TryCreateReturnsNotNullWithValidLatLong(double latitude, double longitude)
+        {
+            var loc = new Location(latitude, longitude);
             var loc2 = Location.TryCreate(loc.Latitude, loc.Longitude);
             Assert.IsNotNull(loc2);
             Assert.AreEqual(loc, loc2);

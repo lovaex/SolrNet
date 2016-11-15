@@ -17,60 +17,65 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using NUnit.Framework;
 using SolrNet.Impl.FieldParsers;
 using SolrNet.Impl.FieldSerializers;
-using SolrNet.Utils;
 
 namespace SolrNet.Tests {
     public class DateTimeOffsetFieldParserTests {
-        private static IEnumerable<TestCaseData> ParsedDates
-        {
-            get
-            {
-                yield return new TestCaseData(KV.Create("1-01-01T00:00:00Z", new DateTimeOffset(new DateTime(1, 1, 1), TimeSpan.Zero)));
-                yield return new TestCaseData(KV.Create("2004-11-01T00:00:00Z", new DateTimeOffset(new DateTime(2004, 11, 1), TimeSpan.Zero)));
-                yield return new TestCaseData(KV.Create("2012-05-10T14:17:23.684Z", new DateTimeOffset(new DateTime(2012, 5, 10, 14, 17, 23, 684), TimeSpan.Zero)));
-                yield return new TestCaseData(KV.Create("2012-05-10T14:17:23.68Z", new DateTimeOffset(new DateTime(2012, 5, 10, 14, 17, 23, 680), TimeSpan.Zero)));
-                yield return new TestCaseData(KV.Create("2012-05-10T14:17:23.6Z", new DateTimeOffset(new DateTime(2012, 5, 10, 14, 17, 23, 600), TimeSpan.Zero)));
-            }
+        [TestCase(1, 1, 1, 0, 0, 0)]
+        [TestCase(2004, 11, 1, 0, 0, 0)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 684)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 680)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 600)]
+        public void ParseYears(int year, int month, int day, int hour, int minute, int second, int milliseconds = 0) {
+            var date = new DateTime(year,month,day,hour,minute,second, milliseconds);
+            var datetimeOffset = new DateTimeOffset(date, TimeSpan.Zero);
+            Assert.AreEqual(datetimeOffset, DateTimeOffsetFieldParser.Parse(date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")));
         }
 
-        private static IEnumerable<TestCaseData> DateTimes
-        {
-            get
-            {
-                yield return new TestCaseData(new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
-                yield return new TestCaseData(new DateTimeOffset(new DateTime(2004, 11, 1)));
-                yield return new TestCaseData(new DateTimeOffset(new DateTime(2004, 11, 1, 15, 41, 23)));
-                yield return new TestCaseData(new DateTimeOffset(new DateTime(2012, 5, 10, 14, 17, 23, 684)));
-                yield return new TestCaseData(new DateTimeOffset(new DateTime(2008, 5, 6, 14, 21, 23, 0, DateTimeKind.Local)));
-            }
-        }
-
-        [TestCaseSource(nameof(ParsedDates))]
-        public void ParseYears(KeyValuePair<string, DateTimeOffset> dateValuePair) {
-            Assert.AreEqual(dateValuePair.Value, DateTimeOffsetFieldParser.Parse(dateValuePair.Key));
-        }
-
-        [TestCaseSource(nameof(DateTimes))]
-        public void RoundTrip(DateTimeOffset dateTimeOffset) {
+        [TestCase(1, 1, 1, 0, 0, 0)]
+        [TestCase(2004, 11, 1, 15, 41, 23)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 684)]
+        public void RoundTripDefaultDateTime(int year, int month, int day, int hour, int minute, int second, int milliseconds = 0) {
+            var date = new DateTime(year, month, day, hour, minute, second, milliseconds);
+            var dateTimeOffset = new DateTimeOffset(date, TimeSpan.Zero);
             var value = DateTimeOffsetFieldParser.Parse(DateTimeOffsetFieldSerializer.Serialize(dateTimeOffset));
             Assert.AreEqual(dateTimeOffset, value);
         }
 
-        [TestCaseSource(nameof(DateTimes))]
-        public void NullableRoundTrips(DateTimeOffset dateTimeOffset) {
-            var parser = new NullableFieldParser(new DateTimeOffsetFieldParser());
-            var serializer = new NullableFieldSerializer(new DateTimeOffsetFieldSerializer());
-            var s = serializer.Serialize(dateTimeOffset).First().FieldValue;
-            var xml = new XDocument();
-            xml.Add(new XElement("date", s));
-            var value = (DateTimeOffset?) parser.Parse(xml.Root, typeof(DateTimeOffset?));
+        [TestCase(2004, 11, 1, 15, 41, 23)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 684)]
+        public void RoundTripLocalDateTime(int year, int month, int day, int hour, int minute, int second, int milliseconds = 0)
+        {
+            var date = new DateTime(year, month, day, hour, minute, second, milliseconds, DateTimeKind.Local);
+            var dateTimeOffset = new DateTimeOffset(date);
+            var value = DateTimeOffsetFieldParser.Parse(DateTimeOffsetFieldSerializer.Serialize(dateTimeOffset));
             Assert.AreEqual(dateTimeOffset, value);
+        }
+
+        [TestCase(1, 1, 1, 0, 0, 0)]
+        [TestCase(2004, 11, 1, 15, 41, 23)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 684)]
+        public void RoundTripUtcDateTime(int year, int month, int day, int hour, int minute, int second, int milliseconds = 0)
+        {
+            var date = new DateTime(year, month, day, hour, minute, second, milliseconds, DateTimeKind.Utc);
+            var dateTimeOffset = new DateTimeOffset(date);
+            var value = DateTimeOffsetFieldParser.Parse(DateTimeOffsetFieldSerializer.Serialize(dateTimeOffset));
+            Assert.AreEqual(dateTimeOffset, value);
+        }
+
+        [TestCase(1, 1, 1, 0, 0, 0)]
+        [TestCase(2004, 11, 1, 15, 41, 23)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 684)]
+        public void NullableRoundTrips(int year, int month, int day, int hour, int minute, int second, int milliseconds = 0) {
+            var dateTimeOffset = new DateTimeOffset(new DateTime(year, month, day, hour, minute, second, milliseconds, DateTimeKind.Utc));
+            var serializer = new NullableFieldSerializer(new DateTimeOffsetFieldSerializer());
+            var xml = new XDocument();
+            xml.Add(new XElement("date", serializer.Serialize(dateTimeOffset).First().FieldValue));
+            Assert.AreEqual(dateTimeOffset, (DateTimeOffset?) new NullableFieldParser(new DateTimeOffsetFieldParser()).Parse(xml.Root, typeof(DateTimeOffset?)));
         }
     }
 }

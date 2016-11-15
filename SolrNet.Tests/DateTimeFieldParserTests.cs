@@ -25,58 +25,46 @@ using SolrNet.Impl.FieldParsers;
 using SolrNet.Impl.FieldSerializers;
 using SolrNet.Utils;
 
-namespace SolrNet.Tests {
-    public class DateTimeFieldParserTests {
-        private static IEnumerable<TestCaseData> ParsedDates
+namespace SolrNet.Tests
+{
+    public class DateTimeFieldParserTests
+    {
+
+        [TestCase(1, 1, 1, 0, 0, 0)]
+        [TestCase(2004, 11, 1, 0, 0, 0)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 684)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 680)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 600)]
+        public void ParseYears(int year, int month, int day, int hour, int minute, int second, int milliseconds = 0)
         {
-            get
-            {
-                yield return new TestCaseData(KV.Create("1-01-01T00:00:00Z", new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
-                yield return new TestCaseData(KV.Create("2004-11-01T00:00:00Z", new DateTime(2004, 11, 1, 0, 0, 0, DateTimeKind.Utc)));
-                yield return new TestCaseData(KV.Create("2012-05-10T14:17:23.684Z", new DateTime(2012, 5, 10, 14, 17, 23, 684, DateTimeKind.Utc)));
-                yield return new TestCaseData(KV.Create("2012-05-10T14:17:23.68Z", new DateTime(2012, 5, 10, 14, 17, 23, 680, DateTimeKind.Utc)));
-                yield return new TestCaseData(KV.Create("2012-05-10T14:17:23.6Z", new DateTime(2012, 5, 10, 14, 17, 23, 600, DateTimeKind.Utc)));
-            }
+            var date = new DateTime(year, month, day, hour, minute, second, milliseconds, DateTimeKind.Utc);
+            var dateTime = DateTimeFieldParser.ParseDate(date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            Assert.AreEqual(date, dateTime);
+            Assert.AreEqual(date.Kind, dateTime.Kind);
         }
 
-        private static IEnumerable<TestCaseData> DateTimes
+        [TestCase(1, 1, 1, 0, 0, 0)]
+        [TestCase(2004, 11, 1, 15, 41, 23)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 684)]
+        public void RoundTripUtcDateTime(int year, int month, int day, int hour, int minute, int second, int milliseconds = 0)
         {
-            get
-            {
-                yield return new TestCaseData(new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-                yield return new TestCaseData(new DateTime(2004, 11, 1, 0, 0, 0, DateTimeKind.Utc));
-                yield return new TestCaseData(new DateTime(2004, 11, 1, 15, 41, 23, DateTimeKind.Utc));
-                yield return new TestCaseData(new DateTime(2012, 5, 10, 14, 17, 23, 684, DateTimeKind.Utc));
-                yield return new TestCaseData(new DateTime(2008, 5, 6, 14, 21, 23, 0, DateTimeKind.Utc));
-            }
-        }
-
-        [TestCaseSource(nameof(ParsedDates))]
-        public void ParseYears(KeyValuePair<string, DateTime> parser) {
-            //var name = "ParseYears " + parser.Key;
-            var value = DateTimeFieldParser.ParseDate(parser.Key);
-            Assert.AreEqual(parser.Value, value);
-            Assert.AreEqual(parser.Value.Kind, value.Kind);
-        }
-
-
-        [TestCaseSource(nameof(DateTimes))]
-        public void RoundTrip(DateTime date) {
+            var date = new DateTime(year, month, day, hour, minute, second, milliseconds, DateTimeKind.Utc);
             var value = DateTimeFieldParser.ParseDate(DateTimeFieldSerializer.SerializeDate(date));
             Assert.AreEqual(date, value);
             Assert.AreEqual(date.Kind, value.Kind);
         }
 
-        [TestCaseSource(nameof(DateTimes))]
-        public void NullableRoundTrips(DateTime date) {
-            var parser = new NullableFieldParser(new DateTimeFieldParser());
-            var serializer = new NullableFieldSerializer(new DateTimeFieldSerializer());
-            var s = serializer.Serialize(date).First().FieldValue;
+        [TestCase(1, 1, 1, 0, 0, 0)]
+        [TestCase(2004, 11, 1, 15, 41, 23)]
+        [TestCase(2012, 5, 10, 14, 17, 23, 684)]
+        public void NullableRoundTrips(int year, int month, int day, int hour, int minute, int second, int milliseconds = 0)
+        {
+            var dateTime = new DateTime(year, month, day, hour, minute, second, milliseconds, DateTimeKind.Utc);
             var xml = new XDocument();
-            xml.Add(new XElement("date", s));
-            var value = (DateTime?) parser.Parse(xml.Root, typeof(DateTime?));
-            Assert.AreEqual(date, value);
-            Assert.AreEqual(date.Kind, value.Value.Kind);
+            xml.Add(new XElement("date", new NullableFieldSerializer(new DateTimeFieldSerializer()).Serialize(dateTime).First().FieldValue));
+            var value = (DateTime?)new NullableFieldParser(new DateTimeFieldParser()).Parse(xml.Root, typeof(DateTime?));
+            Assert.AreEqual(dateTime, value);
+            Assert.AreEqual(dateTime.Kind, value.Value.Kind);
         }
     }
 }

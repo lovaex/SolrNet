@@ -2,25 +2,21 @@
 using NUnit.Framework;
 using SolrNet.Impl.FieldParsers;
 
-namespace SolrNet.Tests {
+namespace SolrNet.Tests
+{
     [TestFixture]
-    public class MoneyTests {
-        private static IEnumerable<TestCaseData> Moneys
+    public class MoneyTests
+    {
+        [TestCase(12, null, "12")]
+        [TestCase(12.45, "USD", "12.45,USD")]
+        [TestCase(52.66, "EUR", "52.66,EUR")]
+        public void ParseMoneyTest(decimal value, string currency, string toString)
         {
-            get
-            {
-                yield return new TestCaseData(new {money = new Money(12, null), toString = "12",});
-                yield return new TestCaseData(new {money = new Money(12.45m, "USD"), toString = "12.45,USD",});
-                yield return new TestCaseData(new {money = new Money(52.66m, "EUR"), toString = "52.66,EUR",});
-            }
-        }
-
-        [TestCaseSource(nameof(Moneys))]
-        public void ParseMoneyTest(dynamic money) {
-            var parsedMoney = MoneyFieldParser.Parse(money.toString);
-            Assert.AreEqual(money.toString, money.money.ToString());
-            Assert.AreEqual(money.money.Currency, parsedMoney.Currency);
-            Assert.AreEqual(money.money.Value, parsedMoney.Value);
+            var money = new Money(value, currency);
+            var parsedMoney = MoneyFieldParser.Parse(toString);
+            Assert.AreEqual(toString, money.ToString());
+            Assert.AreEqual(money.Currency, parsedMoney.Currency);
+            Assert.AreEqual(money.Value, parsedMoney.Value);
         }
     }
 }

@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SolrNet")]
 [assembly: AssemblyDescription("SolrNet")]
 [assembly: AssemblyProduct("SolrNet")]
-//[assembly: AssemblyInformationalVersion("4758ae1c6550363fb060857db120ff3aed438052")]
+[assembly: AssemblyInformationalVersion("4758ae1c6550363fb060857db120ff3aed438052")]
 [assembly: AssemblyDelaySign(false)]
 [assembly : InternalsVisibleTo("SolrNet.Tests")]
 
