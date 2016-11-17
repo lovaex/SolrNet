@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <response>
   <result numFound="1" start="0">
     <doc>
@@ -25,7 +25,8 @@
       </lst>
     </lst>
     <lst name="collations">
-      <str name="collation">dell ultrasharp</str>
+      <str name="collation">giacche</str>
+      <str name="collation">maglie</str>
     </lst>
   </lst>
 </response>

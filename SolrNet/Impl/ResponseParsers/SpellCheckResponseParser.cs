@@ -18,22 +18,27 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using SolrNet.Utils;
 
-namespace SolrNet.Impl.ResponseParsers {
+namespace SolrNet.Impl.ResponseParsers
+{
     /// <summary>
     /// Parses spell-checking results from a query response
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
-    public class SpellCheckResponseParser<T> : ISolrResponseParser<T> {
-        public void Parse(XDocument xml, AbstractSolrQueryResults<T> results) {
-            results.Switch(query : r => Parse(xml, r),
-                moreLikeThis : F.DoNothing);
+    public class SpellCheckResponseParser<T> : ISolrResponseParser<T>
+    {
+        public void Parse(XDocument xml, AbstractSolrQueryResults<T> results)
+        {
+            results.Switch(query: r => Parse(xml, r),
+                moreLikeThis: F.DoNothing);
         }
 
-        public void Parse(XDocument xml, SolrQueryResults<T> results) {
+        public void Parse(XDocument xml, SolrQueryResults<T> results)
+        {
             var spellCheckingNode = xml.XPathSelectElement("response/lst[@name='spellcheck']");
             if (spellCheckingNode != null)
                 results.SpellChecking = ParseSpellChecking(spellCheckingNode);
@@ -44,25 +49,24 @@ namespace SolrNet.Impl.ResponseParsers {
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        public SpellCheckResults ParseSpellChecking(XElement node) {
+        public SpellCheckResults ParseSpellChecking(XElement node)
+        {
             var r = new SpellCheckResults();
             var suggestionsNode = node.XPathSelectElement("lst[@name='suggestions']");
-            var collationNode = suggestionsNode.XPathSelectElement("str[@name='collation']");
+            var collationNode = node.XPathSelectElement("lst[@name='collations']");
             if (collationNode != null)
-                r.Collation = collationNode.Value;
-            var spellChecks = suggestionsNode.Elements("lst");
-            foreach (var c in spellChecks) {
+                r.Collations = collationNode.Elements("str").Select(x => x.Value).ToList();
+
+            var spellChecks = suggestionsNode.Elements("lst").Where(x => x.Value != "collations");
+            foreach (var c in spellChecks)
+            {
                 var result = new SpellCheckResult();
                 result.Query = c.Attribute("name").Value;
                 result.NumFound = Convert.ToInt32(c.XPathSelectElement("int[@name='numFound']").Value);
                 result.EndOffset = Convert.ToInt32(c.XPathSelectElement("int[@name='endOffset']").Value);
                 result.StartOffset = Convert.ToInt32(c.XPathSelectElement("int[@name='startOffset']").Value);
-                var suggestions = new List<string>();
                 var suggestionNodes = c.XPathSelectElements("arr[@name='suggestion']/str");
-                foreach (var suggestionNode in suggestionNodes) {
-                    suggestions.Add(suggestionNode.Value);
-                }
-                result.Suggestions = suggestions;
+                result.Suggestions = suggestionNodes.Select(suggestionNode => suggestionNode.Value).ToList();
                 r.Add(result);
             }
             return r;

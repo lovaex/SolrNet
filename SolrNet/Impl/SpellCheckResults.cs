@@ -29,7 +29,7 @@ namespace SolrNet.Impl {
         /// <summary>
         /// Suggestion query from spell-checking
         /// </summary>
-        public string Collation { get; set; }
+        public IEnumerable<string> Collations { get; set; }
 
         public IEnumerator<SpellCheckResult> GetEnumerator() {
             return SpellChecks.GetEnumerator();
