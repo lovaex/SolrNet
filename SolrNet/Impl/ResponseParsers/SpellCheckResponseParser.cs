@@ -61,7 +61,7 @@ namespace SolrNet.Impl.ResponseParsers
             foreach (var c in spellChecks)
             {
                 var result = new SpellCheckResult();
-                result.Query = c.Attribute("name")?.Value;
+                result.Query = c.Attribute("name") == null ? null : c.Attribute("name").Value;
                 result.NumFound = Convert.ToInt32(c.XPathSelectElement("int[@name='numFound']").Value);
                 result.EndOffset = Convert.ToInt32(c.XPathSelectElement("int[@name='endOffset']").Value);
                 result.StartOffset = Convert.ToInt32(c.XPathSelectElement("int[@name='startOffset']").Value);
@@ -74,10 +74,9 @@ namespace SolrNet.Impl.ResponseParsers
 
         private IEnumerable<string> CollectionNodeChecker(XElement node)
         {
-            //var xName = XName.Get("str");
-            //var collationNode = node.Descendants(xName).Attributes("name").FirstOrDefault(y => y.Value == "collation");
+            
             List<string> res = new List<string>();
-            var collationNode = node.Descendants("str");//.Attributes("name");
+            var collationNode = node.Descendants("str");
             if (collationNode == null) return null;
             foreach (var xElement in collationNode)
             {
@@ -85,19 +84,7 @@ namespace SolrNet.Impl.ResponseParsers
                 if (xElement.Attribute("name").Value.Equals("collation")) res.Add(xElement.Value);
             }
             if (res.Count < 1) return null;
-            //var result=collationNode.Select(item => item.Parent).Select(i => i.Value);
             return res;
-            //XElement collationNode;
-            //List<String> sugg = new List<string>();
-            //if ((collationNode = node.XPathSelectElement("lst[@name='collations']")) != null)
-            //{
-            //    sugg.AddRange(collationNode.Elements("str").Select(str => str.Value));
-            //    return sugg;
-            //}
-            //var xElement = (collationNode = node.XPathSelectElement("lst[@name='suggestions']").XPathSelectElement("str[@name='collation']"));
-            //if (xElement == null) return null;
-            //sugg.Add(collationNode.Value);
-            //return sugg;
         }
     }
 }
