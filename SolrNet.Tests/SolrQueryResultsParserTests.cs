@@ -499,11 +499,12 @@ namespace SolrNet.Tests
             Assert.AreEqual(13, results.Grouping["inStock"].Groups.First().NumFound);
         }
 
-        [Test]
-        public void ParseSpellChecking()
+        [TestCase("Resources.responseWithSpellChecking.xml")]
+        [TestCase("Resources.responseWithSpellCheckOldVersion.xml")]
+        public void ParseSpellChecking(string fileTest)
         {
             var parser = new SpellCheckResponseParser<Product>();
-            var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.responseWithSpellChecking.xml");
+            var xml = EmbeddedResource.GetEmbeddedXml(GetType(), fileTest);
             var docNode = xml.XPathSelectElement("response/lst[@name='spellcheck']");
             var spellChecking = parser.ParseSpellChecking(docNode);
             Assert.IsNotNull(spellChecking);
@@ -512,11 +513,12 @@ namespace SolrNet.Tests
             Assert.AreEqual(2, spellChecking.Count);
         }
 
-        [Test]
-        public void ParseSpellCheckingWithCollationWithMoreElement()
+        [TestCase("Resources.responseWithSpellCheckingWithMoreElementOld.xml")]
+        [TestCase("Resources.responseWithSpellCheckingCollactionsWithMoreElement.xml")]
+        public void ParseSpellCheckingWithCollationWithMoreElement(string fileTest)
         {
             var parser = new SpellCheckResponseParser<Product>();
-            var xml = EmbeddedResource.GetEmbeddedXml(GetType(), "Resources.responseWithSpellCheckingCollactionsWithMoreElement.xml");
+            var xml = EmbeddedResource.GetEmbeddedXml(GetType(), fileTest);
             var docNode = xml.XPathSelectElement("response/lst[@name='spellcheck']");
             var spellChecking = parser.ParseSpellChecking(docNode);
             Assert.IsNotNull(spellChecking);
