@@ -34,7 +34,7 @@ namespace SolrNet.Impl {
         /// <summary>
         /// When row limit is not defined, this value is used
         /// </summary>
-        public static readonly int ConstDefaultRows = 100000000;
+        public static readonly int ConstDefaultRows = 1000;
 
         /// <summary>
         /// Default Solr query handler
