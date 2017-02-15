@@ -500,7 +500,7 @@ namespace SolrNet.Tests
         }
 
         [TestCase("Resources.responseWithSpellChecking.xml")]
-        [TestCase("Resources.responseWithSpellCheckOldVersion.xml")]
+        [TestCase("Resources.responseWithSpellCheckPreV5.xml")]
         public void ParseSpellChecking(string fileTest)
         {
             var parser = new SpellCheckResponseParser<Product>();
@@ -513,7 +513,7 @@ namespace SolrNet.Tests
             Assert.AreEqual(2, spellChecking.Count);
         }
 
-        [TestCase("Resources.responseWithSpellCheckingWithMoreElementOld.xml")]
+        [TestCase("Resources.responseWithSpellCheckingWithMoreElementPreV5.xml")]
         [TestCase("Resources.responseWithSpellCheckingCollactionsWithMoreElement.xml")]
         public void ParseSpellCheckingWithCollationWithMoreElement(string fileTest)
         {
