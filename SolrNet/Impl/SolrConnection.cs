@@ -39,7 +39,20 @@ namespace SolrNet.Impl {
         /// Manages HTTP connection with Solr
         /// </summary>
         /// <param name="serverURL">URL to Solr</param>
-        public SolrConnection(string serverURL) {
+        /// <param name="cache">Custom cache implementation</param>
+        public SolrConnection(string serverURL, ISolrCache cache) {
+            ServerURL = serverURL;
+            Timeout = -1;
+            Cache = cache;
+            HttpWebRequestFactory = new HttpWebRequestFactory();
+        }
+
+        /// <summary>
+        /// Manages HTTP connection with Solr
+        /// </summary>
+        /// <param name="serverURL">URL to Solr</param>
+        public SolrConnection(string serverURL)
+        {
             ServerURL = serverURL;
             Timeout = -1;
             Cache = new NullCache();
